@@ -61,3 +61,7 @@ ChromiumでPC 1440px、タブレット 820px、モバイル 390pxを確認。開
 - 地域ホバー、選択中の輪郭、地図内の選択地域表示を強化
 - 地図のスクロール位置は地域選択時に維持
 - PC・スマホのChromiumで全12地域を実際の陸地上から選択できることを確認
+
+
+## Country-derived SVG map (v1.0.1)
+Natural Earth 110m public-domain country outlines are grouped into 12 interactive regions. The land backdrop and click targets share the same SVG geometry. Boundaries are gameplay abstractions, not official geopolitical borders.
