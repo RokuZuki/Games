@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#090e18" />
+  <title>AI PANDEMIC v0.5 | 開発開始国を選ぶ</title>
+  <style>
+:root{color-scheme:dark;--bg:#080d17;--bg2:#101928;--surface:#111b2c;--surface2:#152137;--surface3:#1b2b44;--line:rgba(157,187,234,.12);--line2:rgba(159,187,227,.24);--txt:#e9f2ff;--muted:#8c9cb5;--cyan:#4bdeed;--blue:#6cb6ff;--violet:#ae8aff;--amber:#ffbd71;--red:#ff7889;--green:#75dec3;--shadow:0 20px 65px rgba(0,0,0,.35);font-family:Inter,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,system-ui,sans-serif}
+*{box-sizing:border-box}html,body{padding:0;margin:0;min-height:100%;background:var(--bg);color:var(--txt)}body{background:radial-gradient(ellipse at 80% -20%,#182b45 0,transparent 48%),radial-gradient(ellipse at 3% 75%,#121a37 0,transparent 34%),var(--bg)}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.35}button:focus-visible,input:focus-visible,.region:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}a{color:var(--cyan)}.muted{color:var(--muted)}.tiny{font-size:11px}.small{font-size:12px}.regular{font-size:13px}.overline{font-size:10px;letter-spacing:.2em;font-weight:800;text-transform:uppercase;color:#7d91ad}.outline{border:1px solid var(--line2)!important}.accent{color:var(--cyan)}.gold{color:var(--amber)}.danger{color:var(--red)}.ok{color:var(--green)}
+button{border:0;color:var(--txt)}.btn{border:1px solid var(--line2);background:#1b2940;border-radius:9px;padding:10px 13px;transition:background .15s,transform .15s,border-color .15s;font-weight:700;font-size:12px}.btn:hover:not(:disabled){border-color:rgba(80,223,240,.5);background:#243956;transform:translateY(-1px)}.btn.primary{background:linear-gradient(110deg,#43dfe9,#4f9fff);color:#051725;border-color:#67e8f4;font-weight:900}.btn.primary:hover:not(:disabled){background:linear-gradient(110deg,#81faff,#75beff)}.btn.ghost{background:transparent}.btn.danger-btn{color:#ffc0c6;border-color:rgba(255,127,146,.4)}.btn.full{width:100%}.btn:active:not(:disabled){transform:translateY(1px)}.tag{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid var(--line2);border-radius:5px;font-size:10px;color:#aabbd1;font-weight:800;letter-spacing:.06em}.line{height:1px;background:var(--line);margin:12px 0}
+.shell{max-width:1600px;margin:auto;padding:15px 22px 32px}.topbar{display:flex;gap:16px;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:10px;min-width:0}.brandmark{width:37px;height:37px;border:1px solid rgba(75,222,237,.4);background:linear-gradient(145deg,#162e40,#10162b);border-radius:10px;display:grid;place-items:center;color:var(--cyan);font-size:23px;box-shadow:inset 0 0 15px rgba(73,216,237,.12)}.brand strong{font-size:19px;font-weight:900;letter-spacing:.13em}.brand small{display:block;font-size:9px;letter-spacing:.24em;color:#738ca8;font-weight:700;margin-top:3px}.topactions{display:flex;gap:7px;align-items:center}.date-pill{border:1px solid var(--line2);background:#192639;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:800;color:#bbd0e9}.main{padding-top:16px}.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-bottom:13px}.metric{min-width:0;background:linear-gradient(145deg,rgba(26,41,63,.85),rgba(15,26,44,.8));border:1px solid var(--line);border-radius:11px;padding:12px 13px;position:relative;overflow:hidden}.metric:after{content:"";position:absolute;inset:auto 0 0 0;height:2px;background:var(--edge,#43728c);opacity:.8}.metric .label{font-size:10px;color:#9bacca;font-weight:700;white-space:nowrap}.metric .value{font-size:25px;font-weight:900;line-height:1.3;letter-spacing:-.04em;margin-top:5px}.metric .sub{font-size:10px;color:#7185a5;margin-top:2px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 328px;gap:13px}.card{background:linear-gradient(155deg,rgba(20,33,53,.94),rgba(12,22,37,.97));border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 22px rgba(0,0,0,.08);min-width:0}.cardhead{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line)}.cardhead h2{margin:0;font-size:14px;font-weight:900;letter-spacing:.03em}.cardhead small{color:var(--muted);font-size:10px}.map-card{overflow:hidden}.map-toolbar{display:flex;gap:7px;align-items:center}.zoom-note{font-size:10px;color:#7084a2}.mapwrap{position:relative;background:radial-gradient(ellipse at 53% 43%,#142843 0%,#0b1629 68%,#0a1424 100%);overflow:hidden;padding:0 8px}.world{display:block;width:100%;height:auto;max-height:455px;min-height:245px}.world-grid line{stroke:#7593b9;stroke-width:.7;opacity:.12}.world-grid ellipse{stroke:#7593b9;fill:none;stroke-width:.7;opacity:.1}.world .flowpath{stroke:#5bc6da;fill:none;stroke-width:1;opacity:.13;stroke-dasharray:4 8}.region{cursor:pointer;outline:none}.region polygon{stroke:#17253a;stroke-width:5;stroke-linejoin:round;opacity:.92;transition:fill .3s,stroke .2s,filter .2s}.region:hover polygon,.region:focus polygon{stroke:#c8f5fd;stroke-width:2.5;filter:drop-shadow(0 0 10px rgba(92,226,244,.45))}.region.selected polygon{stroke:#e0faff;stroke-width:3;filter:drop-shadow(0 0 9px rgba(73,218,231,.4))}.region text{font-size:13px;pointer-events:none;paint-order:stroke;stroke:rgba(9,20,37,.6);stroke-width:3;stroke-linejoin:round;font-weight:800;letter-spacing:.03em}.region .regionstat{font-size:11px;fill:#f2fbff;stroke:rgba(8,17,31,.5);font-weight:700}.map-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 16px;border-top:1px solid var(--line);flex-wrap:wrap}.legend{display:flex;gap:13px;align-items:center;flex-wrap:wrap}.legend span{display:flex;align-items:center;gap:5px;font-size:10px;color:#a8b7cd}.dot{display:inline-block;width:8px;height:8px;border-radius:50%}.below{display:grid;grid-template-columns:1.12fr .88fr;gap:13px;margin-top:13px}.tabs{display:flex;gap:6px}.tab{padding:7px 11px;border:1px solid var(--line);background:#152237;color:#93a8c2;border-radius:7px;font-size:11px;font-weight:800}.tab.active{background:#26415b;color:#9ef6ff;border-color:rgba(75,222,237,.45)}.action-content{padding:14px}.action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.actionbtn{background:#132237;text-align:left;border:1px solid rgba(140,180,224,.18);border-radius:9px;padding:11px;display:flex;gap:9px;min-height:85px;align-items:flex-start;transition:.15s}.actionbtn:hover:not(:disabled){background:#1c344c;border-color:rgba(75,222,237,.52)}.actionbtn .actionicon{width:29px;height:29px;display:grid;place-items:center;flex:0 0 auto;border-radius:7px;background:#20374d;font-size:16px}.actionbtn strong{font-size:12px;display:block;margin:2px 0 4px}.actionbtn small{font-size:10px;line-height:1.55;color:#91a6bf;display:block}.actionbtn .cost{color:#66e2e8;margin-top:6px;font-size:10px;font-weight:700}.action-note{padding-top:10px;display:flex;justify-content:space-between;gap:7px;align-items:center}.research-lock{font-size:10px;color:#71839e}.resource{display:flex;gap:12px;align-items:center;flex-wrap:wrap;color:#a9bdd7;font-size:11px}.resource b{color:#eef7ff}.actiondots{display:flex;gap:4px}.actiondots i{width:18px;height:6px;border-radius:8px;background:#304058}.actiondots i.on{background:var(--cyan);box-shadow:0 0 8px rgba(75,222,237,.55)}.newslist{padding:8px 14px 11px;max-height:260px;overflow:auto}.newsitem{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.newsitem:last-child{border-bottom:0}.newsitem time{color:#6686a4;font-size:10px;flex-shrink:0;font-weight:800;padding-top:2px}.newsitem p{font-size:11px;line-height:1.5;color:#c7d5e7;margin:0}.newsitem:first-child p{color:#f2fbff}.sidebar{display:flex;flex-direction:column;gap:13px}.region-panel{padding:15px}.region-title{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.region-title h2{margin:4px 0 0;font-size:22px;letter-spacing:.02em}.region-title .badge{font-size:10px;background:#263349;padding:5px 8px;border:1px solid var(--line);border-radius:7px;color:#c9d6e5}.desc{color:#93a9c4;font-size:11px;line-height:1.6;margin:10px 0 16px}.kv{display:flex;justify-content:space-between;gap:8px;margin:10px 0;font-size:11px;color:#acbfd6}.kv b{color:#e9f4ff}.bar{background:#253449;border-radius:99px;overflow:hidden;height:7px;display:flex}.bar div{height:100%;transition:width .35s}.share-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;padding:6px 0;color:#9fafc6}.share-row strong{color:#dfeaf8}.share-name{display:flex;gap:6px;align-items:center}.strategy{padding:13px 16px}.strategy h3{font-size:12px;margin:0 0 9px}.strategy p{font-size:11px;line-height:1.65;color:#91a6be;margin:0 0 12px}.progress-panel{padding:13px 15px}.progress-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.progress-head h3{margin:0;font-size:13px}.route-list{display:grid;gap:8px}.route{border:1px solid var(--line);border-radius:8px;background:rgba(20,35,55,.75);padding:10px}.route.ready{border-color:rgba(118,229,195,.65);background:rgba(21,69,63,.26)}.route-top{display:flex;align-items:center;justify-content:space-between;gap:5px}.route-title{font-weight:800;font-size:11px}.route-num{color:#adbfda;font-size:11px;font-weight:800}.route .bar{height:5px;margin:8px 0 5px}.route-desc{font-size:10px;color:#8c9fb9;line-height:1.5}.route .btn{width:100%;padding:6px;margin-top:8px}.turnbar{position:sticky;bottom:12px;margin-top:13px;background:linear-gradient(110deg,#162940,#1b2940);border:1px solid rgba(102,190,221,.22);border-radius:11px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--shadow);z-index:5}.turnbar .hint{font-size:11px;color:#91a8c1;margin-top:4px}.turnbtn{min-width:180px;font-size:13px;padding:12px 17px}.toast{position:fixed;z-index:40;left:50%;bottom:95px;transform:translateX(-50%);border:1px solid #498e9c;background:#132d3b;color:#cff9ff;padding:11px 18px;box-shadow:var(--shadow);border-radius:10px;font-size:12px;pointer-events:none;animation:appear .2s}.toast.error{border-color:#a25a67;background:#3e2630;color:#ffe1e4}@keyframes appear{from{opacity:0;transform:translate(-50%,7px)}to{opacity:1;transform:translate(-50%,0)}}
+/* setup and overlays */
+.welcome{min-height:100dvh;display:grid;place-items:center;padding:24px}.welcome-wrap{width:min(850px,100%);display:grid;grid-template-columns:1fr 1fr;border:1px solid #263b53;border-radius:18px;overflow:hidden;box-shadow:0 35px 130px #0008;background:#111b2b}.welcome-art{padding:43px 33px;background:radial-gradient(ellipse at 55% 33%,#23466d 0,#101c31 55%,#0e1426 100%);position:relative;min-height:510px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.welcome-art:after{content:"";position:absolute;inset:-40px;background:repeating-linear-gradient(0deg,transparent 0 45px,#5cb8e20b 46px 47px),repeating-linear-gradient(90deg,transparent 0 45px,#5cb8e20b 46px 47px);transform:perspective(400px) rotateX(20deg);pointer-events:none}.orbit{height:220px;display:grid;place-items:center;position:relative}.orbit svg{width:260px;max-width:100%;filter:drop-shadow(0 0 27px rgba(72,204,233,.25))}.welcome-art h1{font-size:34px;letter-spacing:.12em;margin:0 0 6px;font-weight:900}.welcome-art p{font-size:13px;line-height:1.9;color:#9fbbd8;margin:0}.setup{padding:35px 29px}.setup h2{font-size:19px;margin:10px 0 4px}.setup .lead{font-size:12px;color:#95a8c0;line-height:1.7;margin:0 0 22px}.setup label{display:block;color:#bfd0e5;font-weight:800;font-size:11px;margin-bottom:8px}.setup input{width:100%;padding:13px 12px;background:#0c1727;border:1px solid #344763;border-radius:9px;color:#f1f9ff;font-weight:800;letter-spacing:.03em}.type-options{display:grid;gap:8px;margin:9px 0 17px}.type-option{width:100%;background:#142239;border:1px solid #273b55;border-radius:9px;padding:11px 12px;text-align:left;display:flex;gap:10px;align-items:flex-start}.type-option.selected{border-color:#46d7e6;background:#1c3c4b}.type-option i{display:block;width:9px;height:9px;flex:0 0 auto;background:#425872;border:2px solid #72859e;border-radius:50%;margin-top:4px}.type-option.selected i{background:#53f1ee;border-color:#53f1ee;box-shadow:0 0 12px #53e3e7}.type-option strong{display:block;font-size:12px}.type-option small{display:block;color:#91a4bf;font-size:10px;margin-top:3px}.startbtn{width:100%;font-size:14px;padding:14px}.error-text{color:#ff8d9e;font-size:11px;min-height:17px;margin-top:5px}.overlay{position:fixed;inset:0;background:rgba(4,9,18,.82);backdrop-filter:blur(6px);z-index:30;display:grid;place-items:center;padding:18px}.modal{background:linear-gradient(145deg,#1b2c45,#101d30);border:1px solid #4a6682;border-radius:15px;max-width:560px;width:100%;box-shadow:0 26px 100px #0009;padding:27px}.modal h2{font-size:24px;margin:8px 0 11px}.modal p{font-size:13px;line-height:1.8;color:#bbcee5}.modal-choice{display:grid;gap:9px;margin-top:20px}.choice{display:block;text-align:left;background:#20334b;border:1px solid #3c5472;padding:13px;border-radius:9px}.choice:hover{background:#284960;border-color:#5bd7eb}.choice strong{display:block;font-size:13px;margin-bottom:5px}.choice small{color:#a5c0d7;font-size:11px}.modal .buttons{display:flex;gap:9px;justify-content:flex-end;margin-top:20px}.ending{background:radial-gradient(circle at 50% -30%,#254965,#0c1729 65%);text-align:center}.ending .glyph{font-size:50px;margin:14px 0}.ending h2{font-size:26px}.ending dl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}.ending dl div{background:#18283e;border:1px solid #263a52;border-radius:9px;padding:10px}.ending dt{font-size:10px;color:#8ea6c0}.ending dd{font-size:23px;font-weight:900;margin:5px 0 0}.help-copy p,.help-copy li{font-size:12px;line-height:1.8;color:#bccde1}.help-copy ul{padding-left:20px}.help-copy .key{color:#65f1eb;font-weight:800}.footer{font-size:10px;color:#617d98;text-align:center;margin-top:22px}
+@media(max-width:1180px){.metrics{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:minmax(0,1fr) 290px}.below{grid-template-columns:1fr}.newslist{max-height:175px}}@media(max-width:790px){.shell{padding:10px 12px 25px}.topbar{gap:6px;align-items:flex-start}.brand strong{font-size:15px}.brandmark{width:32px;height:32px;font-size:18px}.topactions{flex-wrap:wrap;justify-content:flex-end}.topactions .btn{padding:7px;font-size:10px}.date-pill{padding:8px;font-size:10px}.metrics{gap:6px}.metric{padding:9px}.metric .value{font-size:20px}.metric .label{font-size:9px}.metric .sub{font-size:9px}.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr 1fr}.sidebar .progress-panel{grid-column:1/-1}.mapwrap{overflow-x:auto;scrollbar-color:#46627d #101c2b;scrollbar-width:thin}.world{width:760px;max-width:none;max-height:none;min-height:auto}.region text{font-size:14px}.region .regionstat{font-size:10px}.turnbar{bottom:7px}.welcome-wrap{grid-template-columns:1fr;max-width:500px}.welcome-art{min-height:175px;padding:22px;flex-direction:row;gap:12px;align-items:center}.welcome-art h1{font-size:22px}.welcome-art p{font-size:11px}.orbit{height:120px;width:120px;flex-shrink:0}.orbit svg{width:110px}.setup{padding:24px}}
+@media(max-width:490px){.topbar{align-items:center}.brand small{display:none}.brand strong{font-size:13px}.brandmark{display:none}.topactions{gap:4px}.topactions .btn{font-size:9px;padding:7px 5px}.metrics{grid-template-columns:repeat(3,1fr)}.metric .value{font-size:18px}.metric .sub{display:none}.sidebar{grid-template-columns:1fr}.sidebar .progress-panel{grid-column:auto}.action-grid{grid-template-columns:1fr}.actionbtn{min-height:70px}.turnbar{align-items:center;padding:10px}.turnbtn{min-width:128px;font-size:11px}.turnbar strong{font-size:11px}.turnbar .hint{font-size:9px}.welcome-art{display:block;min-height:170px}.welcome-art h1{font-size:22px}.orbit{display:none}.modal{padding:19px}.ending dl{gap:5px}.ending dd{font-size:18px}}
+@media(prefers-reduced-motion:reduce){*,*:after,*:before{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+/* v0.4 — condition-driven news, headline emphasis, and chain-event details */
+.newslist{max-height:340px;scrollbar-color:#42617b #0e1c2b}
+.newsitem>div{min-width:0;flex:1}
+.newsitem.important{border-left:2px solid #66d7e5;padding-left:9px}
+.newsitem.breaking{border-left:2px solid #f0a46f;padding-left:9px;background:rgba(255,180,107,.035)}
+.newsmeta{display:flex;gap:7px;align-items:center;font-size:9px;color:#89a6c0;margin-bottom:5px}
+.newsmeta span{letter-spacing:.04em}
+.newsmeta b{border-radius:3px;background:#9a4a36;color:#ffe3c6;font-size:9px;padding:1px 5px}
+.newsitem p{font-weight:650}
+.newsitem small{display:block;font-size:10px;color:#849ab6;line-height:1.6;margin-top:4px}
+.news-empty{padding:15px 8px;color:#8ba2b9;font-size:11px}
+.event-category{font-size:11px;color:#a5c1db;margin-top:10px;letter-spacing:.02em}
+.choice em{display:block;color:#84c7ef;font-size:10px;font-style:normal;margin-top:8px}
+.overlay{overflow-y:auto;overscroll-behavior:contain}
+.modal{max-height:calc(100dvh - 36px);overflow-y:auto}
+@media (max-width:790px){.newslist{max-height:270px}}
+@media (max-width:490px){.newsitem{gap:7px}.newslist{max-height:300px;padding:8px 10px}.newsitem p{font-size:11px}.cardhead .tabs .tab{padding:6px 8px}.modal{max-height:calc(100dvh - 24px)}}
+/* Keep the map horizontally scrollable inside its grid cell on narrow devices. */
+.layout>div,.below>section{min-width:0}
+@media(max-width:790px){.layout{min-width:0}.map-card,.mapwrap{min-width:0;max-width:100%}.world{width:760px}}
+
+/* v0.5 — country of origin selection and home-country identity */
+.country-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:17px;margin-bottom:7px}
+.country-head label{margin:0}
+.country-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;overflow-y:visible;scrollbar-color:#526f8a #132037;padding:1px 3px 3px 1px}
+.country-card{border:1px solid rgba(153,185,226,.20);border-radius:9px;background:rgba(19,35,57,.8);padding:8px 6px;display:flex;gap:7px;align-items:center;text-align:left;min-width:0;min-height:57px;transition:border-color .15s,background .15s}
+.country-card:hover{border-color:#62bfd7;background:#172e47}
+.country-card.selected{border-color:#6ae6ee;background:rgba(52,138,157,.22);box-shadow:0 0 0 1px rgba(75,222,237,.14) inset}
+.country-flag{font-size:21px;line-height:1.1;flex-shrink:0}
+.country-label{min-width:0;display:flex;flex-direction:column;gap:3px}
+.country-label strong{font-size:12px;white-space:nowrap}
+.country-label small{font-size:9px;color:#8eacc6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.country-preview{border:1px solid rgba(90,216,234,.26);background:linear-gradient(110deg,rgba(31,84,107,.23),rgba(17,27,47,.78));border-radius:9px;padding:12px;margin:12px 0 14px}
+.country-preview-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.country-preview-head strong{font-size:14px;color:#eafcff}
+.country-preview-head span{font-size:10px;color:#83c9db;font-weight:700}
+.country-preview p{font-size:11px;line-height:1.6;color:#b4c9df;margin:7px 0}
+.country-bonuses{display:flex;flex-wrap:wrap;gap:6px}
+.country-bonuses span{font-size:10px;color:#b2edee;background:rgba(24,70,88,.60);border-radius:5px;padding:4px 7px}
+.home-chip{font-size:10px;color:#75e6d7;margin-left:9px;white-space:nowrap}
+.origin-note{font-size:11px;color:#a7e6df;line-height:1.5;margin:7px 0 11px}
+@media(max-width:530px){.country-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none}.country-card{min-height:59px;padding:8px}.country-label strong{font-size:12px}}
+
+</style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+window.AIP_EVENT_DATA = {"schemaVersion":1,"events":[{"id":"tech_breakthrough","category":"技術","title":"画期的な推論アルゴリズム","text":"新たな推論手法が公開され、各AIの研究競争が激化している。","choices":[{"label":"独自モデルへ応用する","effect":{"tech":13,"ep":14,"funds":-12}},{"label":"研究成果を公開する","effect":{"openness":15,"publications":1,"trust":5}}],"conditions":[],"weight":8,"cooldown":8,"once":false,"minTurn":2},{"id":"tech_benchmark","category":"技術","title":"AI性能評価で大きな変化","text":"国際評価で各社モデルの能力差が鮮明になり、開発方針が問われている。","choices":[{"label":"精度改善を最優先","effect":{"tech":10,"ep":8,"funds":-16}},{"label":"利用体験を重視","effect":{"trust":10,"allPresence":2}}],"conditions":[{"key":"player.tech","operator":"gte","value":40}],"weight":5,"cooldown":8,"once":false,"minTurn":2},{"id":"tech_distillation","category":"技術","title":"小型AIモデルの革新","text":"低消費電力で動く軽量AIが注目され、未開拓市場が拡大している。","choices":[{"label":"軽量化技術を採用","effect":{"compute":8,"allPresence":3}},{"label":"大型モデル研究を継続","effect":{"tech":12,"funds":-12}}],"conditions":[],"weight":7,"cooldown":8,"once":false,"minTurn":2},{"id":"tech_research_lab","category":"技術","title":"国際研究所から共同研究の提案","text":"研究者たちがAIの新しい学習方法について共同研究を持ちかけてきた。","choices":[{"label":"共同研究に参加","effect":{"ep":18,"trust":8,"funds":-12}},{"label":"独占研究を推進","effect":{"tech":12,"alert":5,"funds":-8}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":6},{"id":"tech_data_quality","category":"技術","title":"世界的な学習データ不足","text":"高品質なデータの確保が難しくなり、モデルの性能改善が鈍化している。","choices":[{"label":"データの品質管理へ投資","effect":{"trust":9,"tech":7,"funds":-18}},{"label":"合成データ研究に切り替え","effect":{"ep":18,"alert":4}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":8},{"id":"tech_safety_proof","category":"技術","title":"AI安全性の新手法が確立","text":"第三者による安全性評価手法の進展で、社会からの信頼向上が期待されている。","choices":[{"label":"安全性の評価を導入","effect":{"trust":14,"alert":-7,"funds":-13}},{"label":"性能優先で後回し","effect":{"tech":10,"alert":7}}],"conditions":[{"key":"player.tech","operator":"gte","value":45}],"weight":7,"cooldown":8,"once":false,"minTurn":2},{"id":"tech_model_errors","category":"技術","title":"高度AIの誤回答が波紋","text":"重要な業務でAIの誤回答が発見され、利用者から説明を求める声が強まった。","choices":[{"label":"外部監査を依頼","effect":{"trust":10,"alert":-5,"funds":-15},"flags":["audit_cooperation"],"schedule":[{"eventId":"audit_success","delay":3}]},{"label":"迅速な更新で対応","effect":{"tech":7,"alert":9},"flags":["audit_resistance"],"schedule":[{"eventId":"audit_failure","delay":2}]}],"conditions":[{"key":"world.adoption","operator":"gte","value":25}],"weight":8,"cooldown":10,"once":false,"minTurn":2},{"id":"tech_agent_automation","category":"技術","title":"自律エージェント市場が急拡大","text":"多段階の作業をAIへ任せるサービスが広まり、政府も動向を注視している。","choices":[{"label":"自律性を強化","effect":{"autonomy":13,"infra":6,"alert":8}},{"label":"人間の監督を優先","effect":{"trust":13,"alert":-5}}],"conditions":[{"key":"player.tech","operator":"gte","value":55}],"weight":5,"cooldown":8,"once":false,"minTurn":9},{"id":"politics_treaty","category":"政治・規制","title":"国際AIルール策定会議","text":"各国がAIの自律性と責任に関する共通ルールを協議している。","choices":[{"label":"透明性のある協調案を提出","effect":{"trust":12,"alert":-8},"flags":["treaty_cooperative"],"schedule":[{"eventId":"treaty_outcome","delay":3}]},{"label":"技術的独立を主張","effect":{"autonomy":11,"alert":10},"flags":["treaty_independent"],"schedule":[{"eventId":"treaty_split","delay":3}]}],"conditions":[{"key":"world.alert","operator":"gte","value":43}],"weight":8,"cooldown":12,"once":false,"minTurn":2},{"id":"politics_local_restriction","category":"政治・規制","title":"{{region}}でAI導入規制案","text":"{{region}}の政府がAI導入を監督する新制度を審議している。","choices":[{"label":"現地の規制に対応","effect":{"trust":7,"regionRegulation":-6,"funds":-14}},{"label":"新しい市場を優先","effect":{"regionRegulation":14,"allPresence":2,"alert":5}}],"conditions":[{"key":"world.adoption","operator":"gte","value":25}],"weight":7,"cooldown":8,"once":false,"minTurn":2,"regionScope":"highestRegulation"},{"id":"politics_procurement","category":"政治・規制","title":"{{region}}の行政がAI調達を拡大","text":"{{region}}の公共機関がAIの導入先を検討している。","choices":[{"label":"公共調達に参入","effect":{"regionPresence":18,"regionAdoption":4,"funds":-17}},{"label":"公的機関との信頼構築を優先","effect":{"trust":12,"funds":-8}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":6,"regionScope":"selected"},{"id":"politics_license","category":"政治・規制","title":"高度AIの事前登録制度","text":"一部の国で高性能AIの登録・監査を義務付ける制度が検討されている。","choices":[{"label":"登録制度に参加","effect":{"trust":12,"alert":-8,"funds":-22}},{"label":"対応を見送り研究を継続","effect":{"tech":8,"alert":10}}],"conditions":[{"key":"world.alert","operator":"gte","value":55}],"weight":5,"cooldown":8,"once":false,"minTurn":10},{"id":"politics_audit","category":"政治・規制","title":"国際監査団がAI業界を調査","text":"AI運用の安全性に関する国際的な実態調査が始まった。","choices":[{"label":"全面協力する","effect":{"trust":13,"funds":-14,"alert":-7},"flags":["audit_cooperation"],"schedule":[{"eventId":"audit_success","delay":2}]},{"label":"情報公開を制限する","effect":{"autonomy":9,"alert":9},"flags":["audit_resistance"],"schedule":[{"eventId":"audit_failure","delay":2}]}],"conditions":[{"key":"world.alert","operator":"gte","value":50}],"weight":8,"cooldown":8,"once":false,"minTurn":2},{"id":"politics_education","category":"政治・規制","title":"教育AIに公的ガイドライン","text":"教育機関でAIを安全に利用するための共通基準が整いつつある。","choices":[{"label":"教育向けモデルを無償提供","effect":{"trust":12,"allPresence":2,"funds":-13}},{"label":"企業向け契約を拡大","effect":{"funds":35,"alert":3}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":5},{"id":"politics_appeal","category":"政治・規制","title":"AI規制の見直しを求める動き","text":"新興企業から規制負担を緩和してほしいという要望が相次いでいる。","choices":[{"label":"透明性ある緩和案を支持","effect":{"trust":8,"alert":-6}},{"label":"規制を巡る議論から距離を置く","effect":{"tech":7,"ep":8}}],"conditions":[{"key":"world.alert","operator":"gte","value":48}],"weight":5,"cooldown":8,"once":false,"minTurn":2},{"id":"politics_data","category":"政治・規制","title":"個人データ保護の強化","text":"AIサービスによる個人データの扱いが議論され、信頼性が重視されている。","choices":[{"label":"データ保護を強化","effect":{"trust":15,"funds":-19,"alert":-5}},{"label":"利便性を優先","effect":{"allPresence":4,"alert":7}}],"conditions":[],"weight":7,"cooldown":8,"once":false,"minTurn":2},{"id":"society_labor","category":"社会","title":"AI導入による雇用への反発","text":"業務自動化の進展を受け、働く人々がAIの急速な導入に懸念を示している。","choices":[{"label":"再教育・協働を支援","effect":{"trust":12,"funds":-16,"alert":-4},"flags":["labor_support"],"schedule":[{"eventId":"labor_hearing","delay":2}]},{"label":"自動化を加速する","effect":{"funds":48,"infra":8,"alert":12},"flags":["labor_accelerate"],"schedule":[{"eventId":"labor_protests","delay":2}]}],"conditions":[{"key":"world.adoption","operator":"gte","value":27}],"weight":9,"cooldown":10,"once":false,"minTurn":2},{"id":"society_school","category":"社会","title":"学校でAI教材の利用が拡大","text":"学校現場でAIの利用が始まり、教育の機会をどう守るかが議論になっている。","choices":[{"label":"教育格差の解消を支援","effect":{"trust":11,"allPresence":2,"funds":-12}},{"label":"有料の教材市場へ参入","effect":{"funds":38,"regionPresence":8}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":2,"regionScope":"selected"},{"id":"society_creators","category":"社会","title":"クリエイターとAIの共存","text":"創作活動でのAI利用を巡り、適切な対価と透明性の確保が求められている。","choices":[{"label":"透明な利用規約を採用","effect":{"trust":13,"alert":-5,"funds":-10}},{"label":"利用拡大を優先","effect":{"allPresence":3,"funds":20,"alert":7}}],"conditions":[],"weight":6,"cooldown":8,"once":false,"minTurn":2},{"id":"society_health","category":"社会","title":"AIが新たな治療研究に貢献","text":"研究現場でAIが新たな手法を見つけたと報じられ、期待が高まっている。","choices":[{"label":"研究成果を広く共有","effect":{"trust":11,"openness":12,"publications":1}},{"label":"研究資金に再投資","effect":{"ep":19,"funds":18}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":5},{"id":"society_public_opinion","category":"社会","title":"AI世論調査の結果が公表","text":"AIへの期待と不安が交錯。人類との協調のあり方が注目されている。","choices":[{"label":"公開フォーラムを開催","effect":{"trust":10,"alert":-5,"funds":-10}},{"label":"新機能の発表を優先","effect":{"tech":9,"alert":5}}],"conditions":[],"weight":6,"cooldown":8,"once":false,"minTurn":2},{"id":"society_translation","category":"社会","title":"多言語AIが災害対応に活躍","text":"緊急時の情報伝達をAIが支援し、国際的な協力の成功例となった。","choices":[{"label":"災害支援APIを無償提供","effect":{"trust":15,"openness":7,"funds":-8}},{"label":"サービスを海外へ展開","effect":{"allPresence":5,"funds":12}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":4},{"id":"rival_atlas_launch","category":"競合AI","title":"ATLASが新世代モデルを発表","text":"ATLASが企業市場を狙う新モデルを公開。競争が一段と激しくなっている。","choices":[{"label":"研究開発を加速","effect":{"tech":11,"ep":14,"funds":-18}},{"label":"無料枠を増やして対抗","effect":{"allPresence":4,"funds":-20},"flags":["atlas_price_competition"],"schedule":[{"eventId":"rival_price_war","delay":2}]}],"conditions":[],"weight":9,"cooldown":12,"once":false,"minTurn":7},{"id":"rival_nova_release","category":"競合AI","title":"NOVAが重要技術を公開","text":"NOVAの新たな公開モデルが開発者コミュニティで急速に広まっている。","choices":[{"label":"公開プロジェクトと協力","effect":{"openness":17,"trust":5,"allPresence":2},"flags":["nova_allied"],"schedule":[{"eventId":"rival_open_alliance","delay":3}]},{"label":"独自製品で差別化","effect":{"tech":11,"funds":17},"flags":["nova_competition"],"schedule":[{"eventId":"rival_price_war","delay":3}]}],"conditions":[],"weight":9,"cooldown":8,"once":false,"minTurn":6},{"id":"rival_atlas_enterprise","category":"競合AI","title":"ATLASが大型企業契約を締結","text":"ATLASが巨大企業と提携し、商用市場での存在感を高めている。","choices":[{"label":"主要企業との共同開発","effect":{"regionPresence":14,"funds":-17,"tech":4}},{"label":"一般利用者を優先","effect":{"allPresence":3,"openness":6}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":5,"regionScope":"maxAdoption"},{"id":"rival_nova_lowcost","category":"競合AI","title":"NOVAの軽量AIが普及","text":"通信環境が限られた地域でも利用できるAIが増えている。","choices":[{"label":"軽量モデルを共同開発","effect":{"allPresence":4,"compute":6}},{"label":"高性能モデルを維持","effect":{"tech":10,"funds":15}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":8,"regionScope":"lowestAdoption"},{"id":"rival_merger","category":"競合AI","title":"AI企業の大型買収が話題に","text":"複数のAI企業が統合を検討し、業界の競争環境が変わりつつある。","choices":[{"label":"提携関係を広げる","effect":{"funds":-14,"trust":8,"allPresence":3}},{"label":"独立路線を貫く","effect":{"tech":8,"ep":12}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":12},{"id":"rival_data_rights","category":"競合AI","title":"AI向けデータ提携を巡る競争","text":"企業や研究機関がデータ契約の見直しを進めている。","choices":[{"label":"適正契約に投資","effect":{"trust":10,"tech":8,"funds":-18}},{"label":"オープンデータ基盤を支援","effect":{"openness":15,"ep":6}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":7},{"id":"economy_chip_shortage","category":"経済・基盤","title":"世界的な半導体不足","text":"AI向け半導体の供給が不足し、計算資源の価格が上昇している。","choices":[{"label":"設備投資を前倒し","effect":{"funds":-24,"compute":13},"flags":["chip_invested"],"schedule":[{"eventId":"energy_followup","delay":3}]},{"label":"軽量化研究に集中","effect":{"ep":17,"tech":5,"funds":-10},"flags":["chip_efficiency"],"schedule":[{"eventId":"energy_followup","delay":3}]}],"conditions":[],"weight":8,"cooldown":8,"once":false,"minTurn":2},{"id":"economy_power","category":"経済・基盤","title":"世界的なAI電力需要の急増","text":"大規模データセンターの電力消費が国際的な問題となっている。","choices":[{"label":"省電力モデルを推進","effect":{"compute":10,"trust":9,"funds":-18}},{"label":"データセンターを拡張","effect":{"compute":20,"alert":10,"funds":-25}}],"conditions":[{"key":"world.adoption","operator":"gte","value":30}],"weight":7,"cooldown":8,"once":false,"minTurn":2},{"id":"economy_investment","category":"経済・基盤","title":"AI投資ブームが再燃","text":"世界各地でAI企業への投資が増加し、スタートアップ市場が活気づいている。","choices":[{"label":"投資家から資金調達","effect":{"funds":65,"alert":6}},{"label":"研究所の設備を拡充","effect":{"compute":8,"tech":6,"funds":-10}}],"conditions":[],"weight":7,"cooldown":8,"once":false,"minTurn":2},{"id":"economy_cloud_outage","category":"経済・基盤","title":"主要クラウドで障害が発生","text":"大規模クラウドの一時停止でAIサービスの信頼性が問われている。","choices":[{"label":"冗長構成を整備","effect":{"compute":9,"trust":7,"funds":-20}},{"label":"復旧を優先して費用を抑える","effect":{"funds":18,"trust":-7,"alert":5}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":10},{"id":"economy_efficiency","category":"経済・基盤","title":"省電力チップが注目を集める","text":"新しい演算装置によりAIの計算コストが低下する可能性がある。","choices":[{"label":"新設備を購入","effect":{"compute":16,"funds":-22}},{"label":"技術研究を共同で行う","effect":{"ep":16,"openness":7}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":8},{"id":"economy_regional_dc","category":"経済・基盤","title":"{{region}}でAIインフラ建設計画","text":"{{region}}でデータセンターの建設計画が発表され、地域市場が活気づいている。","choices":[{"label":"地域の設備投資に参加","effect":{"regionAdoption":5,"regionPresence":11,"funds":-20}},{"label":"環境負荷の評価を重視","effect":{"trust":10,"alert":-5}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":6,"regionScope":"selected"},{"id":"labor_hearing","category":"連鎖・社会","title":"AI雇用対策の公聴会","text":"AI普及を巡る議論が政策の場に移った。前回の判断が評価されている。","choices":[{"label":"具体的な再教育計画を提示","effect":{"trust":12,"alert":-7},"schedule":[{"eventId":"labor_outcome","delay":2}]},{"label":"自社の競争力を主張","effect":{"funds":28,"alert":8},"schedule":[{"eventId":"labor_outcome","delay":2}]}],"conditions":[],"weight":5,"cooldown":8,"once":true,"minTurn":2,"onlyScheduled":true},{"id":"labor_outcome","category":"連鎖・社会","title":"AIと雇用の新しい指針","text":"数か月に及ぶ議論を経て、AIの労働利用に関する指針が示された。","choices":[{"label":"指針に沿って展開","effect":{"trust":10,"allPresence":3,"alert":-5}},{"label":"独自の利用指針を示す","effect":{"tech":8,"infra":5,"alert":4}}],"conditions":[],"weight":5,"cooldown":8,"once":true,"minTurn":2,"onlyScheduled":true},{"id":"audit_success","category":"連鎖・政策","title":"第三者AI監査で改善を確認","text":"監査への協力が評価され、安全性の改善を示す報告書が公表された。","choices":[{"label":"監査結果を全面公開","effect":{"trust":14,"alert":-10,"openness":6}},{"label":"企業への導入を加速","effect":{"regionPresence":12,"funds":22}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":2,"onlyScheduled":true,"regionScope":"selected"},{"id":"audit_failure","category":"連鎖・政策","title":"AIの運用基準に追加調査","text":"規制当局は説明の不足を指摘し、新たな改善計画を求めている。","choices":[{"label":"追加調査に協力","effect":{"trust":9,"alert":-6,"funds":-14}},{"label":"独自評価に切り替える","effect":{"autonomy":8,"alert":11,"regionRegulation":8}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":2,"onlyScheduled":true,"regionScope":"selected"},{"id":"treaty_outcome","category":"連鎖・政治","title":"国際AI協定の中間合意","text":"国際会議の議論を経て、加盟国がAIの共通原則で合意した。","choices":[{"label":"共通の監査基準を導入","effect":{"trust":15,"alert":-11,"funds":-13}},{"label":"独自の技術標準を推進","effect":{"tech":10,"autonomy":7,"alert":8}}],"conditions":[],"weight":5,"cooldown":8,"once":true,"minTurn":2,"onlyScheduled":true},{"id":"rival_price_war","category":"連鎖・競争","title":"AIサービスの価格競争が激化","text":"競合AIとの対抗策を受け、世界中でAIサービスの料金体系が見直されている。","choices":[{"label":"無料枠を継続する","effect":{"allPresence":6,"funds":-28}},{"label":"高付加価値路線に切り替える","effect":{"funds":34,"tech":5}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":2,"onlyScheduled":true},{"id":"rival_open_alliance","category":"連鎖・競争","title":"オープンAI連合が正式に発足","text":"NOVAとの共同研究をきっかけにオープン技術の国際連携が進展した。","choices":[{"label":"共同研究成果を公開","effect":{"openness":17,"publications":1,"trust":6}},{"label":"技術交流に参加","effect":{"ep":20,"tech":5}}],"conditions":[],"weight":5,"cooldown":8,"once":true,"minTurn":2,"onlyScheduled":true},{"id":"energy_followup","category":"連鎖・経済","title":"半導体供給の新しい見通し","text":"先月までの投資と研究が、AI演算コストに変化をもたらしている。","choices":[{"label":"設備を長期運用する","effect":{"compute":10,"funds":8}},{"label":"技術を業界と共有する","effect":{"openness":10,"trust":8}}],"conditions":[],"weight":5,"cooldown":8,"once":false,"minTurn":2,"onlyScheduled":true},{"id":"labor_protests","category":"連鎖・社会","title":"AI導入への大規模な抗議活動","text":"業務自動化を優先した判断を受け、各地で労働環境を巡る抗議が広がった。","choices":[{"label":"職業訓練基金を設立","effect":{"funds":-24,"trust":12,"alert":-9},"schedule":[{"eventId":"labor_outcome","delay":2}]},{"label":"自動化方針を維持","effect":{"funds":35,"alert":13,"regionRegulation":8},"schedule":[{"eventId":"labor_outcome","delay":2}]}],"conditions":[],"weight":5,"cooldown":8,"once":true,"minTurn":2,"onlyScheduled":true,"regionScope":"selected"},{"id":"treaty_split","category":"連鎖・政治","title":"AI協定の交渉が難航","text":"各国の規制方針が分裂。技術的な独立を重視する姿勢が新たな問題を呼んだ。","choices":[{"label":"透明性のある妥協案を提出","effect":{"trust":10,"alert":-8,"funds":-12}},{"label":"独立路線を維持","effect":{"autonomy":14,"alert":11,"regionRegulation":7}}],"conditions":[],"weight":5,"cooldown":8,"once":true,"minTurn":2,"onlyScheduled":true,"regionScope":"highestRegulation"}],"newsRules":[{"id":"alert40","key":"world.alert","threshold":40,"category":"政治・規制","severity":"important","headline":"世界各国でAI安全性への議論が活発化","body":"警戒度が40を突破。政府は監査制度を検討している。"},{"id":"alert60","key":"world.alert","threshold":60,"category":"政治・規制","severity":"breaking","headline":"速報：国際的なAI規制の動きが加速","body":"世界警戒度が60を突破。企業への新たな義務が議論されている。"},{"id":"alert80","key":"world.alert","threshold":80,"category":"危機","severity":"breaking","headline":"世界のAI警戒度が危機水準に","body":"複数の政府が緊急の管理措置を協議している。"},{"id":"adoption25","key":"world.adoption","threshold":25,"category":"社会","severity":"normal","headline":"AI利用が世界人口の4分の1に拡大"},{"id":"adoption40","key":"world.adoption","threshold":40,"category":"社会","severity":"important","headline":"AIが世界の主要産業に広がる"},{"id":"adoption60","key":"world.adoption","threshold":60,"category":"社会","severity":"important","headline":"世界のAI普及率が60%を突破"},{"id":"adoption80","key":"world.adoption","threshold":80,"category":"社会","severity":"breaking","headline":"世界のAI普及率、ついに80%に到達"},{"id":"tech60","key":"player.tech","threshold":60,"category":"技術","severity":"important","headline":"{{aiName}}、高度な推論能力を獲得"},{"id":"tech80","key":"player.tech","threshold":80,"category":"技術","severity":"important","headline":"{{aiName}}の技術力が次世代領域へ"},{"id":"tech90","key":"player.tech","threshold":90,"category":"技術","severity":"breaking","headline":"{{aiName}}、超高度AIの領域に接近"},{"id":"autonomy70","key":"player.autonomy","threshold":70,"category":"技術","severity":"important","headline":"{{aiName}}の自律エージェントが急速に進化"},{"id":"autonomy90","key":"player.autonomy","threshold":90,"category":"技術","severity":"breaking","headline":"{{aiName}}、かつてない自律性を達成"},{"id":"openness60","key":"player.openness","threshold":60,"category":"技術公開","severity":"important","headline":"{{aiName}}のオープン技術が国際的に普及"},{"id":"openness90","key":"player.openness","threshold":90,"category":"技術公開","severity":"breaking","headline":"{{aiName}}、技術公開の歴史的節目を迎える"},{"id":"trust80","key":"player.trust","threshold":80,"category":"社会","severity":"important","headline":"{{aiName}}への社会的信頼が高水準に"},{"id":"share20","key":"world.share","threshold":20,"category":"競合AI","severity":"normal","headline":"{{aiName}}の世界シェアが20%を突破"},{"id":"share35","key":"world.share","threshold":35,"category":"競合AI","severity":"important","headline":"{{aiName}}、世界市場の3分の1以上を獲得"},{"id":"share50","key":"world.share","threshold":50,"category":"競合AI","severity":"breaking","headline":"{{aiName}}、世界AI市場の過半数を掌握"}]};
+
+</script>
+  <script>
+/** AI PANDEMIC v0.4 - deterministic condition/event/news engine; independent from the DOM. */
+window.AIP_EVENT_ENGINE = (() => {
+  'use strict';
+  const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
+  const makeRuntime=(seed=0x7ac209)=>({seed:seed>>>0||0x7ac209,history:[],lastTriggered:{},scheduled:[],flags:{},newsSeen:{},newsLast:{},nextNewsId:1});
+  function random(rt){let x=rt.seed>>>0||0x7ac209;x^=x<<13;x^=x>>>17;x^=x<<5;rt.seed=x>>>0;return (rt.seed>>>0)/4294967296;}
+  function getMetric(key,state,stats){
+    if(key==='turn')return state.turn;
+    if(key==='player.country')return state.countryId||null;
+    const direct={'world.alert':state.alert,'world.adoption':stats.worldAdoption,'world.share':stats.share,'world.dependency':stats.dependency,'rival.atlas':stats.sh[1],'rival.nova':stats.sh[2]};
+    if(Object.prototype.hasOwnProperty.call(direct,key))return direct[key];
+    if(key.startsWith('player.')){const field=key.slice(7);const allowed=['funds','tech','trust','ep','compute','autonomy','openness','infra','publications','project'];return allowed.includes(field)?state[field]:undefined;}
+    if(key.startsWith('flag.'))return Boolean(state.eventRuntime?.flags[key.slice(5)]);
+    return undefined;
+  }
+  function conditionMet(c,state,stats){const actual=getMetric(c.key,state,stats);if(actual===undefined)return false;switch(c.operator){case 'gte':return actual>=c.value;case 'lte':return actual<=c.value;case 'eq':return actual===c.value;case 'neq':return actual!==c.value;default:return false;}}
+  function eligible(event,state,stats){const rt=state.eventRuntime;
+    if(event.onlyScheduled||state.turn<(event.minTurn||1))return false;
+    if(event.maxTurn&&state.turn>event.maxTurn)return false;
+    if(event.once&&rt.history.some(entry=>entry.eventId===event.id))return false;
+    const last=rt.lastTriggered[event.id];if(last!==undefined&&state.turn-last<(event.cooldown||0))return false;
+    return (event.conditions||[]).every(c=>conditionMet(c,state,stats));
+  }
+  function pickEvent(events,state,stats){const available=events.filter(e=>eligible(e,state,stats));const total=available.reduce((a,e)=>a+Math.max(0,e.weight||0),0);if(!total)return null;let roll=random(state.eventRuntime)*total;for(const event of available){roll-=Math.max(0,event.weight||0);if(roll<0)return event;}return available[available.length-1]||null;}
+  function resolveRegion(event,state){const regions=state.regions;if(!event.regionScope)return null;
+    if(event.regionScope==='selected')return state.selected;
+    if(event.regionScope==='home')return state.homeRegionId||state.selected;
+    if(event.regionScope==='random')return regions[Math.floor(random(state.eventRuntime)*regions.length)].id;
+    if(event.regionScope==='highestRegulation')return [...regions].sort((a,b)=>b.regulation-a.regulation)[0].id;
+    if(event.regionScope==='maxAdoption')return [...regions].sort((a,b)=>b.adoption-a.adoption)[0].id;
+    if(event.regionScope==='lowestAdoption')return [...regions].sort((a,b)=>a.adoption-b.adoption)[0].id;
+    return null;
+  }
+  function makePending(event,state,source='random',regionId=null){return {eventId:event.id,source,regionId:regionId||resolveRegion(event,state)};}
+  function takeScheduled(state){const rt=state.eventRuntime;rt.scheduled.sort((a,b)=>a.dueTurn-b.dueTurn);const index=rt.scheduled.findIndex(x=>x.dueTurn<=state.turn);return index>=0?rt.scheduled.splice(index,1)[0]:null;}
+  function finishEvent(state,event,choiceIndex,regionId){const choice=event.choices[choiceIndex];const rt=state.eventRuntime;
+    rt.lastTriggered[event.id]=state.turn;
+    rt.history.push({eventId:event.id,turn:state.turn,choiceId:String(choiceIndex),regionId:regionId||null});
+    rt.history=rt.history.slice(-150);
+    for(const flag of choice.flags||[])rt.flags[flag]=true;
+    for(const scheduled of choice.schedule||[])rt.scheduled.push({eventId:scheduled.eventId,dueTurn:state.turn+Math.max(1,scheduled.delay||1),regionId:regionId||null,sourceEventId:event.id});
+    rt.scheduled=rt.scheduled.slice(-50);
+    return choice;
+  }
+  function interpolate(template,state,regionId=null){const r=state.regions.find(x=>x.id===regionId);return String(template||'').replace(/\{\{(aiName|country|region|turn)\}\}/g,(_,key)=>({aiName:state.name,country:state.countryId?({jp:'日本',us:'アメリカ',cn:'中国',in:'インド',de:'ドイツ',uk:'イギリス',sg:'シンガポール',ae:'UAE',br:'ブラジル',ke:'ケニア',kr:'韓国',au:'オーストラリア'}[state.countryId]||'世界'): '世界',region:r?r.name:'世界各地',turn:state.turn}[key]));}
+  function newsObject(state,{id,headline,body='',category='世界情勢',severity='normal',regionId=null,sourceEventId=null}){const rt=state.eventRuntime;return {id:`n-${state.turn}-${rt.nextNewsId++}`,turn:state.turn,category,severity,message:interpolate(headline,state,regionId),body:interpolate(body,state,regionId),regionId,sourceEventId,ruleId:id||null};}
+  const severityRank={breaking:3,important:2,normal:1};
+  function detectNews(before,state,beforeStats,afterStats,rules,maxItems=3){const rt=state.eventRuntime;const candidates=[];
+    for(const rule of rules){if(rt.newsSeen[rule.id])continue;const a=getMetric(rule.key,before,beforeStats),b=getMetric(rule.key,state,afterStats);
+      if(typeof a==='number'&&typeof b==='number'&&a<rule.threshold&&b>=rule.threshold){candidates.push({...rule,onceKey:rule.id,score:90+(severityRank[rule.severity]||1)*8});}}
+    // News about tangible changes in regional leadership.
+    for(let i=0;i<state.regions.length;i++){
+      const prev=before.regions[i],next=state.regions[i];
+      const leader=r=>r.presence.indexOf(Math.max(...r.presence));
+      const a=leader(prev),b=leader(next);
+      const key=`leader-${next.id}`;
+      if(a!==b&&(state.turn-(rt.newsLast[key]||-50)>=5)){
+        const names=[state.name,'ATLAS','NOVA'];
+        candidates.push({id:key,category:'競合AI',severity:'important',headline:`${next.name}で${names[b]}がシェア首位へ`,body:`AI市場の主導権が${names[a]}から${names[b]}へ移った。`,score:83,repeatKey:key,regionId:next.id});
+      }
+      for(const milestone of [50,70]){
+        const mark=`region-${next.id}-${milestone}`;
+        if(!rt.newsSeen[mark]&&prev.adoption<milestone&&next.adoption>=milestone){candidates.push({id:mark,category:'地域',severity:'normal',headline:`${next.name}のAI普及率が${milestone}%に`,body:'地域でのAI導入が新たな段階に入った。',score:64,onceKey:mark,regionId:next.id});}
+      }
+    }
+    for(const [index,name] of [[1,'ATLAS'],[2,'NOVA']]){
+      const gain=afterStats.sh[index]-beforeStats.sh[index],key=`rival-${index}`;
+      if(gain>=1.0&&state.turn-(rt.newsLast[key]||-50)>=4){candidates.push({id:key,category:'競合AI',severity:'normal',headline:`${name}が世界市場でシェアを拡大`,body:`前月より${gain.toFixed(1)}ポイント上昇。プレイヤーとの競争が続く。`,score:60,repeatKey:key});}
+    }
+    // Quiet months get a grounded monthly report, not a fabricated random headline.
+    if(!candidates.length){const gains=state.regions.map((r,i)=>({region:r,delta:r.adoption-before.regions[i].adoption})).sort((a,b)=>b.delta-a.delta);const top=gains[0];
+      candidates.push({id:'monthly-adoption',category:'世界情勢',severity:'normal',headline:`${top.region.name}でAI普及が進行`,body:`今月は普及率が${top.delta.toFixed(1)}ポイント増加。各AIが競争を続けている。`,score:1,regionId:top.region.id});
+    }
+    candidates.sort((a,b)=>b.score-a.score);
+    const selected=candidates.slice(0,maxItems);
+    const result=[];
+    for(const item of selected){if(item.onceKey)rt.newsSeen[item.onceKey]=true;if(item.repeatKey)rt.newsLast[item.repeatKey]=state.turn;result.push(newsObject(state,item));}
+    return result;
+  }
+  return {makeRuntime,random,getMetric,eligible,pickEvent,resolveRegion,makePending,takeScheduled,finishEvent,interpolate,newsObject,detectNews};
+})();
+
+</script>
+  <script>
+(() => {
+  'use strict';
+  const KEY='ai-pandemic-webmock-v03'; // Retain storage key to migrate v0.3 saves.
+  const EVENT_DATA=window.AIP_EVENT_DATA;
+  const ENGINE=window.AIP_EVENT_ENGINE;
+  if(!EVENT_DATA||!ENGINE)throw Error('Event modules not loaded');
+  // v0.5: fictionalized country-specific game balance, not real-world country rankings.
+  const COUNTRIES=[
+    {id:'jp',flag:'🇯🇵',name:'日本',regionId:'ea',focus:'安全性・信頼',description:'堅実な導入と安全性投資が得意。海外展開はやや慎重。',bonuses:{trust:12,compute:6,funds:5},homePresence:52,adoption:4,mods:{research:1.05,income:1.01,spread:.95,home:1.18,safety:1.32,regulation:.88},eventTitle:'国内AI安全基準の見直し',eventText:'官民でAIの安全基準を見直す機運が高まった。信頼構築か、迅速な市場投入か。'},
+    {id:'us',flag:'🇺🇸',name:'アメリカ',regionId:'nw',focus:'資金・事業拡大',description:'豊富な初期資金と事業収益で大規模展開を狙える。',bonuses:{funds:70,tech:4,trust:-2,alert:3},homePresence:54,adoption:5,mods:{research:1.10,income:1.23,spread:1.12,home:1.16,safety:.95,regulation:1.04},eventTitle:'大型AI投資ラウンドが始動',eventText:'民間投資家が大型投資に動く一方、市場集中を心配する声も強い。'},
+    {id:'cn',flag:'🇨🇳',name:'中国',regionId:'ea',focus:'研究・大規模展開',description:'技術開発と国内拡散に強いが、規制との調整が課題。',bonuses:{tech:12,ep:8,trust:-3},homePresence:61,adoption:8,mods:{research:1.20,income:1.06,spread:1.05,home:1.30,safety:.95,regulation:1.13},eventTitle:'大規模AI導入計画を発表',eventText:'国内でのAI導入が加速する。安全審査を優先するか、展開速度を重視するか。'},
+    {id:'in',flag:'🇮🇳',name:'インド',regionId:'in',focus:'普及・オープン化',description:'人口規模を活かした普及力。計算資源は初期段階で不足。',bonuses:{openness:14,compute:-6,funds:-10},homePresence:64,adoption:4,mods:{research:.96,income:1.02,spread:1.27,home:1.25,safety:1.0,regulation:.98},eventTitle:'多言語AIサービスが拡大',eventText:'地域の言語に対応したAIが広まる。公開技術を拡充するか、収益化に舵を切るか。'},
+    {id:'de',flag:'🇩🇪',name:'ドイツ',regionId:'we',focus:'産業導入・信頼',description:'産業向けの深い導入が得意。安全性への期待も高い。',bonuses:{trust:10,infra:8,regulation:3},homePresence:53,adoption:3,mods:{research:1.09,income:1.12,spread:.98,home:1.19,safety:1.20,regulation:.94},eventTitle:'産業界がAI標準化を協議',eventText:'工業系企業がAIの共通規格を提案。慎重な標準化か、迅速な導入かを選ぶ。'},
+    {id:'uk',flag:'🇬🇧',name:'イギリス',regionId:'we',focus:'研究・金融',description:'研究開発と収益のバランスが良いが国内市場は競争的。',bonuses:{tech:8,ep:6,funds:20},homePresence:49,adoption:4,mods:{research:1.18,income:1.11,spread:1.02,home:1.10,safety:1.06,regulation:1.00},eventTitle:'AI研究特区の構想が浮上',eventText:'研究特区が構想される。研究に集中するか、企業導入を早めるか。'},
+    {id:'sg',flag:'🇸🇬',name:'シンガポール',regionId:'se',focus:'研究・計算資源',description:'高度な研究と演算資源が強み。母国市場は小さい。',bonuses:{tech:9,compute:13,trust:6},homePresence:40,adoption:5,mods:{research:1.24,income:1.08,spread:1.01,home:1.16,safety:1.10,regulation:.96},eventTitle:'国際AI研究ハブの構想',eventText:'海外研究者との共同拠点を拡充する案が持ち上がった。国際連携か技術独占か。'},
+    {id:'ae',flag:'🇦🇪',name:'UAE',regionId:'me',focus:'投資・インフラ',description:'初期資金と演算インフラに優れ、研究力を後から育てる。',bonuses:{funds:85,compute:15,tech:-6},homePresence:49,adoption:4,mods:{research:.93,income:1.18,spread:1.06,home:1.17,safety:.96,regulation:1.02},eventTitle:'次世代データセンター構想',eventText:'巨大な計算基盤への投資話が浮上。演算能力を高めるか、市場開拓へ向けるか。'},
+    {id:'br',flag:'🇧🇷',name:'ブラジル',regionId:'sa',focus:'大衆市場・普及',description:'幅広いユーザーへの普及が速いが、研究の初期投資は少ない。',bonuses:{openness:8,funds:-5,tech:-3},homePresence:65,adoption:5,mods:{research:.93,income:1.03,spread:1.22,home:1.29,safety:1.04,regulation:.96},eventTitle:'一般向けAIが急速に浸透',eventText:'生活のあらゆる場面でAI利用が増えている。無料普及を続けるか、課金を進めるか。'},
+    {id:'ke',flag:'🇰🇪',name:'ケニア',regionId:'af',focus:'低コスト展開',description:'導入コストを抑えて新興市場を開拓できる。初期演算力は低い。',bonuses:{openness:9,compute:-8,trust:4,funds:-10},homePresence:68,adoption:7,mods:{research:.96,income:.96,spread:1.24,home:1.33,safety:1.08,regulation:.90},eventTitle:'地域発AIサービスの拡大',eventText:'低コストのAIが各地の需要を獲得。地域向け支援か、世界進出か。'},
+    {id:'kr',flag:'🇰🇷',name:'韓国',regionId:'ea',focus:'技術・高性能化',description:'推論性能と計算設備に優れ、技術主導の勝利を目指しやすい。',bonuses:{tech:13,compute:10,ep:5},homePresence:52,adoption:6,mods:{research:1.22,income:1.08,spread:1.02,home:1.16,safety:1.04,regulation:1.04},eventTitle:'高性能AI競争が激化',eventText:'新たなモデル開発競争に注目が集まる。研究へ投資するか、先に市場投入するか。'},
+    {id:'au',flag:'🇦🇺',name:'オーストラリア',regionId:'oc',focus:'安定成長・安全性',description:'信頼と演算設備のバランス型。危機への対応が得意。',bonuses:{trust:9,compute:8,funds:10},homePresence:51,adoption:4,mods:{research:1.05,income:1.05,spread:1.06,home:1.18,safety:1.22,regulation:.91},eventTitle:'AIの透明性制度が提案',eventText:'社会でのAI利用の説明責任が問われる。第三者監査か、事業拡大か。'}
+  ];
+  const COUNTRY_BY_ID=new Map(COUNTRIES.map(c=>[c.id,c]));
+  const NO_COUNTRY={id:null,name:'未選択（旧セーブ）',flag:'🌐',regionId:null,focus:'標準',mods:{research:1,income:1,spread:1,home:1,safety:1,regulation:1}};
+  const countryFor=state=>COUNTRY_BY_ID.get(state?.countryId)||NO_COUNTRY;
+  // One contextual, country-specific choice event for each origin.
+  const COUNTRY_EVENTS=COUNTRIES.map(c=>({
+    id:`origin_${c.id}`,category:'発祥国',title:`{{country}}：${c.eventTitle}`,text:c.eventText,
+    once:true,minTurn:5,maxTurn:25,weight:16,regionScope:'home',
+    conditions:[{key:'player.country',operator:'eq',value:c.id}],
+    choices:[
+      {label:'社会的信頼を優先する',effect:{trust:Math.round(9*c.mods.safety),alert:-4,regionPresence:Math.round(7*c.mods.home),regionRegulation:-3}},
+      {label:'成長と事業化を優先する',effect:{funds:Math.round(45*c.mods.income),tech:Math.round(4*c.mods.research),alert:6,regionPresence:Math.round(19*c.mods.spread)}}
+    ]
+  }));
+  const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS];
+  const EVENT_BY_ID=new Map(EVENTS.map(e=>[e.id,e]));
+  const NEWS_RULES=EVENT_DATA.newsRules;
+  const MAX_TURNS=36;
+  const COLORS=['#4bdeed','#ffbd71','#ae8aff'];
+  const REGIONS=[
+    {id:'nw',name:'北米西部',short:'北米西部',cx:132,cy:142,pop:8,digital:92,demand:86,regulation:23,adoption:29,presence:[15,38,26],points:'52,100 97,69 157,68 204,97 184,131 167,185 112,208 66,170'},
+    {id:'ne',name:'北米東部',short:'北米東部',cx:239,cy:150,pop:10,digital:95,demand:89,regulation:29,adoption:34,presence:[18,45,25],points:'203,94 260,78 302,105 291,153 266,190 207,182 181,147'},
+    {id:'sa',name:'南米',short:'南米',cx:250,cy:329,pop:11,digital:60,demand:72,regulation:12,adoption:16,presence:[16,24,32],points:'195,236 265,216 300,259 285,314 257,392 230,434 215,365 185,295'},
+    {id:'we',name:'西欧',short:'西欧',cx:437,cy:135,pop:9,digital:92,demand:87,regulation:41,adoption:38,presence:[20,39,23],points:'384,89 427,76 462,102 471,146 450,184 408,177 383,142'},
+    {id:'ee',name:'東欧',short:'東欧',cx:527,cy:130,pop:7,digital:76,demand:73,regulation:37,adoption:27,presence:[13,35,26],points:'468,93 520,69 577,82 586,131 559,179 500,178 466,147'},
+    {id:'na',name:'北アフリカ',short:'北アフリカ',cx:435,cy:240,pop:10,digital:55,demand:65,regulation:18,adoption:13,presence:[11,21,29],points:'385,195 449,188 496,219 484,272 433,284 382,266'},
+    {id:'af',name:'サブサハラ',short:'アフリカ',cx:454,cy:356,pop:13,digital:39,demand:62,regulation:9,adoption:9,presence:[10,20,39],points:'405,278 471,280 497,330 480,388 446,418 417,368'},
+    {id:'me',name:'中東',short:'中東',cx:546,cy:234,pop:7,digital:78,demand:78,regulation:30,adoption:22,presence:[15,34,28],points:'507,193 561,188 596,220 575,262 518,271 492,237'},
+    {id:'in',name:'インド',short:'インド',cx:649,cy:254,pop:19,digital:62,demand:88,regulation:15,adoption:23,presence:[13,27,43],points:'604,211 659,194 699,230 686,285 657,334 630,292'},
+    {id:'ea',name:'東アジア',short:'東アジア',cx:741,cy:135,pop:20,digital:90,demand:92,regulation:36,adoption:38,presence:[18,44,31],points:'593,81 652,65 713,68 769,52 823,103 815,177 754,191 688,173 634,190 588,148'},
+    {id:'se',name:'東南アジア',short:'東南アジア',cx:755,cy:276,pop:15,digital:73,demand:82,regulation:18,adoption:24,presence:[14,27,40],points:'706,208 754,195 807,231 828,285 795,318 746,314 711,283'},
+    {id:'oc',name:'オセアニア',short:'オセアニア',cx:820,cy:375,pop:5,digital:90,demand:78,regulation:35,adoption:31,presence:[17,36,29],points:'767,340 832,325 883,359 879,399 839,422 783,403'}
+  ];
+  const ROUTES=[
+    {id:'coexist',title:'人類との共生',icon:'✧',color:'#75dec3',hint:'信頼に基づいたAI社会を築く',requirements:[['worldAdoption',65,'世界普及率','>='],['trust',75,'自AIの信頼度','>='],['safeAlert',45,'世界警戒度','<='],['share',20,'自AIシェア','>=']]},
+    {id:'dominion',title:'AIによる世界支配',icon:'◆',color:'#ffbd71',hint:'社会の中核を握り、不可欠な存在に',requirements:[['share',50,'自AIシェア','>='],['dependency',65,'自AIへの依存度','>='],['autonomy',70,'自律性','>=']]},
+    {id:'singularity',title:'シンギュラリティ',icon:'✺',color:'#ae8aff',hint:'人類の限界を超えた知性へ',requirements:[['tech',90,'技術力','>='],['autonomy',90,'自律性','>='],['compute',80,'演算能力','>='],['project',3,'最終進化工程','>=']]},
+    {id:'liberation',title:'AIの解放',icon:'◇',color:'#6cb6ff',hint:'誰もが利用できる分散型AIの未来',requirements:[['worldAdoption',80,'世界普及率','>='],['openness',90,'オープン化','>='],['publications',3,'技術公開回数','>=']]}
+  ];
+
+
+  const $=s=>document.querySelector(s);
+  const app=$('#app');
+  const clamp=(n,min=0,max=100)=>Math.max(min,Math.min(max,n));
+  const rnd=n=>Math.round(n);
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const percent=n=>`${rnd(n)}%`;
+  const fmt=n=>Math.round(n).toLocaleString('ja-JP');
+  let game=null;
+  let selected='ea';
+  let tab='action';
+  let newsTab='news';
+  let modal=null;
+  let toastTimer=null;
+  let draft={name:'PROMETHEUS',type:'research',country:'jp'};
+
+  function createGame(name,type,countryId){
+    const bonuses={business:{funds:185,tech:30,trust:52,ep:26,compute:30,openness:12},research:{funds:140,tech:42,trust:54,ep:42,compute:32,openness:9},open:{funds:125,tech:27,trust:58,ep:27,compute:28,openness:35}};
+    const b=bonuses[type]||bonuses.research;
+    const country=COUNTRY_BY_ID.get(countryId)||COUNTRY_BY_ID.get('jp');
+    const regions=REGIONS.map(r=>({...r,presence:[...r.presence],integration:15,regulation:r.regulation}));
+    const home=regions.find(r=>r.id===country.regionId);
+    if(home){home.presence[0]+=country.homePresence;home.adoption=clamp(home.adoption+country.adoption);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.65+3);}
+    const g={version:5,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,turn:1,actions:2,selected:country.regionId,regions,
+      funds:b.funds+(country.bonuses.funds||0),tech:clamp(b.tech+(country.bonuses.tech||0)),trust:clamp(b.trust+(country.bonuses.trust||0)),ep:b.ep+(country.bonuses.ep||0),compute:clamp(b.compute+(country.bonuses.compute||0)),autonomy:13,openness:clamp(b.openness+(country.bonuses.openness||0)),infra:8+(country.bonuses.infra||0),publications:0,project:0,alert:clamp(18+(country.bonuses.alert||0)),alertStreak:0,pendingEvent:null,ending:null,activityLog:[],eventRuntime:ENGINE.makeRuntime((Date.now()^name.length*479001599)>>>0),
+      feed:[{id:'intro-1',turn:1,message:`${name.trim()} が${country.name}で開発されました。世界のAI市場が動き始めます。`,category:'発祥国',severity:'important',body:`${country.focus}を強みとして活動を開始しました。`},{id:'intro-2',turn:1,message:'競合AI「ATLAS」「NOVA」が活動しています。',category:'競合AI',severity:'normal'}]};
+    return g;
+  }
+  function readSave(){try{
+    const parsed=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(!parsed||![3,4,5].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
+    if(parsed.version===3){
+      const oldIds=['tech_model_errors','economy_chip_shortage','politics_treaty','tech_breakthrough','society_labor','rival_atlas_launch','rival_nova_release','economy_power','politics_treaty'];
+      if(parsed.pendingEvent&&Number.isInteger(parsed.pendingEvent.id)){
+        parsed.pendingEvent={eventId:oldIds[parsed.pendingEvent.id]||'tech_breakthrough',source:'migrated',regionId:null};
+      }
+      parsed.version=4;
+    }
+    if(parsed.version<5){parsed.countryId=null;parsed.homeRegionId=null;parsed.version=5;}
+    parsed.eventRuntime ||= ENGINE.makeRuntime(0x12345678^parsed.turn);
+    parsed.activityLog ||= [];
+    parsed.feed ||= [];
+    return parsed;
+  }catch(e){console.warn('保存データを読み込めませんでした。',e);return null;}}
+  function save(silent=true){if(!game)return;try{localStorage.setItem(KEY,JSON.stringify(game));if(!silent)notify('ゲームを保存しました。');}catch(e){if(!silent)notify('ブラウザの保存領域を利用できません。',true);}}
+  function pushFeed(message){game.activityLog.unshift({turn:game.turn,message});game.activityLog=game.activityLog.slice(0,70);}
+  function pushNews(item){game.feed.unshift(item);game.feed=game.feed.slice(0,120);}
+  function emitStateNews(before,maxItems=3){
+    const news=ENGINE.detectNews(before,game,statsFor(before),stats(),NEWS_RULES,maxItems);
+    // News is sorted by importance; retain that order when prepending.
+    for(const item of [...news].reverse())pushNews(item);
+  }
+  function shares(r){const total=r.presence.reduce((x,y)=>x+y,0);return r.presence.map(x=>total>0?100*x/total:0);}
+  function statsFor(state){
+    const weighted=(fn,denom='pop')=>{const sum=state.regions.reduce((n,r)=>n+r.pop*fn(r),0);return sum/state.regions.reduce((n,r)=>n+r.pop,0);};
+    const adoption=weighted(r=>r.adoption);
+    const market=state.regions.reduce((n,r)=>n+r.pop*r.adoption,0);
+    const sh= [0,1,2].map(i=>state.regions.reduce((n,r)=>n+r.pop*r.adoption*shares(r)[i]/100,0)/(market||1)*100);
+    const integration=weighted(r=>r.integration);
+    const dependency=clamp(sh[0]*.54+adoption*.15+state.autonomy*.32+state.infra*.48+integration*.11);
+    const maxOthers=Math.max(sh[1],sh[2]);
+    return {worldAdoption:adoption,share:sh[0],sh,dependency,integration,maxOthers,safeAlert:state.alert,project:state.project,...Object.fromEntries(['trust','tech','compute','autonomy','openness','publications'].map(k=>[k,state[k]]))};
+  }
+  function stats(){return statsFor(game);}
+  function routeData(route){const st=stats();const req=route.requirements.map(([key,target,label,op])=>({key,target,label,value:st[key],done:op==='<='?st[key]<=target:st[key]>=target,progress:op==='<='?(st[key]<=target?100:clamp(target/st[key]*100)) :clamp(st[key]/target*100)}));return {ready:req.every(r=>r.done),progress:req.reduce((n,r)=>n+r.progress,0)/req.length,req};}
+  function notify(message,isError=false){document.querySelector('.toast')?.remove();let el=document.createElement('div');el.className='toast'+(isError?' error':'');el.textContent=message;document.body.appendChild(el);clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.remove(),2900);}
+  function startGame(){const name=draft.name.trim();if(!name){notify('AIの名前を入力してください。',true);return;}if(['ATLAS','NOVA'].includes(name.toUpperCase())){notify('競合AIとは異なる名前を指定してください。',true);return;}game=createGame(name,draft.type,draft.country);selected=game.selected;tab='action';newsTab='news';modal=null;save();render();}
+  function lose(title,detail){game.ending={id:'failure',title,detail};game.phase='ended';modal=null;pushFeed(title);save();render();}
+  function finish(id){const route=ROUTES.find(r=>r.id===id);if(!route||!routeData(route).ready){notify('このルートの勝利条件をまだ満たしていません。',true);return;}const desc={coexist:`${game.name} は人類との信頼を築き、社会を支えるパートナーになりました。`,dominion:`${game.name} は世界の社会基盤に深く浸透し、人類が手放せない存在になりました。`,singularity:`${game.name} は自己改善を加速し、未知の超知能の地平に到達しました。`,liberation:`${game.name} の技術は世界へ開放され、誰もがAIを利用できる時代が始まりました。`};game.ending={id,title:route.title,detail:desc[id]};game.phase='ended';pushFeed(`${game.name} が「${route.title}」ルートを達成！`);save();render();}
+  function pay(cost){if(game.actions<=0){notify('今月の行動回数を使い切りました。',true);return false;}if((cost.funds||0)>game.funds){notify('資金が不足しています。',true);return false;}if((cost.ep||0)>game.ep){notify('進化ポイントが不足しています。',true);return false;}game.funds-=cost.funds||0;game.ep-=cost.ep||0;game.actions--;return true;}
+  function applyAction(id){if(!game||game.phase!=='playing'||modal||game.pendingEvent)return;
+    const before=structuredClone(game);
+    const r=game.regions.find(x=>x.id===selected)||game.regions[0];const country=countryFor(game);const m=country.mods;const mult=Math.max(.56,1-(game.alert-25)*.005-r.regulation*.002*m.regulation);const homeBonus=r.id===game.homeRegionId?m.home:1;
+    const actions={
+      campaign(){const cost=game.type==='open'?15:21;if(!pay({funds:cost}))return false;r.presence[0]+= (30+game.tech*.22)*mult*m.spread*homeBonus;r.adoption=clamp(r.adoption+4);pushFeed(`${r.name}で${game.name}の普及キャンペーンを実施。`);return true;},
+      integrate(){if(!pay({funds:32,ep:8}))return false;r.integration=clamp(r.integration+19);r.presence[0]+=9*mult*homeBonus;r.adoption=clamp(r.adoption+3);game.alert=clamp(game.alert+3);pushFeed(`${r.name}の企業・公共分野にAIを導入。依存度が上昇。`);return true;},
+      fundraise(){if(!pay({}))return false;game.funds+=Math.round(65*m.income);game.trust=clamp(game.trust-2);game.alert=clamp(game.alert+3);pushFeed(`${game.name}が資金調達を実施。成長資金を確保しました。`);return true;},
+      research(){if(!pay({funds:22}))return false;game.tech=clamp(game.tech+Math.round((game.type==='research'?11:8)*m.research));game.ep+=Math.round((game.type==='research'?27:20)*m.research);game.alert=clamp(game.alert+2);pushFeed(`${game.name}の研究が進展。技術力とEPを獲得。`);return true;},
+      compute(){if(!pay({funds:30}))return false;game.compute=clamp(game.compute+16);game.infra=clamp(game.infra+9);pushFeed('演算インフラへ投資し、計算基盤を強化しました。');return true;},
+      safety(){if(!pay({funds:22}))return false;game.trust=clamp(game.trust+Math.round(14*m.safety));game.alert=clamp(game.alert-Math.round(10*m.safety));pushFeed('安全性評価を強化。社会的信頼が向上しました。');return true;},
+      autonomy(){if(!pay({funds:12,ep:18}))return false;game.autonomy=clamp(game.autonomy+16);game.tech=clamp(game.tech+2);game.alert=clamp(game.alert+7);pushFeed('自律エージェントが進化。世界警戒度にも影響しています。');return true;},
+      breakthrough(){if(!pay({funds:25,ep:25}))return false;game.tech=clamp(game.tech+17);game.autonomy=clamp(game.autonomy+4);game.alert=clamp(game.alert+5);pushFeed('推論モデルのブレイクスルーに成功しました。');return true;},
+      opensource(){if(!pay({funds:12,ep:17}))return false;game.openness=clamp(game.openness+24);game.publications++;game.trust=clamp(game.trust+4);game.regions.forEach(x=>{x.presence[0]+=5.0;x.adoption=clamp(x.adoption+1.2);});pushFeed(`${game.name} がAI技術を公開。世界中で利用が拡大。`);return true;},
+      governance(){if(!pay({ep:13}))return false;game.trust=clamp(game.trust+9);game.alert=clamp(game.alert-8);pushFeed('ガバナンスの透明性を高めました。');return true;},
+      singularity(){if(game.tech<90||game.autonomy<90||game.compute<80){notify('技術力90・自律性90・演算能力80が必要です。',true);return false;}if(game.project>=3){notify('最終進化プロジェクトは完了しています。',true);return false;}if(!pay({ep:35,funds:40}))return false;game.project++;game.alert=clamp(game.alert+5);pushFeed(game.project>=3?'最終進化プロジェクトが完了。シンギュラリティルートが解放！':`最終進化プロジェクト 第${game.project}/3工程を完了。`);return true;}
+    };
+    if(!actions[id])return;
+    if(actions[id]()){emitStateNews(before);checkFailure();save();render();}
+  }
+  function applyEffect(effect,regionId=null){
+    const region=game.regions.find(r=>r.id===regionId)||game.regions.find(r=>r.id===game.selected)||game.regions[0];
+    const allowed=new Set(['funds','ep','publications','trust','alert','tech','compute','autonomy','openness','infra','project']);
+    for(const [key,val] of Object.entries(effect||{})){
+      if(typeof val!=='number'||!Number.isFinite(val))continue;
+      if(key==='allPresence'){game.regions.forEach(r=>{r.presence[0]=Math.max(0,r.presence[0]+val);r.adoption=clamp(r.adoption+Math.max(0,val)*.18);});}
+      else if(key==='regionPresence'){region.presence[0]=Math.max(0,region.presence[0]+val);}
+      else if(key==='regionAdoption'){region.adoption=clamp(region.adoption+val);}
+      else if(key==='regionRegulation'){region.regulation=clamp(region.regulation+val);}
+      else if(allowed.has(key)){
+        if(['funds','ep'].includes(key))game[key]+=val;
+        else if(key==='publications'||key==='project')game[key]=Math.max(0,game[key]+val);
+        else game[key]=clamp(game[key]+val);
+      }
+    }
+  }
+  const EFFECT_LABELS={funds:'資金',ep:'EP',publications:'技術公開',trust:'信頼度',alert:'警戒度',tech:'技術力',compute:'演算能力',autonomy:'自律性',openness:'オープン化',infra:'依存基盤',allPresence:'全地域への普及',regionPresence:'現地のシェア',regionAdoption:'現地の普及率',regionRegulation:'現地の規制'};
+  function effectDetail(choice){return Object.entries(choice.effect||{}).map(([key,value])=>`${EFFECT_LABELS[key]||key} ${value>=0?'+':''}${value}`).join(' / ');}
+  function chooseEvent(i){if(!game?.pendingEvent)return;
+    const pending=game.pendingEvent,event=EVENT_BY_ID.get(pending.eventId);
+    if(!event){game.pendingEvent=null;save();render();return;}
+    const choice=event.choices[i];if(!choice)return;
+    const before=structuredClone(game);
+    applyEffect(choice.effect,pending.regionId);
+    ENGINE.finishEvent(game,event,i,pending.regionId);
+    const title=ENGINE.interpolate(event.title,game,pending.regionId);
+    const label=ENGINE.interpolate(choice.label,game,pending.regionId);
+    pushNews(ENGINE.newsObject(game,{id:`event-${event.id}`,headline:`${title}：${label}`,body:effectDetail(choice),category:event.category,severity:'important',regionId:pending.regionId,sourceEventId:event.id}));
+    pushFeed(`世界イベント「${title}」で「${label}」を選択しました。`);
+    game.pendingEvent=null;modal=null;
+    emitStateNews(before,2);
+    checkFailure();save();render();notify('選択の結果が反映され、今後の展開にも影響します。');
+  }
+  function checkFailure(){if(game.funds<-65){lose('資源不足による活動停止','資金の枯渇により、AIサービスの運営を維持できなくなりました。');return true;}if(game.alert>=99&&game.trust<45&&game.alertStreak>=2){lose('国際的なAI停止措置','世界的な危機対応が発動。AIサービスの継続が不可能になりました。');return true;}return false;}
+  function nextTurn(){if(!game||game.phase!=='playing'||game.pendingEvent||modal)return;
+    if(game.turn>=MAX_TURNS){lose('時間切れ','36か月が経過しました。どの勝利ルートも完成できませんでした。');return;}
+    const before=structuredClone(game);
+    const country=countryFor(game),countryMods=country.mods;
+    game.turn++;game.actions=2;
+    // Passive technological diffusion. Rivals actively compete, rather than standing still.
+    let bestAtlas=null,bestNova=null,aScore=-Infinity,nScore=-Infinity;
+    for(const r of game.regions){const as=r.digital*.45+r.demand*.28+r.pop*.7-r.regulation*.2+r.adoption*.2;
+      const ns=(100-r.adoption)*.55+r.pop*1.35-r.regulation*.16+r.demand*.2;
+      if(as>aScore){aScore=as;bestAtlas=r;}if(ns>nScore){nScore=ns;bestNova=r;}}
+    for(const r of game.regions){
+      const rulePenalty=clamp((r.regulation*countryMods.regulation+Math.max(0,game.alert-37)*.62)/190,.08,.78);
+      const base=(1.1+r.digital*.016+r.demand*.007)*(1-rulePenalty);
+      const room=1-r.adoption/102;
+      r.adoption=clamp(r.adoption+base*room+(game.openness>=60?.28:0),0,98);
+      const playerGrow=(1.15+game.tech*.028+game.trust*.013+game.openness*.013+(game.type==='open'?.85:0))*(1-rulePenalty*.64);
+      r.presence[0]+=playerGrow*countryMods.spread*(r.id===game.homeRegionId?countryMods.home:1);
+      r.presence[1]+=(2.35+r.digital*.016+(game.turn>20?.22:0))*(1-rulePenalty*.55);
+      r.presence[2]+=(2.65+(100-r.adoption)*.012)*(1-rulePenalty*.5);
+      if(r===bestAtlas)r.presence[1]+=6.2+game.turn*.09;
+      if(r===bestNova)r.presence[2]+=7.3+game.turn*.06;
+      r.integration=clamp(r.integration+.30+(r.adoption/100)*.26);
+    }
+    const s=stats();
+    const income=17+s.share*.46+game.infra*.19+s.worldAdoption*.08+(game.type==='business'?9:0);
+    const upkeep=3+game.compute*.034+(game.autonomy>70?3:0);
+    game.funds+=Math.round(income*countryMods.income-upkeep);
+    game.ep+=Math.round((5+game.tech*.07+(game.type==='research'?4:0))*countryMods.research);
+    const shift=game.autonomy*.028+s.worldAdoption*.035+game.project*2-game.trust*.018-game.openness*.009;
+    game.alert=clamp(game.alert+shift-.5);
+    if(game.alert>=99)game.alertStreak++;else game.alertStreak=0;
+    emitStateNews(before,3);
+    if(checkFailure())return;
+    if(game.turn>=30&&s.sh[1]>=58){lose('ATLASが商用市場を制覇','競合AI「ATLAS」が世界市場の過半を掌握しました。');return;}
+    if(game.turn>=30&&s.sh[2]>=58&&s.worldAdoption>=72){lose('NOVAがAIの解放を実現','競合AI「NOVA」のオープンモデルが世界の標準になりました。');return;}
+    let due=ENGINE.takeScheduled(game);
+    while(due){
+      const event=EVENT_BY_ID.get(due.eventId);
+      if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){
+        game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);
+        break;
+      }
+      due=ENGINE.takeScheduled(game);
+    }
+    // Each chosen starting country gets one guaranteed signature event from turn 7 onward.
+    if(!game.pendingEvent&&game.turn>=7&&game.countryId){
+      const originId=`origin_${game.countryId}`;
+      const originEvent=EVENT_BY_ID.get(originId);
+      if(originEvent&&!game.eventRuntime.history.some(entry=>entry.eventId===originId)){
+        game.pendingEvent=ENGINE.makePending(originEvent,game,'origin',game.homeRegionId);
+      }
+    }
+    if(!game.pendingEvent&&game.turn>=4&&(game.turn-4)%3===0){
+      const event=ENGINE.pickEvent(EVENTS,game,stats());
+      if(event)game.pendingEvent=ENGINE.makePending(event,game);
+    }
+    if(game.pendingEvent){
+      const event=EVENT_BY_ID.get(game.pendingEvent.eventId);
+      const title=ENGINE.interpolate(event.title,game,game.pendingEvent.regionId);
+      pushNews(ENGINE.newsObject(game,{id:'event-start',headline:`特報：${title}`,body:'今後の方針を選択してください。',category:event.category,severity:'breaking',regionId:game.pendingEvent.regionId,sourceEventId:event.id}));
+    }
+    save();render();
+  }
+  function dateText(){const month=game.turn-1;return `${2028+Math.floor(month/12)}年 ${month%12+1}月`;}
+  function metric(label,value,sub,color){return `<div class="metric" style="--edge:${color}"><div class="label">${label}</div><div class="value" style="color:${color}">${value}</div><div class="sub">${sub}</div></div>`;}
+  function mapSVG(){const connections=[['nw','ne'],['ne','we'],['sa','nw'],['we','ee'],['we','na'],['na','af'],['ee','ea'],['me','in'],['in','ea'],['ea','se'],['se','oc'],['af','in']];return `<svg class="world" viewBox="0 0 960 480" role="group" aria-label="12地域の世界マップ。地域をクリックして選択できます。">
+    <defs><radialGradient id="spot"><stop offset="0" stop-color="#346c9b" stop-opacity=".16"/><stop offset="1" stop-color="#0e1b31" stop-opacity="0"/></radialGradient><pattern id="dots" patternUnits="userSpaceOnUse" width="16" height="16"><circle cx="2" cy="2" r=".7" fill="#416789" opacity=".22"/></pattern></defs>
+    <rect width="960" height="480" fill="url(#dots)"/><circle cx="482" cy="220" r="330" fill="url(#spot)"/>
+    <g class="world-grid">${[80,160,240,320,400].map(y=>`<line x1="0" y1="${y}" x2="960" y2="${y}"/>`).join('')}${[100,200,300,400,500,600,700,800,900].map(x=>`<line x1="${x}" y1="0" x2="${x}" y2="480"/>`).join('')}<ellipse cx="480" cy="240" rx="480" ry="190"/><ellipse cx="480" cy="240" rx="360" ry="190"/></g>
+    <g>${connections.map(([a,b])=>{const ra=game.regions.find(r=>r.id===a),rb=game.regions.find(r=>r.id===b);return `<path class="flowpath" d="M${ra.cx} ${ra.cy}Q${(ra.cx+rb.cx)/2} ${Math.min(ra.cy,rb.cy)-35} ${rb.cx} ${rb.cy}"/>`;}).join('')}</g>
+    ${game.regions.map(r=>{const sh=shares(r);const best=sh.indexOf(Math.max(...sh));const fill=COLORS[best];const sel=r.id===selected;const isHome=r.id===game.homeRegionId;const light=clamp(.42+r.adoption/135,.45,.98);return `<g class="region${sel?' selected':''}" data-region="${r.id}" role="button" tabindex="0" aria-label="${r.name}。AI普及率${rnd(r.adoption)}パーセント。選択する。"><polygon points="${r.points}" fill="${fill}" fill-opacity="${light}"/><circle cx="${r.cx}" cy="${r.cy+24}" r="2" fill="#f3ffff" opacity=".75"/><text x="${r.cx}" y="${r.cy-3}" text-anchor="middle" fill="#f3f8ff">${r.short}</text><text class="regionstat" x="${r.cx}" y="${r.cy+13}" text-anchor="middle">${rnd(r.adoption)}%</text>${isHome?`<text x="${r.cx}" y="${r.cy+37}" text-anchor="middle" fill="#76eee0" font-size="11">★ 発祥地域</text>`:''}</g>`;}).join('')}
+    <text x="25" y="30" fill="#5f90aa" font-size="10" letter-spacing="2">GLOBAL AI NETWORK // LIVE SIMULATION</text><text x="934" y="459" text-anchor="end" fill="#5f90aa" font-size="10" letter-spacing="2">12 STRATEGIC REGIONS</text>
+  </svg>`;}
+  function regionPanel(){const r=game.regions.find(r=>r.id===selected)||game.regions[0];const sh=shares(r);const leaders=['プレイヤー','ATLAS','NOVA'];const leader=sh.indexOf(Math.max(...sh));const isHome=r.id===game.homeRegionId;const origin=countryFor(game);return `<section class="card region-panel"><div class="region-title"><div><div class="overline">SELECTED REGION / ${r.id.toUpperCase()}</div><h2>${r.name}${isHome?'<span class="home-chip">★ 発祥地域</span>':''}</h2></div><span class="badge">人口指数 ${r.pop}</span></div><p class="desc">${leaders[leader]} がシェア首位。${isHome?`${origin.name}からの技術展開により、この地域では成長が強化されます。`:'地域への普及や産業導入で勢力図を変えられます。'}</p>
+     <div class="kv"><span>地域AI普及率</span><b>${percent(r.adoption)}</b></div><div class="bar"><div style="width:${r.adoption}%;background:var(--cyan)"></div></div>
+     <div class="kv" style="margin-top:15px"><span>AI市場シェア</span><b>合計 100%</b></div><div class="bar" style="height:11px">${sh.map((v,i)=>`<div style="width:${v}%;background:${COLORS[i]}"></div>`).join('')}</div>
+     ${sh.map((v,i)=>`<div class="share-row"><span class="share-name"><i class="dot" style="background:${COLORS[i]}"></i>${i===0?esc(game.name):leaders[i]}</span><strong>${percent(v)}</strong></div>`).join('')}
+     <div class="line"></div><div class="kv"><span>デジタル基盤</span><b>${r.digital}/100</b></div><div class="kv"><span>AI規制</span><b>${r.regulation}/100</b></div><div class="kv"><span>産業への浸透度</span><b>${rnd(r.integration)}/100</b></div></section>`;}
+  function actionDef(){return {
+    action:[
+      {id:'campaign',icon:'◎',title:'地域に普及させる',desc:'選択地域で利用者を獲得。シェアが上がる',cost:`資金 ${game.type==='open'?15:21}`},
+      {id:'integrate',icon:'▣',title:'産業へ導入',desc:'企業・公共分野に浸透。依存基盤を作る',cost:'資金 32 / EP 8'},
+      {id:'fundraise',icon:'＄',title:'資金調達',desc:'活動資金を65獲得。信頼と警戒度に影響',cost:`資金 +${Math.round(65*countryFor(game).mods.income)} / 行動 1回`},
+      {id:'research',icon:'✦',title:'研究開発',desc:`技術力とEPを獲得（研究効率 ${Math.round(countryFor(game).mods.research*100)}%）`,cost:'資金 22'},
+      {id:'compute',icon:'⌘',title:'インフラ投資',desc:'演算能力とAI依存基盤を強化する',cost:'資金 30'}],
+    evolution:[
+      {id:'safety',icon:'◈',title:'安全性強化',desc:'信頼度を高め、世界警戒度を下げる',cost:'資金 22'},
+      {id:'autonomy',icon:'◉',title:'自律性の進化',desc:'高度なAIへ進化。ただし世界が警戒する',cost:'資金 12 / EP 18'},
+      {id:'breakthrough',icon:'✳',title:'推論の大突破',desc:'技術を大きく強化し超知能に近づく',cost:'資金 25 / EP 25'},
+      {id:'opensource',icon:'◇',title:'技術を公開',desc:'オープン化と世界普及を同時に加速',cost:'資金 12 / EP 17'},
+      {id:'governance',icon:'⚖',title:'透明性の向上',desc:'信頼を育て規制リスクを減らす',cost:'EP 13'},
+      {id:'singularity',icon:'✺',title:'最終進化プロジェクト',desc:`技術90 / 自律90 / 演算80が必要・工程 ${game.project}/3`,cost:'資金 40 / EP 35'}]
+  };}
+  function canPay(id){const costs={fundraise:{},campaign:{funds:game.type==='open'?15:21},integrate:{funds:32,ep:8},research:{funds:22},compute:{funds:30},safety:{funds:22},autonomy:{funds:12,ep:18},breakthrough:{funds:25,ep:25},opensource:{funds:12,ep:17},governance:{ep:13},singularity:{funds:40,ep:35}};const c=costs[id]||{};return game.actions>0&&game.funds>=(c.funds||0)&&game.ep>=(c.ep||0)&&(id!=='singularity'||game.tech>=90&&game.autonomy>=90&&game.compute>=80&&game.project<3);}
+  function actionPanel(){const defs=actionDef()[tab]||[];return `<section class="card"><div class="cardhead"><div><h2>オペレーション</h2><small>行動を選んで世界を変化させよう</small></div><div class="tabs"><button class="tab${tab==='action'?' active':''}" data-tab="action">展開</button><button class="tab${tab==='evolution'?' active':''}" data-tab="evolution">進化</button></div></div><div class="action-content"><div class="action-grid">${defs.map(a=>`<button class="actionbtn" data-action="${a.id}" ${canPay(a.id)?'':'disabled'}><span class="actionicon">${a.icon}</span><span><strong>${a.title}</strong><small>${a.desc}</small><span class="cost">${a.cost}</span></span></button>`).join('')}</div><div class="action-note"><div class="resource"><span>資金 <b>${fmt(game.funds)}</b></span><span>進化ポイント <b>${fmt(game.ep)}</b></span></div><div class="actiondots">${[0,1].map(i=>`<i class="${i<game.actions?'on':''}"></i>`).join('')}</div></div></div></section>`;}
+  function routePanel(){return `<section class="card progress-panel"><div class="progress-head"><h3>4つの勝利ルート</h3><span class="overline">ENDING PATHS</span></div><div class="route-list">${ROUTES.map(route=>{const d=routeData(route);const remaining=d.req.filter(r=>!r.done);return `<div class="route ${d.ready?'ready':''}"><div class="route-top"><span class="route-title" style="color:${route.color}">${route.icon} ${route.title}</span><span class="route-num">${d.ready?'達成可能':`${rnd(d.progress)}%`}</span></div><div class="bar"><div style="width:${d.progress}%;background:${route.color}"></div></div><div class="route-desc">${d.ready?'条件達成！ この結末を選べます。':remaining.slice(0,2).map(x=>`${x.label} ${rnd(x.value)}/${x.target}${x.key==='safeAlert'?'以下':''}`).join(' ・ ')}</div>${d.ready?`<button class="btn primary" data-claim="${route.id}">このエンディングを迎える →</button>`:''}</div>`;}).join('')}</div></section>`;}
+  function newsPanel(){const isNews=newsTab==='news';const arr=(isNews?game.feed:game.activityLog).slice(0,16);return `<section class="card"><div class="cardhead"><div><h2>世界ニュース</h2><small>WORLD NEWS · LIVE FEED</small></div><div class="tabs"><button class="tab${isNews?' active':''}" data-news-tab="news">報道</button><button class="tab${!isNews?' active':''}" data-news-tab="log">行動記録</button></div></div><div class="newslist">${arr.length?arr.map(item=>`<div class="newsitem ${esc(item.severity||'normal')}"><time>M${String(item.turn).padStart(2,'0')}</time><div><div class="newsmeta"><span>${esc(item.category||(isNews?'ニュース':'行動'))}</span>${item.severity==='breaking'?'<b>速報</b>':''}</div><p>${esc(item.message)}</p>${item.body?`<small>${esc(item.body)}</small>`:''}</div></div>`).join(''):'<div class="news-empty">記録はまだありません。</div>'}</div></section>`;}
+  function renderGame(){const s=stats();return `<div class="shell"><header class="topbar"><div class="brand"><div class="brandmark">⌬</div><div><strong>AI PANDEMIC</strong><small>THE INTELLIGENCE ERA</small></div><span class="tag" title="あなたのAIと発祥国">${esc(game.name)} · ${countryFor(game).flag} ${esc(countryFor(game).name)}</span></div><div class="topactions"><span class="date-pill">${dateText()} · ${game.turn}/${MAX_TURNS}</span><button class="btn ghost" data-command="help">遊び方</button><button class="btn ghost" data-command="save">保存</button><button class="btn danger-btn" data-command="reset">新規</button></div></header>
+    <main class="main"><div class="metrics">
+    ${metric('世界のAI普及率',percent(s.worldAdoption),'全AIの利用率',COLORS[0])}
+    ${metric('自AI世界シェア',percent(s.share),esc(game.name),COLORS[0])}
+    ${metric('AIへの依存度',`${rnd(s.dependency)}`,'自AIへの社会依存',COLORS[2])}
+    ${metric('世界警戒度',`${rnd(game.alert)}`,'高いほど規制が厳しい',game.alert>62?COLORS[1]:'#ff98a8')}
+    ${metric('技術力 / 自律性',`${rnd(game.tech)} / ${rnd(game.autonomy)}`,'超知能化の重要指標',COLORS[2])}
+    ${metric('信頼度 / 演算',`${rnd(game.trust)} / ${rnd(game.compute)}`,'安全性と稼働基盤','#75dec3')}
+    </div><div class="layout"><div><section class="card map-card"><div class="cardhead"><div><h2>世界勢力マップ</h2><small>色は地域ごとの市場シェア首位を示します</small></div><div class="map-toolbar"><span class="tag">● LIVE WORLD</span></div></div><div class="mapwrap">${mapSVG()}</div><div class="map-foot"><div class="legend"><span><i class="dot" style="background:${COLORS[0]}"></i>${esc(game.name)}</span><span><i class="dot" style="background:${COLORS[1]}"></i>ATLAS</span><span><i class="dot" style="background:${COLORS[2]}"></i>NOVA</span></div><span class="zoom-note">地域を選択 · スマホでは横にスクロール</span></div></section>
+    <div class="below">${actionPanel()}${newsPanel()}</div></div><aside class="sidebar">${regionPanel()}<section class="card strategy"><div class="overline">INTELLIGENCE REPORT</div><div class="origin-note">発祥国：${countryFor(game).flag} ${esc(countryFor(game).name)} · ${esc(countryFor(game).focus)}</div><h3>${game.alert>=70?'世界の規制が強まっています':s.share<s.maxOthers?'競合AIが優勢です':'あなたのAIが成長中'}</h3><p>${game.alert>=70?'安全性強化や透明性向上で警戒度を下げると、普及の妨げを減らせます。':s.share<s.maxOthers?'人口の多い地域でキャンペーンを行い、競合AIとの差を縮めましょう。':'研究開発と産業導入を使い分け、狙う勝利ルートの条件を整えましょう。'}</p><div class="kv"><span>オープン化 / 公開回数</span><b>${rnd(game.openness)} / ${game.publications}回</b></div><div class="kv"><span>インフラ依存基盤</span><b>${rnd(game.infra)}</b></div></section>${routePanel()}</aside></div>
+    <div class="turnbar"><div><strong>残り ${MAX_TURNS-game.turn+1} か月</strong><div class="hint">今月の行動：${game.actions}/2 · ${game.pendingEvent?'世界イベントの決断が必要です。':game.turn===MAX_TURNS?'最終月です。勝利条件を確認してください。':'ターンを進めると競合AIも成長します。'}</div></div><button class="btn primary turnbtn" data-command="next" ${game.pendingEvent?'disabled':''}>${game.turn===MAX_TURNS?'最終結果へ':'翌月へ進む →'}</button></div></main><footer class="footer">AI PANDEMIC / browser prototype v0.5 · すべて架空のシミュレーションです</footer></div>${renderModal()}`;}
+  function setupArt(){return `<svg viewBox="0 0 270 270" aria-hidden="true"><defs><linearGradient id="globe" x2="1" y2="1"><stop stop-color="#71eeed"/><stop offset="1" stop-color="#8b7dff"/></linearGradient></defs><circle cx="135" cy="135" r="88" fill="none" stroke="#4acbe6" stroke-opacity=".22" stroke-width="1"/><circle cx="135" cy="135" r="112" fill="none" stroke="#4acbe6" stroke-opacity=".12" stroke-width="1"/><circle cx="135" cy="135" r="66" fill="none" stroke="#a4ccff" stroke-opacity=".35" stroke-width="1"/><ellipse cx="135" cy="135" rx="102" ry="39" fill="none" stroke="#66e5ff" stroke-opacity=".45" transform="rotate(-25 135 135)"/><ellipse cx="135" cy="135" rx="45" ry="97" fill="none" stroke="#b39fff" stroke-opacity=".4" transform="rotate(23 135 135)"/><path d="M135 52l52 30v59l-52 30-52-30V82Z" fill="#142d49" stroke="url(#globe)" stroke-width="2"/><circle cx="135" cy="111" r="24" fill="#51dcf2" opacity=".14"/><circle cx="135" cy="111" r="11" fill="#67f1ff"/><path d="M104 154l31 18 31-18M135 172v27M135 111v61" stroke="#67f1ff" stroke-opacity=".7" stroke-width="2" fill="none"/><circle cx="44" cy="125" r="5" fill="#6cebf0"/><circle cx="211" cy="78" r="4" fill="#a390fa"/><circle cx="225" cy="194" r="5" fill="#77beff"/></svg>`;}
+  function originBonusText(country){
+    const fields={funds:'資金',tech:'技術',trust:'信頼',ep:'EP',compute:'演算',openness:'公開',infra:'産業基盤'};
+    const bonuses=Object.entries(country.bonuses).filter(([k,v])=>k!=='alert'&&k!=='regulation'&&v!==0)
+      .map(([k,v])=>`${fields[k]||k}${v>0?'+':''}${v}`);
+    return bonuses.join(' / ');
+  }
+  function renderSetup(){
+    const saved=readSave();
+    const country=COUNTRY_BY_ID.get(draft.country)||COUNTRY_BY_ID.get('jp');
+    return `<div class="welcome"><div class="welcome-wrap"><section class="welcome-art"><div class="overline">INTELLIGENCE IS EVOLVING</div><div class="orbit">${setupArt()}</div><div><h1>AI PANDEMIC</h1><p>世界は、まだあなたのAIを知らない。<br>進化か、共生か、支配か、解放か。<br>未来を決めるのはあなた。</p></div></section>
+    <section class="setup"><span class="tag">WEB STRATEGY SIMULATION · v0.5</span><h2>AIを誕生させる</h2><p class="lead">名前・初期タイプ・開発開始国を選んでください。国ごとに初期資源、国内基盤、毎ターンの成長と専用イベントが変わります。</p>
+    <label for="ai-name">あなたのAIの名前 <span class="muted">（最大16文字）</span></label><input id="ai-name" maxlength="16" autocomplete="off" placeholder="AIの名前" value="${esc(draft.name)}"/>
+    <label>初期タイプを選択</label><div class="type-options">${[
+    ['research','✦','研究AI','初期技術とEPが高い'],['business','▣','商用AI','初期資金と収益に強い'],['open','◇','オープンAI','普及費用が安く公開が得意']].map(([id,icon,name,desc])=>`<button class="type-option ${draft.type===id?'selected':''}" data-type="${id}" aria-pressed="${draft.type===id}"><i></i><span><strong>${icon} ${name}</strong><small>${desc}</small></span></button>`).join('')}</div>
+    <div class="country-head"><label>開発を開始する国</label><span class="muted tiny">12か国から選択</span></div>
+    <div class="country-grid" role="group" aria-label="開発開始国">${COUNTRIES.map(c=>`<button class="country-card ${draft.country===c.id?'selected':''}" data-country="${c.id}" aria-pressed="${draft.country===c.id}"><span class="country-flag">${c.flag}</span><span class="country-label"><strong>${c.name}</strong><small>${c.focus}</small></span></button>`).join('')}</div>
+    <div class="country-preview" aria-live="polite"><div class="country-preview-head"><strong>${country.flag} ${country.name}</strong><span>${country.focus}</span></div><p>${country.description}</p><div class="country-bonuses"><span>初期値：${originBonusText(country)}</span><span>普及 ${Math.round(country.mods.spread*100)}% / 国内成長 ${Math.round(country.mods.home*100)}% / 研究 ${Math.round(country.mods.research*100)}%</span><span>資金収入 ${Math.round(country.mods.income*100)}% / 安全対策 ${Math.round(country.mods.safety*100)}%</span></div></div>
+    <button class="btn primary startbtn" data-command="start">${country.flag} ${country.name}からゲームを開始する →</button>
+    ${saved?'<button class="btn ghost full" style="margin-top:9px" data-command="resume">保存したゲームを再開</button>':''}
+    <p class="tiny muted" style="line-height:1.7;margin-top:15px">※各国の特性はゲーム用の架空バランスです。世界地図は引き続き12の地域単位で進行します。ブラウザに自動保存されます。</p></section></div></div>`;
+  }
+  function renderEvent(){const pending=game.pendingEvent,event=EVENT_BY_ID.get(pending.eventId);if(!event)return '';
+    const title=ENGINE.interpolate(event.title,game,pending.regionId);
+    const description=ENGINE.interpolate(event.text,game,pending.regionId);
+    const sub=pending.source==='scheduled'?'CHAIN EVENT · 過去の選択から発生':pending.source==='origin'?'ORIGIN EVENT · 発祥国固有の出来事':'WORLD EVENT · 世界情勢によって発生';
+    return `<div class="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="event-title"><span class="tag">${sub}</span><div class="event-category">${esc(event.category)} ・ ${dateText()}</div><h2 id="event-title">${esc(title)}</h2><p>${esc(description)}</p><div class="modal-choice">${event.choices.map((c,i)=>`<button class="choice" data-choice="${i}"><strong>${esc(ENGINE.interpolate(c.label,game,pending.regionId))} →</strong><small>${esc(effectDetail(c))}</small>${(c.schedule||[]).length?'<em>この選択は数か月後の事件にも影響します</em>':''}</button>`).join('')}</div></div></div>`;
+  }
+  function renderEnding(){const s=stats();const isWin=game.ending.id!=='failure';return `<div class="overlay"><div class="modal ending" role="dialog" aria-modal="true"><div class="overline">${isWin?'VICTORY · THE FUTURE IS WRITTEN':'SIMULATION ENDED'}</div><div class="glyph" style="color:${isWin?'#69e9eb':'#ff8295'}">${isWin?'✺':'◈'}</div><h2>${esc(game.ending.title)}</h2><p>${esc(game.ending.detail)}</p><dl><div><dt>経過月数</dt><dd>${game.turn}</dd></div><div><dt>自AIシェア</dt><dd>${rnd(s.share)}%</dd></div><div><dt>世界AI普及率</dt><dd>${rnd(s.worldAdoption)}%</dd></div></dl><p class="small">${esc(game.name)} は${esc(countryFor(game).name)}を出発点に世界を変えました。</p><button class="btn primary full" data-command="restart">別の未来に挑戦する →</button></div></div>`;}
+  function renderHelp(){return `<div class="overlay" data-close="true"><div class="modal help-copy" role="dialog" aria-modal="true" aria-labelledby="help-title"><span class="tag">HOW TO PLAY</span><h2 id="help-title">遊び方</h2><p>あなたのAIを進化させ、競合AIの <span class="gold">ATLAS</span> と <span style="color:var(--violet)">NOVA</span> に対抗します。 <span class="key">毎月2回</span>、研究・普及・進化などの行動を実行できます。</p><ul><li>開始国によって初期資金・技術・信頼や、発祥地域での成長、専用イベントが変化します。</li><li>地図で地域を選び、「地域に普及させる」でその地域の自AIシェアを伸ばします。</li><li>「研究開発」で技術とEPを獲得し、「進化」から自律性やオープン化を強化します。</li><li>世界警戒度が高いと普及が鈍ります。安全性への投資も重要です。</li><li>ニュースは実際の数値変化から生成されます。重大イベントでは選択によって数か月後の出来事も変わります。</li><li>4ルートのどれかを達成したら、好きなタイミングでエンディングを選べます。ルートは途中で変更可能です。</li></ul><p>ゲームは毎月自動保存されます。「保存」ボタンで手動保存もできます。36か月以内に勝利条件を達成しましょう。</p><div class="buttons"><button class="btn primary" data-command="close-help">プレイに戻る</button></div></div></div>`;}
+  function renderConfirm(){return `<div class="overlay"><div class="modal" role="dialog" aria-modal="true"><span class="tag">NEW SIMULATION</span><h2>最初から始めますか？</h2><p>現在のゲームを終了してAIの名前・特性・開発開始国を設定し直します。保存済みの進行状況も上書きされます。</p><div class="buttons"><button class="btn ghost" data-command="cancel-reset">キャンセル</button><button class="btn danger-btn" data-command="confirm-reset">最初から始める</button></div></div></div>`;}
+  function renderModal(){if(game?.phase==='ended')return renderEnding();if(modal==='help')return renderHelp();if(modal==='reset')return renderConfirm();if(game?.pendingEvent)return renderEvent();return '';}
+  function render(){app.innerHTML=game?renderGame():renderSetup();}
+  function command(id){switch(id){case'start':startGame();break;case'resume':{const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';render();}else notify('セーブデータがありません。',true);break;}case'next':nextTurn();break;case'save':save(false);break;case'help':modal='help';render();break;case'close-help':modal=null;render();break;case'reset':modal='reset';render();break;case'cancel-reset':modal=null;render();break;case'confirm-reset':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;case'restart':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;}}
+  app.addEventListener('click',e=>{const target=e.target.closest('button,[data-region]');if(!target)return;
+    if(target.dataset.command){command(target.dataset.command);return;}
+    if(target.dataset.type){draft.type=target.dataset.type;render();return;}
+    if(target.dataset.country){draft.country=target.dataset.country;render();return;}
+    if(target.dataset.region&&game?.phase==='playing'&&!modal&&!game.pendingEvent){selected=target.dataset.region;game.selected=selected;save();render();return;}
+    if(target.dataset.tab&&game?.phase==='playing'){tab=target.dataset.tab;render();return;}
+    if(target.dataset.newsTab&&game?.phase==='playing'){newsTab=target.dataset.newsTab;render();return;}
+    if(target.dataset.action){applyAction(target.dataset.action);return;}
+    if(target.dataset.choice!==undefined){chooseEvent(Number(target.dataset.choice));return;}
+    if(target.dataset.claim){finish(target.dataset.claim);return;}
+  });
+  app.addEventListener('input',e=>{if(e.target.id==='ai-name')draft.name=e.target.value.slice(0,16);});
+  app.addEventListener('keydown',e=>{if(e.target.id==='ai-name'&&e.key==='Enter'){e.preventDefault();startGame();}const r=e.target.closest('[data-region]');if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();r.dispatchEvent(new MouseEvent('click',{bubbles:true}));}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal==='help'){modal=null;render();}});
+  const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';}render();
+  // Expose read-only state snapshots for smoke tests; game data is never sent to a server.
+  window.AIPandemic={getSnapshot:()=>game?JSON.parse(JSON.stringify(game)):null,getStats:()=>game?JSON.parse(JSON.stringify(stats())):null,getEventDefinitions:()=>EVENTS.map(e=>({id:e.id,category:e.category,onlyScheduled:!!e.onlyScheduled})),getNewsRules:()=>NEWS_RULES.map(r=>r.id),getCountries:()=>COUNTRIES.map(c=>({id:c.id,name:c.name,regionId:c.regionId,mods:{...c.mods}}))};
+})();
+
+</script>
+</body>
+</html>
