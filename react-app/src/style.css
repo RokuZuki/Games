@@ -40,3 +40,8 @@
 .map-selection-readout rect{fill:#091b2de8;stroke:#428c9d;stroke-width:1}
 .map-selection-readout text{fill:#d4fbf1;font-size:11px;font-weight:750;letter-spacing:.02em}
 @media(max-width:750px){.map-region-label{font-size:13px}.map-selection-readout text{font-size:11.5px}}
+
+/* v1.0.1 — country-based interactive SVG map */
+.region-territory{fill-opacity:.24;stroke-opacity:.48;stroke-linejoin:round;stroke-linecap:round;transition:fill-opacity .2s ease,stroke-opacity .2s ease}
+.map-region:hover .region-territory,.map-region:focus-visible .region-territory{fill-opacity:.48;stroke-opacity:.97;filter:drop-shadow(0 0 3px #7ee8fb66)}
+.map-region.is-selected .region-territory{fill-opacity:.6;stroke:#a4ffe9;stroke-opacity:1;filter:drop-shadow(0 0 4px #51e9d666)}
