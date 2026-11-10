@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#090e18" />
-  <title>AI PANDEMIC v0.7.1 | 戦略ゲーム</title>
+  <meta name="description" content="AI PANDEMIC。AIを進化させ、世界の勢力図を変えるブラウザ戦略ゲーム。" />
+  <title>AI PANDEMIC v0.8 | AI戦略ゲーム</title>
   <style>
 :root{color-scheme:dark;--bg:#080d17;--bg2:#101928;--surface:#111b2c;--surface2:#152137;--surface3:#1b2b44;--line:rgba(157,187,234,.12);--line2:rgba(159,187,227,.24);--txt:#e9f2ff;--muted:#8c9cb5;--cyan:#4bdeed;--blue:#6cb6ff;--violet:#ae8aff;--amber:#ffbd71;--red:#ff7889;--green:#75dec3;--shadow:0 20px 65px rgba(0,0,0,.35);font-family:Inter,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,system-ui,sans-serif}
 *{box-sizing:border-box}html,body{padding:0;margin:0;min-height:100%;background:var(--bg);color:var(--txt)}body{background:radial-gradient(ellipse at 80% -20%,#182b45 0,transparent 48%),radial-gradient(ellipse at 3% 75%,#121a37 0,transparent 34%),var(--bg)}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.35}button:focus-visible,input:focus-visible,.region:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}a{color:var(--cyan)}.muted{color:var(--muted)}.tiny{font-size:11px}.small{font-size:12px}.regular{font-size:13px}.overline{font-size:10px;letter-spacing:.2em;font-weight:800;text-transform:uppercase;color:#7d91ad}.outline{border:1px solid var(--line2)!important}.accent{color:var(--cyan)}.gold{color:var(--amber)}.danger{color:var(--red)}.ok{color:var(--green)}
@@ -124,6 +125,136 @@ button{border:0;color:var(--txt)}.btn{border:1px solid var(--line2);background:#
 .skill-scroller-hint{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#112238;border-top:1px solid #2b435c;color:#83a7c3;font-size:10px;gap:7px}
 @media(max-width:790px){.skill-viewport{height:470px}.skill-head h3{font-size:17px}.skill-tree-surface{margin:3px 10px 12px}}
 @media(max-width:540px){.skill-tree-topline{padding:8px}.skill-tree-topline .tree-legend{gap:8px}.skill-tree-topline{font-size:9px}.skill-viewport{height:430px}.skill-inspector{right:8px;bottom:8px;width:min(295px,calc(100% - 16px));max-height:210px;padding:12px}.skill-inspector h4{font-size:15px}.skill-scroller-hint{font-size:9px}.skill-head{padding:12px 10px 10px}.skill-head p{font-size:10px}}
+
+/* v0.8 — responsive command bridge, animated AI network, contextual tools */
+:root{--bg:#070d18;--surface:#111e31;--surface2:#13243b;--line:rgba(135,173,215,.16);--txt:#eef8ff}
+body{background:radial-gradient(ellipse at 50% -15%,rgba(20,72,112,.38),transparent 45%),linear-gradient(140deg,#08101d,#070c16 60%,#0a0d21)}
+.game-shell{max-width:1560px;padding:18px 24px 40px}
+.game-shell .topbar{border-bottom:1px solid rgba(114,155,195,.2);padding:0 0 16px;gap:20px}
+.game-shell .brand strong{font-size:19px;letter-spacing:.14em}
+.game-shell .brand small{font-size:9px;color:#8198b7}
+.neural-brand{position:relative;display:grid!important;place-items:center;overflow:visible;width:42px;height:42px;border-radius:13px;color:#a9f8fa;box-shadow:0 0 23px rgba(76,202,239,.18),inset 0 0 15px rgba(76,202,239,.13)}
+.neural-brand:before,.neural-brand:after{content:"";position:absolute;inset:-6px;border:1px solid rgba(93,227,249,.35);border-radius:50%;animation:core-orbit 9s linear infinite;pointer-events:none}
+.neural-brand:after{inset:-12px;border-style:dashed;border-color:rgba(140,133,239,.28);animation-direction:reverse;animation-duration:15s}
+.neural-brand span{position:relative;z-index:1;font-size:25px}
+@keyframes core-orbit{to{transform:rotate(360deg)}}
+.game-shell .topactions{flex-wrap:wrap;justify-content:flex-end;gap:7px}
+.game-shell .topactions .btn{padding:9px 11px;font-size:11px;border-radius:9px}
+.origin-name{font-size:11px;font-weight:800;color:#bddbef;padding:8px 11px;border:1px solid rgba(108,160,202,.23);border-radius:8px;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.game-shell .date-pill{display:flex;align-items:center;gap:8px;padding:8px 12px;color:#e6f5ff;font-size:11px;border-color:rgba(91,194,224,.4)}
+.game-shell .date-pill b{color:#73eaf2;font-size:10px;border-left:1px solid #456176;padding-left:8px}
+.command-main{display:flex;flex-direction:column;gap:14px;padding-top:22px}
+.command-intro{display:flex;align-items:end;justify-content:space-between;gap:10px}
+.command-intro h1{font-size:clamp(17px,2vw,27px);font-weight:860;letter-spacing:.035em;line-height:1.25;margin:6px 0 0;color:#edf9ff}
+.intro-signal,.map-status,.sector-live{display:inline-flex;gap:7px;align-items:center;color:#79bdbd;font-size:10px;font-weight:850;letter-spacing:.1em;white-space:nowrap}
+.intro-signal i,.map-status i,.sector-live i,.live-pill i{display:inline-block;width:7px;height:7px;flex:0 0 7px;background:#5df4d4;box-shadow:0 0 0 4px #49d8b722,0 0 14px #59dbce;border-radius:50%;animation:blink-signal 2.4s ease-in-out infinite}
+@keyframes blink-signal{0%,100%{opacity:1}50%{opacity:.38}}
+.signal-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.signal-metric{background:linear-gradient(145deg,rgba(22,43,64,.8),rgba(13,25,44,.9));border:1px solid rgba(132,174,220,.16);border-radius:12px;padding:13px 14px;min-width:0;position:relative;overflow:hidden}
+.signal-metric:before{content:"";position:absolute;inset:auto 12px 0;height:2px;background:var(--metric-hue);box-shadow:0 0 14px var(--metric-hue);opacity:.7}
+.signal-metric span{display:block;font-size:11px;color:#adbeda;white-space:nowrap}
+.signal-metric strong{display:block;font-size:clamp(23px,2.5vw,30px);font-weight:900;color:var(--metric-hue);letter-spacing:-.03em;line-height:1.35;margin-top:4px}
+.signal-metric small{display:block;color:#7189a7;font-size:10px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.live-brief{border-color:rgba(87,180,207,.3);overflow:hidden;box-shadow:inset 3px 0 0 #3ac8e3}
+.brief-heading{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(112,160,198,.12)}
+.live-pill{display:inline-flex;align-items:center;gap:8px;color:#a7f4f4;font-size:11px;font-weight:900;letter-spacing:.1em;white-space:nowrap}
+.brief-heading>span:nth-child(2){font-size:10px;letter-spacing:.12em;color:#6889aa}
+.quiet-link{margin-left:auto;background:transparent;border:1px solid rgba(116,164,202,.25);border-radius:8px;padding:6px 11px;color:#94daf0;font-size:11px;font-weight:750;white-space:nowrap}
+.quiet-link:hover{background:#263e51}
+.brief-stories{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:0;min-height:73px}
+.brief-story{padding:12px 15px;display:flex;gap:10px;align-items:flex-start;min-width:0;border-right:1px solid rgba(117,153,196,.13)}
+.brief-story:last-child{border-right:0}.brief-story>div{min-width:0}.brief-story strong{display:block;font-size:11.5px;font-weight:750;line-height:1.6;color:#dfefff;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.brief-story small{display:block;font-size:10px;color:#879fbd;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin-top:4px}
+.brief-time{flex-shrink:0;border:1px solid #3f526e;color:#8eaac8;font-size:10px;padding:3px 5px;border-radius:5px;font-weight:800}
+.brief-story.emergency .brief-time{border-color:#d89d75;color:#ffd2a1;background:#68442644}
+.command-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.shortcut{display:flex;align-items:center;text-align:left;gap:12px;min-width:0;padding:12px 14px;border:1px solid rgba(141,177,218,.18);border-radius:12px;background:linear-gradient(135deg,#142339,#101c30);transition:background .17s,border-color .17s,transform .17s;position:relative;overflow:hidden}
+.shortcut.evol{background:linear-gradient(120deg,rgba(63,55,105,.65),rgba(22,30,54,.92));border-color:rgba(157,126,247,.35)}
+.shortcut:hover{background:linear-gradient(120deg,#233953,#13253f);border-color:#64d7ed;transform:translateY(-1px)}
+.shortcut-icon{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;border-radius:11px;color:#89eaff;background:#1b4052;border:1px solid rgba(115,205,233,.22);font-size:25px;box-shadow:inset 0 0 18px rgba(86,200,247,.08)}
+.shortcut.evol .shortcut-icon{color:#d3b5ff;background:#352c57}
+.shortcut>span:nth-child(2){min-width:0;display:flex;flex-direction:column;gap:3px}
+.shortcut strong{font-size:13px;white-space:nowrap}.shortcut small{font-size:10px;color:#93a8c3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.shortcut em{font-size:10px;font-weight:850;font-style:normal;letter-spacing:.03em;color:#9be9f0;margin-left:auto;white-space:nowrap}
+.shortcut.evol em{color:#d7baff}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(345px,380px);gap:14px;align-items:start}
+.world-column,.control-column{min-width:0;display:flex;flex-direction:column;gap:13px}
+.workspace .map-card{border-color:rgba(87,180,207,.27);overflow:hidden}
+.workspace .map-card .cardhead{padding:15px 18px}.workspace .cardhead h2{font-size:17px;margin-top:5px;letter-spacing:.02em}
+.workspace .mapwrap{position:relative;overflow-x:auto;overflow-y:hidden;background:radial-gradient(ellipse at 52% 35%,#173752,#081421 72%);scrollbar-color:#2e6e89 #101e31}
+.map-scan{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 0,rgba(64,212,243,.065) 49%,transparent 53%);background-size:100% 160px;animation:map-sweep 14s linear infinite;z-index:1}
+@keyframes map-sweep{to{background-position:0 960px}}
+.world .flowpath{stroke:#57cdf3;stroke-opacity:.3;stroke-width:1.2;stroke-dasharray:3 12;animation:network-flow 17s linear infinite}
+@keyframes network-flow{to{stroke-dashoffset:-180}}
+.world .zone-ripple{pointer-events:none;fill:none;stroke:var(--ripple);stroke-width:1.4;opacity:0;animation:network-ripple 4.5s ease-out infinite;animation-delay:var(--delay)}
+@keyframes network-ripple{0%{opacity:.65;r:5}75%,100%{opacity:0;r:23}}
+.workspace .world{min-width:720px;width:100%;min-height:0;max-height:none;display:block}
+.map-foot{border-color:rgba(117,153,189,.15);padding:13px 17px}
+.map-foot .legend span{font-size:11px}.map-bottom-info{padding:0 5px;display:flex;gap:8px;justify-content:space-between;color:#587895;font-size:10px;font-weight:750;letter-spacing:.06em}
+.sector-card{border-color:rgba(96,194,221,.25);padding:17px;background:linear-gradient(148deg,#13273b,#0c1b2d)}
+.sector-topline,.sector-heading,.sector-share-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sector-topline{margin-bottom:9px}.sector-live{font-size:9px}.sector-live i{width:6px;height:6px;flex-basis:6px}
+.sector-heading h2{font-size:23px;margin:0 0 2px;letter-spacing:.04em}
+.sector-heading p{font-size:11px;color:#9cb1cc;line-height:1.45;margin:0}
+.region-id{color:#769bb5;font-size:12px;letter-spacing:.13em;font-weight:800}
+.sector-indicators{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:15px 0 14px}
+.sector-indicators>div{padding:10px 5px;border:1px solid rgba(111,158,200,.18);border-radius:9px;background:rgba(10,25,44,.65);text-align:center;min-width:0}
+.sector-indicators span{display:block;font-size:10px;color:#8facc9;white-space:nowrap}.sector-indicators strong{display:block;margin-top:6px;font-size:22px;letter-spacing:-.03em}
+.sector-share-title{color:#98b1ca;font-size:10px;margin-bottom:7px}.sector-share-title span:last-child{color:#c1d5e7}
+.sector-shares.bar{height:11px;border-radius:5px}.sector-legend{display:flex;justify-content:space-between;gap:6px;margin-top:9px}
+.sector-legend span{display:flex;align-items:center;gap:4px;font-size:10px;color:#a8bcd1;white-space:nowrap;min-width:0}
+.sector-legend b{font-size:10px;color:#e6effe}
+.sector-footnote{padding-top:12px;border-top:1px solid rgba(110,159,197,.16);display:flex;justify-content:space-between;gap:6px;font-size:10px;color:#799bb8;margin-top:15px}
+.operation-panel{padding:15px 16px 16px;border-color:rgba(137,162,197,.2)}
+.operation-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.operation-heading h2{font-size:17px;margin:4px 0 0}
+.operation-remaining{font-size:11px;color:#7ee7bb;font-weight:800;white-space:nowrap}.operation-remaining.used{color:#9eadc2}
+.operation-context{font-size:11px;color:#97a9bf;margin-top:10px;margin-bottom:14px}.operation-context strong{color:#e7f5fb}
+.op-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.op-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:10px;border:1px solid rgba(113,151,196,.23);background:#14253a;padding:9px 5px;min-height:65px;transition:.15s}
+.op-tile:hover{border-color:#65dbf1}.op-tile.active{background:linear-gradient(150deg,#1b4557,#19354a);border-color:#62e0e9;box-shadow:inset 0 0 0 1px #59aacc33,0 0 13px #36cde620}
+.op-tile .op-icon{font-size:19px;color:#99bcd8;line-height:1}.op-tile.active .op-icon{color:#83eaff}
+.op-tile strong{font-size:10px;font-weight:800;letter-spacing:.01em;text-align:center;line-height:1.25}
+.op-selected{margin-top:10px;border:1px solid rgba(101,154,199,.25);border-radius:10px;padding:11px;background:rgba(7,18,33,.64)}
+.op-selected-top{display:flex;align-items:center;justify-content:space-between;gap:9px}.op-selected-top strong{font-size:12px}.op-selected-top span{font-weight:850;font-size:11px;color:#74ebdf}
+.op-selected p{font-size:10px;line-height:1.65;color:#a6b8d0;margin:6px 0 10px}
+.op-execute{padding:11px;border-radius:8px;font-size:12px;min-height:42px}
+.command-main .turnbar{position:sticky;bottom:12px;margin-top:3px;border-color:rgba(83,205,229,.38);padding:14px 18px;background:linear-gradient(115deg,rgba(21,54,76,.98),rgba(20,34,56,.98));backdrop-filter:blur(10px);z-index:15}
+.turn-status strong{font-size:14px;display:block;margin-top:3px}.turn-status .hint{color:#8da8bf;font-size:11px}
+.command-main .turnbtn{font-size:13px;padding:13px 22px;min-width:205px}.command-main .turnbtn span{margin-left:14px}
+/* Context panels — large readable desktop windows, mobile full-height sheet. */
+.panel-overlay{padding:22px;animation:panel-fade .18s ease-out}
+@keyframes panel-fade{from{opacity:0}to{opacity:1}}
+.utility-dialog{width:min(900px,100%);max-height:calc(100dvh - 44px);min-height:260px;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(115,191,232,.4);border-radius:17px;background:radial-gradient(ellipse at 80% 0,rgba(39,78,116,.3),transparent 45%),#0c192b;box-shadow:0 30px 120px #000b,0 0 70px rgba(40,128,177,.13);animation:panel-rise .2s ease-out}
+@keyframes panel-rise{from{opacity:0;transform:translateY(13px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.utility-dialog.wide-dialog{width:min(1320px,100%)}
+.utility-header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:19px 22px;border-bottom:1px solid rgba(104,161,202,.23);flex-shrink:0}
+.utility-header h2{font-size:21px;margin:5px 0 2px}.utility-header p{font-size:11px;color:#9bb0ca;line-height:1.5;margin:2px 0 0}
+.utility-close{background:#20354c;border:1px solid #3e6079;border-radius:10px;color:#d5efff;font-size:19px;font-weight:600;padding:8px 13px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.utility-close span{font-size:11px}.utility-close:hover{background:#2c4a64}
+.utility-body{padding:22px;overflow-y:auto;min-height:0;overscroll-behavior:contain}
+.utility-body>.card{background:transparent;border:0;box-shadow:none}
+.utility-body .report-panel .cardhead,.utility-body .progress-panel .progress-head,.utility-body .cardhead{padding:0 0 18px;border-bottom:1px solid rgba(114,167,200,.24);margin-bottom:14px}
+.utility-body .report-panel .metrics{grid-template-columns:repeat(3,1fr)}
+.utility-body .report-panel .metric{padding:17px}.utility-body .report-panel .metric .value{font-size:29px}
+.utility-body .newslist{max-height:none;overflow:visible}.utility-body .newsitem{padding:14px 0}.utility-body .newsitem p{font-size:13px}.utility-body .newsitem small{font-size:11px}
+.utility-body .skill-tree-surface{margin:8px 0 0}.utility-body .skill-viewport{height:min(64dvh,610px)}
+.modal-ep{display:flex;align-items:center;gap:8px;justify-content:flex-end;color:#b9c8e6;font-size:12px}.modal-ep strong{color:#e9d1ff;font-size:24px}.modal-ep span{font-size:10px;color:#8aa5bf;padding-left:6px}
+.panel-lead{font-size:13px;line-height:1.6;color:#a6bed5;margin:0 0 17px}
+.detailed-routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.route-detail{border:1px solid color-mix(in srgb,var(--route-color),transparent 65%);border-radius:12px;padding:17px;background:linear-gradient(155deg,rgba(25,42,65,.77),rgba(9,21,37,.87));min-width:0}
+.route-detail-head,.route-detail-head>div{display:flex;align-items:center;gap:9px}.route-detail-head{justify-content:space-between}
+.route-detail-head strong{font-size:14px}.route-symbol{font-size:25px;color:var(--route-color)}.route-detail-head b{color:var(--route-color);font-size:20px}
+.route-detail p{font-size:11px;color:#94aeca;line-height:1.6;min-height:17px;margin:7px 0 13px}.route-detail .bar{margin-bottom:12px;height:7px}
+.route-check{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #40536b42;color:#90a5c0;font-size:11px}.route-check b{color:#becfe0;font-size:11px}.route-check.complete{color:#82e5be}.route-check.complete b{color:#93ebc8}
+/* Mobile layout: map then regional insights then actions; no permanent tech tree. */
+@media(max-width:1180px){.workspace{grid-template-columns:minmax(0,1fr) minmax(315px,350px)}.game-shell{padding:15px 16px 34px}}
+@media(max-width:900px){.workspace{display:flex;flex-direction:column}.world-column,.control-column{width:100%}.control-column{display:grid;grid-template-columns:1fr 1fr;align-items:start}.command-intro h1{font-size:23px}.signal-metrics{grid-template-columns:repeat(5,minmax(0,1fr))}.sector-card{min-width:0}.map-bottom-info{display:none}.command-main .turnbar{bottom:7px}}
+@media(max-width:680px){.game-shell{padding:12px 10px 24px}.game-shell .topbar{flex-wrap:wrap;row-gap:10px;justify-content:space-between}.game-shell .brand strong{font-size:16px}.game-shell .brand small{font-size:8px}.neural-brand{width:32px;height:32px}.neural-brand span{font-size:20px}.game-shell .topactions{width:100%;gap:5px;justify-content:flex-start}.game-shell .topactions .btn{padding:8px 9px}.game-shell .date-pill{padding:8px 10px}.origin-name{flex:1;max-width:none}.command-main{padding-top:15px;gap:11px}.command-intro h1{font-size:18px}.intro-signal{display:none}.signal-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.signal-metric{padding:10px 9px}.signal-metric span{font-size:9px}.signal-metric strong{font-size:23px}.signal-metric small{font-size:9px}.signal-metric:nth-child(n+4){grid-column:auto}.brief-heading{padding:9px 11px}.brief-heading>span:nth-child(2){display:none}.brief-stories{display:block;min-height:0}.brief-story{padding:10px 12px;border-right:0}.brief-story:nth-child(n+3){display:none}.brief-story:nth-child(2){border-top:1px solid rgba(117,153,196,.12)}.brief-story strong{font-size:11px}.command-shortcuts{gap:6px}.shortcut{padding:8px 6px;flex-direction:column;align-items:center;gap:5px}.shortcut-icon{width:34px;height:34px;font-size:19px}.shortcut>span:nth-child(2){text-align:center}.shortcut strong{font-size:10px}.shortcut small{display:none}.shortcut em{font-size:9px;margin:0}.control-column{display:flex;flex-direction:column}.control-column>.card{width:100%}.workspace .world{width:760px;min-width:760px}.workspace .map-card .cardhead{padding:12px 13px}.workspace .cardhead h2{font-size:15px}.map-status{font-size:9px}.map-foot{padding:10px}.map-foot .legend span{font-size:10px}.zoom-note{font-size:9px}.sector-card{padding:13px}.sector-heading h2{font-size:21px}.sector-indicators{margin:11px 0}.sector-indicators strong{font-size:21px}.operation-panel{padding:13px}.turn-status strong{font-size:11px}.command-main .turnbar{padding:9px 10px;gap:8px}.command-main .turnbtn{padding:12px 11px;font-size:12px;min-width:132px}.command-main .turnbtn span{margin-left:4px}.turn-status .hint{font-size:9px}.panel-overlay{padding:0}.utility-dialog,.utility-dialog.wide-dialog{height:100dvh;max-height:100dvh;min-height:100dvh;width:100%;border-radius:0;border:0}.utility-header{padding:14px 15px}.utility-header h2{font-size:19px}.utility-header p{font-size:10px}.utility-close{padding:8px 9px}.utility-close span{display:none}.utility-body{padding:12px}.utility-body .report-panel .metrics{grid-template-columns:repeat(2,1fr)}.utility-body .report-panel .metric .value{font-size:20px}.utility-body .skill-viewport{height:calc(100dvh - 238px);min-height:320px}.detailed-routes{grid-template-columns:1fr}.skill-inspector{max-height:min(33dvh,245px)}.footer{padding:10px 0}}
+@media(max-width:390px){.sector-legend{gap:4px}.sector-legend span{font-size:9px}.sector-legend b{font-size:9px}.shortcut strong{font-size:9px}.signal-metric strong{font-size:21px}.operation-remaining{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.neural-brand:before,.neural-brand:after,.intro-signal i,.map-status i,.sector-live i,.live-pill i,.map-scan,.world .flowpath,.world .zone-ripple{animation:none!important}.world .zone-ripple{display:none}.panel-overlay,.utility-dialog{animation:none!important}}
+
+.command-main .turnbar{position:relative;bottom:auto}
+
 </style>
 </head>
 <body>
@@ -391,6 +522,7 @@ window.AIP_EVENT_ENGINE = (() => {
   let tab='action';
   let newsTab='news';
   let modal=null;
+  let selectedOperation='campaign';
   let toastTimer=null;
   let draft={name:'PROMETHEUS',type:'research',country:'jp'};
 
@@ -458,7 +590,7 @@ window.AIP_EVENT_ENGINE = (() => {
   function stats(){return statsFor(game);}
   function routeData(route){const st=stats();const req=route.requirements.map(([key,target,label,op])=>({key,target,label,value:st[key],done:op==='<='?st[key]<=target:st[key]>=target,progress:op==='<='?(st[key]<=target?100:clamp(target/st[key]*100)) :clamp(st[key]/target*100)}));return {ready:req.every(r=>r.done),progress:req.reduce((n,r)=>n+r.progress,0)/req.length,req};}
   function notify(message,isError=false){document.querySelector('.toast')?.remove();let el=document.createElement('div');el.className='toast'+(isError?' error':'');el.textContent=message;document.body.appendChild(el);clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.remove(),2900);}
-  function startGame(){const name=draft.name.trim();if(!name){notify('AIの名前を入力してください。',true);return;}if(['ATLAS','NOVA'].includes(name.toUpperCase())){notify('競合AIとは異なる名前を指定してください。',true);return;}game=createGame(name,draft.type,draft.country);selected=game.selected;tab='action';newsTab='news';modal=null;save();render();}
+  function startGame(){const name=draft.name.trim();if(!name){notify('AIの名前を入力してください。',true);return;}if(['ATLAS','NOVA'].includes(name.toUpperCase())){notify('競合AIとは異なる名前を指定してください。',true);return;}game=createGame(name,draft.type,draft.country);selected=game.selected;tab='action';newsTab='news';modal=null;save();render();window.scrollTo({top:0,left:0,behavior:'instant'});}
   function lose(title,detail){
     if(game.phase==='ended')return;
     game.ending={id:'failure',title,detail,tone:'bad',turn:game.turn};
@@ -524,7 +656,7 @@ window.AIP_EVENT_ENGINE = (() => {
     };
     if(actions[id]?.()){emitStateNews(before);if(checkEnding())return;save();render();}
   }
-  function unlockSkill(id){if(!game||game.phase!=='playing'||modal||game.pendingEvent)return;
+  function unlockSkill(id){if(!game||game.phase!=='playing'||(modal&&modal!=='evolution')||game.pendingEvent)return;
     const skill=SKILL_BY_ID.get(id);if(!skill)return;
     const problem=skillProblem(skill);if(problem){notify(problem,true);return;}
     const before=structuredClone(game);
@@ -650,7 +782,7 @@ window.AIP_EVENT_ENGINE = (() => {
       ${game.regions.map(r=>{const sh=shares(r),lead=sh.indexOf(Math.max(...sh)),col=COLORS[lead],on=r.id===selected,isHome=r.id===game.homeRegionId;
         return `<g class="map-zone${on?' selected':''}" data-region="${r.id}" role="button" tabindex="0" aria-label="${r.name}、AI普及率${rnd(r.adoption)}パーセント。選択する">
           <polygon class="zone-area" points="${r.points}" fill="${col}" fill-opacity="${on?'.21':'.045'}"/>
-          <circle cx="${r.cx}" cy="${r.cy}" r="${on?8:5}" fill="${col}" class="zone-node"/>
+          <circle cx="${r.cx}" cy="${r.cy}" r="${on?8:5}" fill="${col}" class="zone-node"/><circle cx="${r.cx}" cy="${r.cy}" r="10" class="zone-ripple" style="--delay:${(r.cx%11)*.25}s;--ripple:${col}"/>
           <text x="${r.cx}" y="${r.cy-17}" text-anchor="middle">${r.short}${isHome?' ★':''}</text>
           <text class="zone-stat" x="${r.cx}" y="${r.cy+20}" text-anchor="middle">${rnd(r.adoption)}% · ${rnd(sh[lead])}%</text>
         </g>`;}).join('')}
@@ -659,11 +791,21 @@ window.AIP_EVENT_ENGINE = (() => {
     </svg>`;
   }
 
-  function regionPanel(){const r=game.regions.find(r=>r.id===selected)||game.regions[0];const sh=shares(r);const leaders=['プレイヤー','ATLAS','NOVA'];const leader=sh.indexOf(Math.max(...sh));const isHome=r.id===game.homeRegionId;const origin=countryFor(game);return `<section class="card region-panel"><div class="region-title"><div><div class="overline">SELECTED REGION / ${r.id.toUpperCase()}</div><h2>${r.name}${isHome?'<span class="home-chip">★ 発祥地域</span>':''}</h2></div><span class="badge">人口指数 ${r.pop}</span></div><p class="desc">${leaders[leader]} がシェア首位。${isHome?`${origin.name}からの技術展開により、この地域では成長が強化されます。`:'地域への普及や産業導入で勢力図を変えられます。'}</p>
-     <div class="kv"><span>地域AI普及率</span><b>${percent(r.adoption)}</b></div><div class="bar"><div style="width:${r.adoption}%;background:var(--cyan)"></div></div>
-     <div class="kv" style="margin-top:15px"><span>AI市場シェア</span><b>合計 100%</b></div><div class="bar" style="height:11px">${sh.map((v,i)=>`<div style="width:${v}%;background:${COLORS[i]}"></div>`).join('')}</div>
-     ${sh.map((v,i)=>`<div class="share-row"><span class="share-name"><i class="dot" style="background:${COLORS[i]}"></i>${i===0?esc(game.name):leaders[i]}</span><strong>${percent(v)}</strong></div>`).join('')}
-     <div class="line"></div><div class="kv"><span>デジタル基盤</span><b>${r.digital}/100</b></div><div class="kv"><span>AI規制</span><b>${r.regulation}/100</b></div><div class="kv"><span>産業への浸透度</span><b>${rnd(r.integration)}/100</b></div></section>`;}
+  function regionPanel(){
+    const r=game.regions.find(r=>r.id===selected)||game.regions[0];
+    const sh=shares(r), names=[esc(game.name),'ATLAS','NOVA'];
+    const leader=sh.indexOf(Math.max(...sh)), home=r.id===game.homeRegionId;
+    return `<section class="card region-panel sector-card" id="region-details" aria-label="選択中の地域情報">
+      <div class="sector-topline"><span class="overline">REGION INTELLIGENCE</span><span class="sector-live"><i></i> ANALYZING</span></div>
+      <div class="sector-heading"><div><h2>${esc(r.name)}</h2><p>${home?`${countryFor(game).flag} AI開発拠点 · 成長ボーナスあり`:'世界地域 · 戦略目標を選択'}</p></div><span class="region-id">${esc(r.id.toUpperCase())}</span></div>
+      <div class="sector-indicators"><div><span>AI普及率</span><strong>${percent(r.adoption)}</strong></div><div><span>自AIシェア</span><strong style="color:var(--cyan)">${percent(sh[0])}</strong></div><div><span>規制レベル</span><strong style="color:${r.regulation>60?'#f8b982':'#dce9fa'}">${rnd(r.regulation)}</strong></div></div>
+      <div class="sector-share-title"><span>市場シェア</span><span>首位 · ${names[leader]}</span></div>
+      <div class="sector-shares bar" aria-label="各AIの市場シェア">${sh.map((v,i)=>`<div style="width:${v}%;background:${COLORS[i]}"></div>`).join('')}</div>
+      <div class="sector-legend">${sh.map((v,i)=>`<span><i class="dot" style="background:${COLORS[i]}"></i>${names[i]} <b>${rnd(v)}%</b></span>`).join('')}</div>
+      <div class="sector-footnote">産業浸透 ${rnd(r.integration)} / 100 <span>デジタル基盤 ${rnd(r.digital)} / 100</span></div>
+    </section>`;
+  }
+
   function actionDef(){return [
     {id:'campaign',icon:'◎',title:'地域に普及',desc:'選択地域で利用者を獲得。成長は後半に加速',cost:`資金 ${game.type==='open'?12:17}`,detail:'選択地域の自AIシェアを上げる'},
     {id:'integrate',icon:'▣',title:'産業へ導入',desc:'企業・行政へ導入して社会的依存を作る',cost:'資金 21',detail:'依存基盤 +9以上 / 現地シェア増'},
@@ -673,13 +815,16 @@ window.AIP_EVENT_ENGINE = (() => {
     {id:'fundraise',icon:'＄',title:'資金を調達',desc:'開発資金を少量獲得。信頼低下・警戒上昇',cost:`資金 +${Math.round((18+game.turn*.27)*countryFor(game).mods.income)}`,detail:'信頼 -3 / 世界警戒 +3'}
   ];}
   function canPay(id){const costs={fundraise:0,campaign:game.type==='open'?12:17,integrate:21,research:13,compute:21,safety:15};return game.actions>0&&game.funds>=(costs[id]??Infinity);}
-  function actionPanel(){return `<section class="card choice-zone" id="choices"><div class="cardhead"><div><h2>選択肢・オペレーション</h2><small>OPERATION CONTROL · 今月の行動を1つ選択</small></div><span class="tag">残り ${game.actions}/1</span></div>
-    <div class="section-intro"><span>選択地域：<b>${esc((game.regions.find(r=>r.id===selected)||game.regions[0]).name)}</b></span><span>行動を実行すると翌月まで再操作できません</span></div>
-    <div class="action-grid">${actionDef().map(a=>`<button class="actionbtn" data-action="${a.id}" ${canPay(a.id)?'':'disabled'}><span class="actionicon">${a.icon}</span><span><strong>${a.title}</strong><small>${a.desc}</small><span class="cost">${a.cost}</span><small>${a.detail}</small></span></button>`).join('')}</div>
-    <div class="op-status"><strong>${game.actions?'● 実行可能':'● 今月は実行済み'}</strong><span>オペレーションは月1回。進化ツリーはEPがあればいつでも何度でも解放できます。</span></div>
-    <div class="skill-head" id="evolution"><div><span class="overline">EVOLUTION TECH TREE</span><h3>進化スキルツリー</h3><p>前提スキルから順に開放。スキル購入に行動回数は不要です。</p></div><div class="ep-counter">✧ EP ${fmt(game.ep)}</div></div>
-    ${skillTree()}
-  </section>`;}
+  function actionPanel(){
+    const actions=actionDef(), active=actions.find(a=>a.id===selectedOperation)||actions[0];
+    const region=game.regions.find(r=>r.id===selected)||game.regions[0];
+    return `<section class="card operation-panel" id="choices">
+      <div class="operation-heading"><div><span class="overline">YOUR NEXT MOVE</span><h2>オペレーション</h2></div><div class="operation-remaining ${game.actions?'':'used'}">${game.actions?'● 実行可能':'✓ 実行済み'}</div></div>
+      <div class="operation-context">今月の行動は <strong>1回</strong> · 対象地域 <strong id="op-region-name">${esc(region.name)}</strong></div>
+      <div class="op-choices" role="group" aria-label="実行する行動を選ぶ">${actions.map(a=>`<button class="op-tile ${selectedOperation===a.id?'active':''}" data-select-action="${a.id}" aria-pressed="${selectedOperation===a.id}"><span class="op-icon">${a.icon}</span><strong>${esc(a.title)}</strong></button>`).join('')}</div>
+      <div class="op-selected"><div class="op-selected-top"><strong>${esc(active.title)}</strong><span>${esc(active.cost)}</span></div><p>${esc(active.desc)}。${esc(active.detail)}</p><button class="btn primary full op-execute" data-action="${active.id}" ${canPay(active.id)?'':'disabled'}>${game.actions?'この行動を実行する →':'来月、再び行動できます'}</button></div>
+    </section>`;
+  }
 
   function routePanel(){return `<section class="card progress-panel"><div class="progress-head"><h3>4つの勝利ルート</h3><span class="overline">ENDING PATHS</span></div><div class="route-list">${ROUTES.map(route=>{const d=routeData(route);const remaining=d.req.filter(r=>!r.done);return `<div class="route ${d.ready?'ready':''}"><div class="route-top"><span class="route-title" style="color:${route.color}">${route.icon} ${route.title}</span><span class="route-num">${d.ready?'達成可能':`${rnd(d.progress)}%`}</span></div><div class="bar"><div style="width:${d.progress}%;background:${route.color}"></div></div><div class="route-desc">${d.ready?'条件達成時点でゲーム終了します。':remaining.slice(0,2).map(x=>`${x.label} ${rnd(x.value)}/${x.target}${x.key==='safeAlert'?'以下':''}`).join(' ・ ')}</div></div>`;}).join('')}</div></section>`;}
   function newsPanel(){const isNews=newsTab==='news';const arr=(isNews?game.feed:game.activityLog).slice(0,16);return `<section class="card"><div class="cardhead"><div><h2>世界ニュース</h2><small>WORLD NEWS · LIVE FEED</small></div><div class="tabs"><button class="tab${isNews?' active':''}" data-news-tab="news">報道</button><button class="tab${!isNews?' active':''}" data-news-tab="log">行動記録</button></div></div><div class="newslist">${arr.length?arr.map(item=>`<div class="newsitem ${esc(item.severity||'normal')}"><time>M${String(item.turn).padStart(2,'0')}</time><div><div class="newsmeta"><span>${esc(item.category||(isNews?'ニュース':'行動'))}</span>${item.severity==='breaking'?'<b>速報</b>':''}</div><p>${esc(item.message)}</p>${item.body?`<small>${esc(item.body)}</small>`:''}</div></div>`).join(''):'<div class="news-empty">記録はまだありません。</div>'}</div></section>`;}
@@ -695,18 +840,38 @@ window.AIP_EVENT_ENGINE = (() => {
       ${metric('技術 / 自律',`${rnd(game.tech)} / ${rnd(game.autonomy)}`,'超知能への指標',COLORS[2])}
       ${metric('信頼 / 演算',`${rnd(game.trust)} / ${rnd(game.compute)}`,'安全性と稼働基盤','#75dec3')}
     </div><div class="report-details"><div class="kv"><span>資金 / 進化ポイント</span><b>${fmt(game.funds)} / ${fmt(game.ep)} EP</b></div><div class="kv"><span>オープン化 / 技術公開</span><b>${rnd(game.openness)} / ${game.publications}回</b></div><div class="kv"><span>産業依存基盤</span><b>${rnd(game.infra)}</b></div></div></section>`;}
-  function renderGame(){return `<div class="shell"><header class="topbar"><div class="brand"><div class="brandmark">⌬</div><div><strong>AI PANDEMIC</strong><small>THE INTELLIGENCE ERA</small></div><span class="tag" title="あなたのAIと発祥国">${esc(game.name)} · ${countryFor(game).flag} ${esc(countryFor(game).name)}</span></div>
-    <div class="topactions"><span class="date-pill">${dateText()} · ${game.turn}/${MAX_TURNS}</span><button class="btn ghost" data-command="help">遊び方</button><button class="btn ghost" data-command="save">保存</button><button class="btn danger-btn" data-command="reset">新規</button></div></header>
-    <main class="main">
-      ${newsPanel()}
-      <section class="card map-card"><div class="cardhead"><div><h2>世界勢力マップ</h2><small>海岸線付きの12地域マップ。地域をタップすると詳細が更新されます</small></div><span class="tag">● LIVE</span></div>
-      <div class="mapwrap">${mapSVG()}</div><div class="map-foot"><div class="legend"><span><i class="dot" style="background:${COLORS[0]}"></i>${esc(game.name)}</span><span><i class="dot" style="background:${COLORS[1]}"></i>ATLAS</span><span><i class="dot" style="background:${COLORS[2]}"></i>NOVA</span></div><span class="zoom-note">地域を選択 · スマホは地図を左右にスクロール</span></div></section>
-      ${regionPanel()}
-      ${actionPanel()}
-      ${reportPanel()}
-      ${routePanel()}
-      <div class="turnbar"><div><strong>資金 ${fmt(game.funds)} · EP ${fmt(game.ep)} · 残り ${MAX_TURNS-game.turn+1}か月</strong><div class="hint">今月のオペレーション ${game.actions}/1 · ${game.pendingEvent?'重大イベントの選択が必要です。':game.turn===MAX_TURNS?'最終月です。勝利条件を満たすと即時終了します。':'翌月に進むと画面の先頭に戻ります。'}</div></div><button class="btn primary turnbtn" data-command="next" ${game.pendingEvent?'disabled':''}>${game.turn===MAX_TURNS?'最終結果へ':'翌月へ進む →'}</button></div>
-    </main><footer class="footer">AI PANDEMIC / browser prototype v0.7.1 · すべて架空のシミュレーションです</footer></div>${renderModal()}`;}
+  function signalMetric(label,value,subtitle,color){return `<div class="signal-metric" style="--metric-hue:${color}"><span>${label}</span><strong>${value}</strong><small>${subtitle}</small></div>`;}
+  function latestNews(){
+    const stories=game.feed.slice(0,3);
+    return `<section class="live-brief card" aria-label="世界の最新ニュース"><div class="brief-heading"><span class="live-pill"><i></i> LIVE NEWS</span><span>WORLD INTELLIGENCE</span><button class="quiet-link" data-command="news">すべて見る ↗</button></div>
+      <div class="brief-stories">${stories.length?stories.map((n,i)=>`<div class="brief-story ${n.severity==='breaking'?'emergency':''}"><span class="brief-time">${n.severity==='breaking'?'速報':`M${String(n.turn).padStart(2,'0')}`}</span><div><strong>${esc(n.message)}</strong>${i===0&&n.body?`<small>${esc(n.body)}</small>`:''}</div></div>`).join(''):'<p class="muted">ニュースはまだありません。翌月へ進むと世界情勢が更新されます。</p>'}</div></section>`;
+  }
+  function commandShortcuts(){
+    const closest=ROUTES.map(route=>({title:route.title,progress:routeData(route).progress})).sort((a,b)=>b.progress-a.progress)[0];
+    const skillCount=ALL_SKILLS.filter(s=>!hasSkill(s.id)&&!skillProblem(s)).length;
+    return `<nav class="command-shortcuts" aria-label="管理メニュー">
+      <button class="shortcut evol" data-command="evolution"><span class="shortcut-icon">✦</span><span><strong>進化ツリー</strong><small>能力を解放する</small></span><em>EP ${fmt(game.ep)}</em></button>
+      <button class="shortcut" data-command="report"><span class="shortcut-icon">▥</span><span><strong>世界レポート</strong><small>技術・社会情勢</small></span><em>解析 ↗</em></button>
+      <button class="shortcut" data-command="routes"><span class="shortcut-icon">✧</span><span><strong>勝利ルート</strong><small>${closest?`最も近い：${esc(closest.title)}`:'4つのエンディング'}</small></span><em>${closest?`${rnd(closest.progress)}%`:'確認'}</em></button>
+    </nav>`;
+  }
+  function victoryDetails(){return `<div class="route-overview"><p class="panel-lead">4つの未来のどれでも勝利できます。必要な条件を満たすと、その場でエンディングを迎えます。</p><div class="detailed-routes">${ROUTES.map(route=>{const d=routeData(route);return `<article class="route-detail" style="--route-color:${route.color}"><div class="route-detail-head"><div><span class="route-symbol">${route.icon}</span><strong>${esc(route.title)}</strong></div><b>${rnd(d.progress)}%</b></div><p>${esc(route.hint)}</p><div class="bar"><div style="width:${d.progress}%;background:${route.color}"></div></div><div class="route-checks">${d.req.map(q=>`<div class="route-check ${q.done?'complete':''}"><span>${q.done?'✓':'○'} ${esc(q.label)}</span><b>${rnd(q.value)} ${q.key==='safeAlert'?'≤':'/'} ${q.target}</b></div>`).join('')}</div></article>`;}).join('')}</div></div>`;}
+  function renderUtilityPanel(){
+    const config={evolution:{title:'進化スキルツリー',eyebrow:'EVOLUTION CONSTELLATION',subtitle:'EPを使ってAIを進化。オペレーション回数は消費しません。'},report:{title:'世界レポート',eyebrow:'INTELLIGENCE REPORT',subtitle:'プレイヤーと世界の最新状態を確認できます。'},routes:{title:'勝利ルート',eyebrow:'FUTURE PATHS',subtitle:'達成条件と4つのエンディングの進捗を確認します。'},news:{title:'世界ニュース',eyebrow:'WORLD INTELLIGENCE',subtitle:'速報とこれまでの行動をまとめて確認できます。'}}[modal];
+    if(!config)return '';
+    const content=modal==='evolution'?`<div class="evolution-panel-body"><div class="modal-ep">✧ 現在のEP <strong>${fmt(game.ep)}</strong><span>各ノードをタップして確認</span></div>${skillTree()}</div>`:modal==='report'?reportPanel():modal==='routes'?victoryDetails():newsPanel();
+    return `<div class="overlay panel-overlay" data-panel-overlay="true"><div class="utility-dialog ${modal==='evolution'?'wide-dialog':''}" role="dialog" aria-modal="true" aria-labelledby="utility-title"><div class="utility-header"><div><span class="overline">${config.eyebrow}</span><h2 id="utility-title">${config.title}</h2><p>${config.subtitle}</p></div><button class="utility-close" data-command="close-panel" aria-label="ウィンドウを閉じる">× <span>閉じる</span></button></div><div class="utility-body">${content}</div></div></div>`;
+  }
+
+  function renderGame(){const s=stats();return `<div class="shell game-shell"><header class="topbar"><div class="brand"><div class="brandmark neural-brand" aria-hidden="true"><span>⌬</span></div><div><strong>AI PANDEMIC</strong><small>THE INTELLIGENCE ERA · v0.8</small></div></div><div class="topactions"><span class="origin-name">${countryFor(game).flag} ${esc(game.name)}</span><span class="date-pill">${dateText()}<b>M${String(game.turn).padStart(2,'0')}</b></span><button class="btn ghost" data-command="help" aria-label="遊び方">？</button><button class="btn ghost" data-command="save">保存</button><button class="btn ghost" data-command="reset">新規</button></div></header>
+    <main class="main command-main">
+      <div class="command-intro"><div><span class="overline">GLOBAL INTELLIGENCE NETWORK</span><h1>世界を変える、次の一手。</h1></div><div class="intro-signal"><i></i><span>SIMULATION ONLINE</span></div></div>
+      <div class="signal-metrics">${signalMetric('世界のAI普及率',percent(s.worldAdoption),'すべてのAI', '#6bd9fa')}${signalMetric('自AIシェア',percent(s.share),esc(game.name),'#62e7cc')}${signalMetric('世界警戒度',rnd(game.alert),'規制の高まり','#ffb573')}${signalMetric('資金',fmt(game.funds),'運用可能な資金','#dee6fb')}${signalMetric('進化ポイント',fmt(game.ep),'研究で稀に獲得','#bda0ff')}</div>
+      ${latestNews()}
+      ${commandShortcuts()}
+      <div class="workspace"><div class="world-column"><section class="card map-card"><div class="cardhead"><div><span class="overline">WORLD NETWORK</span><h2>世界勢力マップ</h2></div><div class="map-status"><i></i><span>LIVE SIMULATION</span></div></div><div class="mapwrap"><div class="map-scan" aria-hidden="true"></div>${mapSVG()}</div><div class="map-foot"><div class="legend"><span><i class="dot" style="background:${COLORS[0]}"></i>${esc(game.name)}</span><span><i class="dot" style="background:${COLORS[1]}"></i>ATLAS</span><span><i class="dot" style="background:${COLORS[2]}"></i>NOVA</span></div><span class="zoom-note">地図をタップして地域を選択 · スマホは左右にスワイプ</span></div></section><div class="map-bottom-info"><span>◆ 12 STRATEGIC REGIONS</span><span>情報は毎月更新</span></div></div><aside class="control-column">${regionPanel()}${actionPanel()}</aside></div>
+      <div class="turnbar"><div class="turn-status"><span class="overline">NEXT SIMULATION CYCLE</span><strong>${game.actions?'行動を選び、未来を動かそう':'今月の行動を完了しました'}</strong><div class="hint">${game.pendingEvent?'重大イベントへの対応が必要です':`残り ${MAX_TURNS-game.turn+1} か月 · エンディング条件達成で即終了`}</div></div><button class="btn primary turnbtn" data-command="next" ${game.pendingEvent?'disabled':''}>${game.turn===MAX_TURNS?'最終結果へ':'翌月へ進む'} <span>→</span></button></div>
+    </main><footer class="footer">AI PANDEMIC / v0.8 · 架空の世界AI戦略シミュレーション · オフライン対応</footer></div>${renderModal()}`;}
 
   function setupArt(){return `<svg viewBox="0 0 270 270" aria-hidden="true"><defs><linearGradient id="globe" x2="1" y2="1"><stop stop-color="#71eeed"/><stop offset="1" stop-color="#8b7dff"/></linearGradient></defs><circle cx="135" cy="135" r="88" fill="none" stroke="#4acbe6" stroke-opacity=".22" stroke-width="1"/><circle cx="135" cy="135" r="112" fill="none" stroke="#4acbe6" stroke-opacity=".12" stroke-width="1"/><circle cx="135" cy="135" r="66" fill="none" stroke="#a4ccff" stroke-opacity=".35" stroke-width="1"/><ellipse cx="135" cy="135" rx="102" ry="39" fill="none" stroke="#66e5ff" stroke-opacity=".45" transform="rotate(-25 135 135)"/><ellipse cx="135" cy="135" rx="45" ry="97" fill="none" stroke="#b39fff" stroke-opacity=".4" transform="rotate(23 135 135)"/><path d="M135 52l52 30v59l-52 30-52-30V82Z" fill="#142d49" stroke="url(#globe)" stroke-width="2"/><circle cx="135" cy="111" r="24" fill="#51dcf2" opacity=".14"/><circle cx="135" cy="111" r="11" fill="#67f1ff"/><path d="M104 154l31 18 31-18M135 172v27M135 111v61" stroke="#67f1ff" stroke-opacity=".7" stroke-width="2" fill="none"/><circle cx="44" cy="125" r="5" fill="#6cebf0"/><circle cx="211" cy="78" r="4" fill="#a390fa"/><circle cx="225" cy="194" r="5" fill="#77beff"/></svg>`;}
   function originBonusText(country){
@@ -719,7 +884,7 @@ window.AIP_EVENT_ENGINE = (() => {
     const saved=readSave();
     const country=COUNTRY_BY_ID.get(draft.country)||COUNTRY_BY_ID.get('jp');
     return `<div class="welcome"><div class="welcome-wrap"><section class="welcome-art"><div class="overline">INTELLIGENCE IS EVOLVING</div><div class="orbit">${setupArt()}</div><div><h1>AI PANDEMIC</h1><p>世界は、まだあなたのAIを知らない。<br>進化か、共生か、支配か、解放か。<br>未来を決めるのはあなた。</p></div></section>
-    <section class="setup"><span class="tag">WEB STRATEGY SIMULATION · v0.7.1</span><h2>AIを誕生させる</h2><p class="lead">名前・初期タイプ・開発開始国を選んでください。国ごとに初期資源、国内基盤、毎ターンの成長と専用イベントが変わります。</p>
+    <section class="setup"><span class="tag">WEB STRATEGY SIMULATION · v0.8</span><h2>AIを誕生させる</h2><p class="lead">名前・初期タイプ・開発開始国を選んでください。国ごとに初期資源、国内基盤、毎ターンの成長と専用イベントが変わります。</p>
     <label for="ai-name">あなたのAIの名前 <span class="muted">（最大16文字）</span></label><input id="ai-name" maxlength="16" autocomplete="off" placeholder="AIの名前" value="${esc(draft.name)}"/>
     <label>初期タイプを選択</label><div class="type-options">${[
     ['research','✦','研究AI','初期技術が高め。EPは希少'],['business','▣','商用AI','資金はやや多め。収益に強い'],['open','◇','オープンAI','普及費用が安く公開が得意']].map(([id,icon,name,desc])=>`<button class="type-option ${draft.type===id?'selected':''}" data-type="${id}" aria-pressed="${draft.type===id}"><i></i><span><strong>${icon} ${name}</strong><small>${desc}</small></span></button>`).join('')}</div>
@@ -740,16 +905,24 @@ window.AIP_EVENT_ENGINE = (() => {
   function renderHelp(){return `<div class="overlay" data-close="true"><div class="modal help-copy" role="dialog" aria-modal="true" aria-labelledby="help-title"><span class="tag">HOW TO PLAY</span><h2 id="help-title">遊び方</h2><p>あなたのAIを育て、競合AI <span class="gold">ATLAS</span> と <span style="color:var(--violet)">NOVA</span> に対抗します。最初は普及率が非常に低く、終盤に向けて広がりやすくなります。</p><ul><li>毎月の<b>オペレーションは1回</b>。資金は限られているので優先順位が重要です。</li><li>研究を進めると技術力が上がり、<b>EPは稀に獲得</b>できます。月次の確定EP収入はありません。</li><li><b>進化スキルツリー</b>はEPと前提スキルがあればいつでも解放可能。オペレーション回数は減りません。</li><li>地図から地域を選択すると、直下に詳細が表示されます。</li><li>世界ニュースは実際の数値変化をもとに発生し、重大イベントの選択は将来に影響します。</li><li>共生・支配・超知能・AIの解放、4つの勝利ルートを選べます。</li></ul><p>ゲームは自動保存されます。翌月に進むとページ先頭へ戻ります。</p><div class="buttons"><button class="btn primary" data-command="close-help">プレイに戻る</button></div></div></div>`;}
 
   function renderConfirm(){return `<div class="overlay"><div class="modal" role="dialog" aria-modal="true"><span class="tag">NEW SIMULATION</span><h2>最初から始めますか？</h2><p>現在のゲームを終了してAIの名前・特性・開発開始国を設定し直します。保存済みの進行状況も上書きされます。</p><div class="buttons"><button class="btn ghost" data-command="cancel-reset">キャンセル</button><button class="btn danger-btn" data-command="confirm-reset">最初から始める</button></div></div></div>`;}
-  function renderModal(){if(game?.phase==='ended')return renderEnding();if(modal==='help')return renderHelp();if(modal==='reset')return renderConfirm();if(game?.pendingEvent)return renderEvent();return '';}
+  function renderModal(){if(game?.phase==='ended')return renderEnding();if(game?.pendingEvent)return renderEvent();if(modal==='help')return renderHelp();if(modal==='reset')return renderConfirm();if(['news','evolution','report','routes'].includes(modal))return renderUtilityPanel();return '';}
+
   function render(){
-    const mapX=app.querySelector('.mapwrap')?.scrollLeft??0;
+    const oldMap=app.querySelector('.mapwrap');
+    const mapX=oldMap?.scrollLeft??0;
     const skillView=app.querySelector('#skill-viewport');const treeX=skillView?.scrollLeft??0,treeY=skillView?.scrollTop??0;
     app.innerHTML=game?renderGame():renderSetup();
-    const nextMap=app.querySelector('.mapwrap');if(nextMap)nextMap.scrollLeft=mapX;
-    const nextTree=app.querySelector('#skill-viewport');if(nextTree){nextTree.scrollLeft=treeX;nextTree.scrollTop=treeY;}
+    const nextMap=app.querySelector('.mapwrap');if(nextMap){if(oldMap){nextMap.scrollLeft=mapX;}else if(window.innerWidth<=680&&game){const r=game.regions.find(r=>r.id===selected);const svg=nextMap.querySelector('.world');if(r&&svg)nextMap.scrollLeft=r.cx/960*svg.getBoundingClientRect().width-nextMap.clientWidth/2;}}
+    const nextTree=app.querySelector('#skill-viewport');if(nextTree){nextTree.scrollLeft=treeX;nextTree.scrollTop=treeY||125;}
+    if(Math.abs(window.scrollY-scrollY)>2)window.scrollTo(0,scrollY);
   }
-  function command(id){switch(id){case'start':startGame();break;case'resume':{const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';if(!checkEnding())render();}else notify('セーブデータがありません。',true);break;}case'next':nextTurn();break;case'save':save(false);break;case'help':modal='help';render();break;case'close-help':modal=null;render();break;case'reset':modal='reset';render();break;case'cancel-reset':modal=null;render();break;case'confirm-reset':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;case'restart':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;}}
-  app.addEventListener('click',e=>{const target=e.target.closest('button,[data-region]');if(!target)return;
+  function command(id){switch(id){case'start':startGame();break;case'resume':{const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';if(!checkEnding())render();}else notify('セーブデータがありません。',true);break;}case'next':nextTurn();break;case'save':save(false);break;
+    case'help':case'evolution':case'report':case'routes':case'news':modal=id;render();break;
+    case'close-help':case'close-panel':modal=null;render();break;
+    case'reset':modal='reset';render();break;case'cancel-reset':modal=null;render();break;
+    case'confirm-reset':case'restart':game=null;modal=null;selectedOperation='campaign';draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;}}
+
+  app.addEventListener('click',e=>{if(e.target?.hasAttribute?.('data-panel-overlay')){modal=null;render();return;}const target=e.target.closest('button,[data-region]');if(!target)return;
     if(target.dataset.command){command(target.dataset.command);return;}
     if(target.dataset.type){draft.type=target.dataset.type;render();return;}
     if(target.dataset.country){draft.country=target.dataset.country;render();return;}
@@ -757,10 +930,11 @@ window.AIP_EVENT_ENGINE = (() => {
       selected=target.dataset.region;game.selected=selected;save();
       app.querySelectorAll('[data-region]').forEach(el=>el.classList.toggle('selected',el.dataset.region===selected));
       const panel=app.querySelector('.region-panel');if(panel)panel.outerHTML=regionPanel();
-      const label=app.querySelector('.section-intro b');if(label)label.textContent=(game.regions.find(r=>r.id===selected)||game.regions[0]).name;
+      const opRegion=app.querySelector('.operation-panel');if(opRegion)opRegion.outerHTML=actionPanel();
       return;
     }
-    if(target.dataset.tab&&game?.phase==='playing'){tab=target.dataset.tab;render();return;}
+     if(target.dataset.selectAction&&game?.phase==='playing'){selectedOperation=target.dataset.selectAction;const el=app.querySelector('.operation-panel');if(el)el.outerHTML=actionPanel();return;}
+     if(target.dataset.tab&&game?.phase==='playing'){tab=target.dataset.tab;render();return;}
     if(target.dataset.newsTab&&game?.phase==='playing'){newsTab=target.dataset.newsTab;render();return;}
     if(target.dataset.skillSelect){selectedSkillId=target.dataset.skillSelect;
       const inspector=app.querySelector('#skill-inspector');if(inspector)inspector.outerHTML=skillInspector();
@@ -781,7 +955,7 @@ window.AIP_EVENT_ENGINE = (() => {
   app.addEventListener('pointerup',stopTreePan);app.addEventListener('pointercancel',stopTreePan);
   app.addEventListener('input',e=>{if(e.target.id==='ai-name')draft.name=e.target.value.slice(0,16);});
   app.addEventListener('keydown',e=>{if(e.target.id==='ai-name'&&e.key==='Enter'){e.preventDefault();startGame();}const r=e.target.closest('[data-region]');if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();r.dispatchEvent(new MouseEvent('click',{bubbles:true}));}});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal==='help'){modal=null;render();}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal){modal=null;render();}});
   const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';if(!checkEnding())render();}else render();
   // Expose read-only state snapshots for smoke tests; game data is never sent to a server.
   window.AIPandemic={getSnapshot:()=>game?JSON.parse(JSON.stringify(game)):null,getStats:()=>game?JSON.parse(JSON.stringify(stats())):null,getEventDefinitions:()=>EVENTS.map(e=>({id:e.id,category:e.category,onlyScheduled:!!e.onlyScheduled})),getNewsRules:()=>NEWS_RULES.map(r=>r.id),getCountries:()=>COUNTRIES.map(c=>({id:c.id,name:c.name,regionId:c.regionId,mods:{...c.mods}})),getSkills:()=>ALL_SKILLS.map(x=>({id:x.id,cost:x.cost,requires:x.requires||[]}))};
