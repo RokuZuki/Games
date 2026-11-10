@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#090e18" />
-  <title>AI PANDEMIC v0.6.1 | 戦略ゲーム</title>
+  <title>AI PANDEMIC v0.7.1 | 戦略ゲーム</title>
   <style>
 :root{color-scheme:dark;--bg:#080d17;--bg2:#101928;--surface:#111b2c;--surface2:#152137;--surface3:#1b2b44;--line:rgba(157,187,234,.12);--line2:rgba(159,187,227,.24);--txt:#e9f2ff;--muted:#8c9cb5;--cyan:#4bdeed;--blue:#6cb6ff;--violet:#ae8aff;--amber:#ffbd71;--red:#ff7889;--green:#75dec3;--shadow:0 20px 65px rgba(0,0,0,.35);font-family:Inter,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,system-ui,sans-serif}
 *{box-sizing:border-box}html,body{padding:0;margin:0;min-height:100%;background:var(--bg);color:var(--txt)}body{background:radial-gradient(ellipse at 80% -20%,#182b45 0,transparent 48%),radial-gradient(ellipse at 3% 75%,#121a37 0,transparent 34%),var(--bg)}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.35}button:focus-visible,input:focus-visible,.region:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}a{color:var(--cyan)}.muted{color:var(--muted)}.tiny{font-size:11px}.small{font-size:12px}.regular{font-size:13px}.overline{font-size:10px;letter-spacing:.2em;font-weight:800;text-transform:uppercase;color:#7d91ad}.outline{border:1px solid var(--line2)!important}.accent{color:var(--cyan)}.gold{color:var(--amber)}.danger{color:var(--red)}.ok{color:var(--green)}
@@ -58,6 +58,72 @@ button{border:0;color:var(--txt)}.btn{border:1px solid var(--line2);background:#
 .origin-note{font-size:11px;color:#a7e6df;line-height:1.5;margin:7px 0 11px}
 @media(max-width:530px){.country-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none}.country-card{min-height:59px;padding:8px}.country-label strong{font-size:12px}}
 
+/* v0.6 — newspaper-first command interface and independent evolution */
+.shell{max-width:1100px}.main{display:flex;flex-direction:column;gap:12px}.main>.card,.main>.choice-zone{min-width:0}.metrics{grid-template-columns:repeat(3,minmax(0,1fr));margin:0}.metrics .metric{padding:12px}.newslist{max-height:230px}.map-card{overflow:hidden}.mapwrap{background:radial-gradient(ellipse at 52% 38%,#183b54 0%,#091625 70%,#08121f 100%);padding:0;overflow-x:auto;overscroll-behavior-x:contain}.world{width:100%;min-width:730px;height:auto;max-height:none;min-height:0}.world-grid line,.world-grid ellipse{stroke:#5c8498;stroke-opacity:.17}.earth-land{fill:#172f43;stroke:#365d72;stroke-width:.8;stroke-opacity:.8}.earth-coast{fill:none;stroke:#5d92a8;stroke-width:.65;stroke-opacity:.8}.map-zone{cursor:pointer;outline:none}.map-zone .zone-area{stroke:rgba(128,201,218,.2);stroke-width:1.25;stroke-dasharray:3 6;transition:fill-opacity .2s,stroke .2s}.map-zone.selected .zone-area{stroke:#9af8ff;stroke-width:2.3;stroke-dasharray:none}.map-zone:hover .zone-area{stroke:#c7faff;stroke-width:2}.map-zone text{pointer-events:none;paint-order:stroke;stroke:#081522;stroke-width:3px;stroke-linejoin:round;font-weight:850;font-size:12px;fill:#f1f7fc}.map-zone .zone-stat{font-size:10px;fill:#a7ebf4}.map-zone .zone-node{stroke:#d4fcff;stroke-width:1.5;filter:drop-shadow(0 0 5px #59d4e2)}.map-zone.selected .zone-node{stroke-width:3}.map-zone:focus-visible{outline:none}.map-zone:focus-visible .zone-area{stroke:#f8ffff;stroke-width:3}.map-annotation{font-size:10px;fill:#8dbbcd;letter-spacing:1.5px}.map-foot{padding:12px 14px}.region-panel{border-color:rgba(75,222,237,.3)}.region-panel .desc{font-size:12px}.choice-zone{padding-bottom:14px}.section-intro{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:2px 15px 13px;color:#abc1d6;font-size:11px}.section-intro b{color:#6de7f0}.action-grid{padding:0 14px 16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.actionbtn{padding:13px;min-height:100px;gap:12px;background:linear-gradient(140deg,#15263c,#101e30)}.actionbtn:disabled{opacity:.43}.actionbtn .actionicon{background:#1d3c50;color:#7be8ef;border-radius:10px;width:40px;height:40px;flex-shrink:0;display:grid;place-items:center;font-size:23px}.actionbtn strong{font-size:13px}.actionbtn small{font-size:11px;line-height:1.55}.actionbtn .cost{font-size:10px;background:#23334a;padding:3px 6px;border-radius:4px;color:#a5dcea}.op-status{display:flex;align-items:center;gap:9px;margin:0 14px 16px;padding:11px 13px;background:rgba(43,90,115,.17);border:1px solid rgba(81,151,180,.22);border-radius:9px;color:#b8d4e2;font-size:11px}.op-status strong{color:#b8f7f3}.skill-head{padding:17px 15px 11px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.skill-head h3{margin:5px 0;font-size:17px}.skill-head p{margin:0;font-size:11px;color:#98aec7;line-height:1.6}.ep-counter{background:rgba(168,130,255,.12);border:1px solid rgba(174,138,255,.4);padding:9px 13px;border-radius:10px;color:#d0bcff;font-weight:900;white-space:nowrap;font-size:15px}.skill-branches{display:grid;gap:11px;padding:5px 14px 14px}.skill-lane{padding:11px 12px 12px;border:1px solid rgba(140,176,213,.17);border-radius:10px;background:linear-gradient(100deg,rgba(21,37,58,.9),rgba(15,28,47,.8))}.skill-lane-top{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:11px;font-size:12px}.skill-lane-top strong{color:#e4f2fc}.skill-lane-top span{font-size:10px;color:#789ab7}.skill-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.skill-node{min-width:0;min-height:105px;position:relative;background:#102337;border:1px solid #36546a;border-radius:9px;padding:11px 7px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:5px;align-items:center}.skill-node:not(:last-child):after{content:'◆';position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:#4b8198;font-size:13px;pointer-events:none}.skill-node.ready{border-color:#927bea;background:linear-gradient(130deg,#242347,#142c48)}.skill-node.done{background:rgba(41,94,79,.28);border-color:#5ad1b2}.skill-node.locked{opacity:.46;cursor:not-allowed}.skill-node strong{font-size:12px;line-height:1.3}.skill-node small{font-size:10px;line-height:1.45;color:#9cb8cb}.skill-node .skill-symbol{font-size:18px;color:#b6a2ff}.skill-node.done .skill-symbol{color:#75e3bf}.skill-node .skill-cost{font-size:10px;font-weight:800;color:#ceb1ff}.skill-node.done .skill-cost{color:#75e3bf}.skill-node:disabled{opacity:1;cursor:default}.skill-node.locked:disabled{opacity:.42}.report-panel .cardhead{margin-bottom:3px}.report-copy{padding:10px 14px 13px}.report-copy p{line-height:1.8;color:#a9bfd3;font-size:12px;margin:8px 0 12px}.report-details{padding:0 14px 14px}.report-details .kv{margin:8px 0}.report-panel .metrics{padding:0 14px 15px;grid-template-columns:repeat(3,minmax(0,1fr))}.turnbar{position:sticky;bottom:10px;margin:0;background:linear-gradient(110deg,#12324b,#12223b);backdrop-filter:blur(12px)}.turnbar .hint{line-height:1.5}.choice-zone .cardhead{padding-bottom:9px}.progress-panel{margin-bottom:7px}
+@media(max-width:790px){.shell{padding:12px}.world{min-width:770px}.newslist{max-height:240px}.report-panel .metrics{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:540px){.shell{padding:9px 9px 20px}.main{gap:10px}.world{min-width:760px}.metrics,.report-panel .metrics{grid-template-columns:repeat(2,1fr)}.action-grid{grid-template-columns:1fr;padding:0 10px 12px}.actionbtn{min-height:84px}.skill-branches{padding:3px 9px 12px;gap:9px}.skill-lane{padding:9px 8px}.skill-row{gap:9px}.skill-node{padding:9px 4px;min-height:116px}.skill-node:not(:last-child):after{right:-9px;font-size:11px}.skill-node strong{font-size:10px}.skill-node small{font-size:9px}.skill-node .skill-cost{font-size:9px}.section-intro{padding:0 10px 11px}.skill-head{padding:13px 10px 10px}.newslist{max-height:200px}.turnbar{bottom:5px}.topbar{flex-wrap:wrap}.brand>.tag{max-width:140px;overflow:hidden;text-overflow:ellipsis}.map-annotation{font-size:9px}}
+
+
+
+/* v0.7 — constellation skill tree, touch-first map stability */
+.mapwrap { overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; }
+.skill-head{align-items:center;flex-wrap:wrap;gap:12px}
+.skill-head h3{font-size:19px;letter-spacing:.03em}
+.skill-head p{max-width:610px}
+.skill-tree-surface{margin:6px 13px 14px;border:1px solid rgba(145,172,210,.27);border-radius:15px;overflow:hidden;background:#090f20;position:relative}
+.skill-tree-topline{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;padding:9px 13px;border-bottom:1px solid #2a3b55;background:linear-gradient(115deg,#14233a,#0e1a2c);font-size:10px;color:#93aac5}
+.skill-tree-topline strong{font-size:11px;color:#d6e8fb}
+.skill-tree-topline .tree-legend{display:flex;gap:13px;flex-wrap:wrap}
+.tree-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.skill-explorer{position:relative;overflow:hidden}
+.skill-viewport{height:530px;max-width:100%;overflow:auto;scrollbar-color:#466a8e #0a1929;scrollbar-width:thin;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;cursor:grab;overscroll-behavior:contain}
+.skill-viewport.dragging{cursor:grabbing;user-select:none}
+.skill-canvas{position:relative;width:1420px;height:754px;isolation:isolate;background:radial-gradient(ellipse at 13% 48%,rgba(40,111,152,.25),transparent 40%),radial-gradient(ellipse at 81% 49%,rgba(100,60,162,.16),transparent 39%),radial-gradient(circle at 50% 50%,#142237,#080e1c 83%);}
+.skill-canvas::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(108,164,218,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(108,164,218,.06) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse,#0005 7%,transparent 95%);pointer-events:none}
+.skill-canvas::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.25;background-image:radial-gradient(#def4ff 1px,transparent 1px),radial-gradient(#a99aff 1px,transparent 1px);background-size:113px 107px,211px 173px;background-position:19px 29px,75px 85px}
+.skill-links{position:absolute;left:0;top:0;z-index:1;pointer-events:none;overflow:visible}
+.skill-links .tree-wire-back{stroke:rgba(102,148,181,.12);stroke-width:10;fill:none;stroke-linecap:round}
+.skill-links .tree-wire{stroke:rgba(100,131,169,.37);stroke-width:2;fill:none;stroke-linecap:round;stroke-dasharray:4 7}
+.skill-links .tree-wire.ready{stroke:var(--wire-color);stroke-opacity:.67;stroke-dasharray:4 6;filter:drop-shadow(0 0 4px var(--wire-color))}
+.skill-links .tree-wire.done{stroke:var(--wire-color);stroke-opacity:1;stroke-width:4;stroke-dasharray:none;filter:drop-shadow(0 0 7px var(--wire-color))}
+.skill-branch-title{position:absolute;z-index:2;font-size:11px;font-weight:900;letter-spacing:.08em;color:var(--node-color);text-shadow:0 0 17px color-mix(in srgb,var(--node-color),transparent 55%);display:flex;align-items:center;gap:8px;white-space:nowrap;pointer-events:none}
+.skill-branch-title span{border:1px solid color-mix(in srgb,var(--node-color),transparent 62%);background:rgba(16,30,52,.82);border-radius:6px;padding:5px 9px}
+.skill-core{position:absolute;z-index:3;left:115px;top:375px;transform:translate(-50%,-50%);width:132px;height:132px;border:2px solid #70e6f2;border-radius:50%;box-shadow:0 0 0 11px rgba(71,158,206,.1),0 0 0 25px rgba(81,151,203,.035),0 0 45px rgba(70,207,245,.25),inset 0 0 26px rgba(70,201,225,.1);background:radial-gradient(circle,#1b4a64,#111e3a 63%,#0d1c30);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#c7faff;text-align:center}
+.skill-core svg{width:46px;height:46px;color:#7cf9ff;filter:drop-shadow(0 0 10px #49bde0);margin-bottom:5px}
+.skill-core strong{font-size:12px;letter-spacing:.11em}.skill-core small{font-size:10px;color:#8aacc7;margin-top:4px}
+.skill-orb{position:absolute;z-index:4;left:var(--x);top:var(--y);transform:translate(-50%,-50%);width:146px;min-height:118px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:none;border:none;outline-offset:3px;gap:5px;padding:0 0 4px;color:#e9f4ff;opacity:1!important;cursor:pointer!important}
+.skill-orb .orb-frame{position:relative;display:grid;place-items:center;width:66px;height:66px;border-radius:50%;border:2px solid color-mix(in srgb,var(--node-color) 70%,#142b47);background:radial-gradient(circle at 43% 33%,#283b57,#0c1527 74%);box-shadow:inset 0 0 16px rgba(0,0,0,.5),0 0 0 5px rgba(43,75,112,.26),0 6px 22px #0007;transition:transform .16s,box-shadow .16s,border-color .16s}
+.skill-orb .orb-frame::before{content:"";position:absolute;inset:4px;border:1px dashed rgba(175,214,244,.25);border-radius:50%;pointer-events:none}
+.skill-orb svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;color:var(--node-color);filter:drop-shadow(0 0 5px color-mix(in srgb,var(--node-color),transparent 55%))}
+.skill-orb .orb-name{font-size:11px;font-weight:850;line-height:1.3;text-align:center;max-width:140px;text-shadow:0 1px 4px #030817}
+.skill-orb .orb-cost{font-size:10px;line-height:1.3;font-weight:850;border:1px solid #324861;border-radius:6px;padding:3px 7px;background:rgba(9,18,34,.87);color:#b6c6dc;white-space:nowrap}
+.skill-orb.locked .orb-frame{border-color:#475268;filter:saturate(.48);opacity:.66}
+.skill-orb.locked svg{color:#7e89a0;filter:none}
+.skill-orb.locked .orb-name{color:#a0aec4}
+.skill-orb.available .orb-frame{border-color:var(--node-color);box-shadow:0 0 0 6px color-mix(in srgb,var(--node-color),transparent 87%),0 0 27px color-mix(in srgb,var(--node-color),transparent 68%),inset 0 0 15px rgba(17,43,66,.4)}
+.skill-orb.available .orb-cost{color:#e6d2ff;border-color:rgba(199,156,255,.52)}
+.skill-orb.done .orb-frame{border-color:#79eace;background:radial-gradient(circle at 40% 25%,#245a59,#0d282e 76%);box-shadow:0 0 0 5px rgba(93,204,181,.13),0 0 18px rgba(89,222,182,.31)}
+.skill-orb.done svg{color:#a0ffe1;filter:drop-shadow(0 0 6px #55cea2)}
+.skill-orb.done .orb-cost{color:#92eccf;border-color:#3c7e74}
+.skill-orb.selected .orb-frame,.skill-orb:focus-visible .orb-frame{transform:scale(1.10);border-color:#f8f1c3;box-shadow:0 0 0 6px rgba(255,233,165,.16),0 0 31px rgba(255,233,165,.55)}
+.skill-orb:hover .orb-frame{transform:scale(1.07)}
+.skill-orb:focus-visible{outline:2px solid #fff6be;outline-offset:2px;border-radius:14px}
+.orb-dot{position:absolute;width:14px;height:14px;border-radius:50%;background:rgba(17,29,53,.95);border:2px solid #55728d;top:46px;right:35px;display:grid;place-items:center;font-size:10px}
+.skill-orb.done .orb-dot{background:#80e9c0;color:#0e3228;border-color:#e3fff1}
+.skill-inspector{position:absolute;right:13px;bottom:13px;z-index:8;width:298px;max-height:285px;overflow:auto;border:1px solid rgba(135,188,216,.45);border-radius:13px;background:linear-gradient(145deg,rgba(24,43,67,.97),rgba(10,20,36,.98));box-shadow:0 12px 42px rgba(0,0,0,.68);padding:15px;backdrop-filter:blur(10px)}
+.skill-inspector.empty{max-width:265px;padding:10px 13px;border-color:rgba(105,139,180,.25)}
+.skill-inspector.empty p{margin:2px 0;font-size:11px;line-height:1.5;color:#96acc6}
+.skill-inspector .inspect-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.skill-inspector .inspect-type{font-size:10px;font-weight:850;letter-spacing:.09em;color:var(--inspect-color)}
+.skill-inspector .inspect-close{border:none;background:rgba(100,130,170,.17);color:#bcd7e8;border-radius:6px;padding:3px 9px;font-size:15px}
+.skill-inspector h4{margin:4px 0 6px;font-size:17px}
+.skill-inspector p{margin:6px 0;font-size:11px;line-height:1.6;color:#b3c8dd}
+.skill-inspector .inspect-require{color:#d6bcff;font-size:11px;margin:9px 0}
+.skill-inspector .inspect-button{width:100%;margin-top:8px;padding:10px 12px;font-size:12px}
+.skill-inspector .inspect-button:disabled{opacity:.65}
+.skill-scroller-hint{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#112238;border-top:1px solid #2b435c;color:#83a7c3;font-size:10px;gap:7px}
+@media(max-width:790px){.skill-viewport{height:470px}.skill-head h3{font-size:17px}.skill-tree-surface{margin:3px 10px 12px}}
+@media(max-width:540px){.skill-tree-topline{padding:8px}.skill-tree-topline .tree-legend{gap:8px}.skill-tree-topline{font-size:9px}.skill-viewport{height:430px}.skill-inspector{right:8px;bottom:8px;width:min(295px,calc(100% - 16px));max-height:210px;padding:12px}.skill-inspector h4{font-size:15px}.skill-scroller-hint{font-size:9px}.skill-head{padding:12px 10px 10px}.skill-head p{font-size:10px}}
 </style>
 </head>
 <body>
@@ -188,7 +254,7 @@ window.AIP_EVENT_ENGINE = (() => {
   const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS];
   // v0.6 economy rebalance: event effects no longer flood money or EP.
   for(const event of EVENTS){for(const choice of event.choices||[]){const fx=choice.effect||{};
-    if(fx.ep>0)fx.ep=Math.max(1,Math.round(fx.ep*.23));
+    if(fx.ep>0)fx.ep=Math.max(1,Math.round(fx.ep*.12));
     if(fx.funds>0)fx.funds=Math.max(3,Math.round(fx.funds*.36));
     if(fx.funds<0)fx.funds=Math.round(fx.funds*.55);
     if(fx.allPresence>0)fx.allPresence=+(fx.allPresence*.35).toFixed(1);
@@ -237,6 +303,65 @@ window.AIP_EVENT_ENGINE = (() => {
   ];
   const ALL_SKILLS=SKILL_LANES.flatMap(l=>l.skills);
   const SKILL_BY_ID=new Map(ALL_SKILLS.map(x=>[x.id,x]));
+
+  // Skill tree: a self-contained constellation graph with icon nodes and prerequisite links.
+  const SKILL_TREE_COLORS={reason:'#68cfff',autonomy:'#c093ff',trust:'#70e8bb',spread:'#ffc779',singularity:'#ff91c4'};
+  const SKILL_TREE_POS={
+    reason_1:[305,116],reason_2:[505,116],reason_3:[715,116],
+    agent_1:[305,244],agent_2:[505,244],agent_3:[715,244],
+    safe_1:[305,502],safe_2:[505,502],safe_3:[715,502],
+    spread_1:[305,631],spread_2:[505,631],spread_3:[715,631],
+    final_1:[965,375],final_2:[1120,375],final_3:[1274,375]
+  };
+  const SKILL_ICONS={
+    reason_1:'<rect x="12" y="12" width="24" height="24" rx="4"/><path d="M19 19h10v10H19zM17 7v5m7-5v5m7-5v5M17 36v5m7-5v5m7-5v5M7 17h5m-5 7h5m-5 7h5m24-14h5m-5 7h5m-5 7h5"/>',
+    reason_2:'<circle cx="24" cy="24" r="7"/><circle cx="10" cy="12" r="4"/><circle cx="38" cy="12" r="4"/><circle cx="10" cy="38" r="4"/><circle cx="38" cy="38" r="4"/><path d="M13 15l6 5m10 0 6-5M13 35l6-6m10 0 6 6"/>',
+    reason_3:'<path d="M24 11c-5-8-16-3-13 6-9 5-5 17 3 17-1 9 11 11 13 4 7 7 18-3 12-10 8-9-1-17-8-14-1-4-4-5-7-3Z"/><path d="M24 13v23m-8-17 8 4 7-5m-15 12 8-4 8 5"/>',
+    agent_1:'<path d="M24 5 41 14v20L24 43 7 34V14Z"/><path d="m27 12-12 15h9l-3 10 13-18h-9l2-7Z"/>',
+    agent_2:'<rect x="18" y="5" width="13" height="12" rx="3"/><rect x="4" y="29" width="13" height="12" rx="3"/><rect x="31" y="29" width="13" height="12" rx="3"/><path d="M24 17v6M11 29v-6h27v6M38 23H11"/>',
+    agent_3:'<circle cx="24" cy="24" r="9"/><circle cx="24" cy="24" r="3"/><path d="M22 4h4l2 8 6 3 8-3 3 6-6 6 1 7 6 5-4 6-8-4-6 2-3 7h-6l-2-8-6-3-8 3-3-6 6-6-1-7-5-5 4-6 8 4 6-2Z"/>',
+    safe_1:'<path d="M24 5 41 12v13c0 11-9 17-17 20C16 42 7 36 7 25V12Z"/><path d="m16 24 6 6 11-13"/>',
+    safe_2:'<path d="M7 9h34v24H22l-9 8v-8H7z"/><path d="M14 18h20m-20 7h15"/><circle cx="33" cy="25" r="4"/>',
+    safe_3:'<path d="M6 17h36M24 9v31M15 41h18M12 17 5 30h14L12 17Zm24 0-7 13h14L36 17Z"/><path d="M19 9h10"/>',
+    spread_1:'<rect x="6" y="10" width="36" height="27" rx="5"/><path d="M14 20h11m-11 7h19m-4-11 5 4-5 4M13 42h22"/>',
+    spread_2:'<path d="m14 11-10 13 10 13m20-26 10 13-10 13M29 9l-10 30"/><circle cx="24" cy="24" r="3"/>',
+    spread_3:'<circle cx="24" cy="24" r="19"/><path d="M5 24h38M24 5c-8 11-8 27 0 38M24 5c8 11 8 27 0 38M9 15h30M9 33h30"/>',
+    final_1:'<rect x="8" y="9" width="32" height="10" rx="2"/><rect x="8" y="21" width="32" height="10" rx="2"/><rect x="8" y="33" width="32" height="10" rx="2"/><path d="M13 14h3m-3 12h3m-3 12h3M25 14h11M25 26h11M25 38h11"/>',
+    final_2:'<circle cx="24" cy="24" r="18"/><path d="M24 7c11 0 15 14 8 21-7 7-19 1-15-8 5-10 19-2 13 7-6 9-16 7-19-1"/>',
+    final_3:'<path d="M24 3 29 18l15 6-15 6-5 15-6-15-15-6 15-6z"/><circle cx="24" cy="24" r="6"/><path d="M24 12v5m0 14v5m-12-12h5m14 0h5"/>'
+  };
+  let selectedSkillId=null;
+  function skillIcon(id){return `<svg viewBox="0 0 48 48" aria-hidden="true">${SKILL_ICONS[id]||SKILL_ICONS.reason_1}</svg>`;}
+  function skillLane(id){return SKILL_LANES.find(l=>l.skills.some(s=>s.id===id));}
+  function skillInspector(){
+    const s=SKILL_BY_ID.get(selectedSkillId);
+    if(!s)return `<div id="skill-inspector" class="skill-inspector empty"><p>◇ ノードをタップして能力と解放条件を確認</p></div>`;
+    const lane=skillLane(s.id),problem=skillProblem(s),done=hasSkill(s.id);
+    const req=(s.requires||[]).map(id=>{const source=SKILL_BY_ID.get(id);return `${hasSkill(id)?'✓':'○'} ${source?.title||id}`;});
+    const minimum=Object.entries(s.minimum||{}).map(([k,v])=>`${{tech:'技術',autonomy:'自律',compute:'演算'}[k]||k} ${v}以上`);
+    return `<div id="skill-inspector" class="skill-inspector" style="--inspect-color:${SKILL_TREE_COLORS[lane.id]}"><div class="inspect-top"><span class="inspect-type">${esc(lane.title)} · EP ${s.cost}</span><button class="inspect-close" data-skill-close aria-label="詳細を閉じる">×</button></div><h4>${esc(s.title)}</h4><p>${esc(s.desc)}</p>${req.length||minimum.length?`<p class="inspect-require">前提：${esc([...req,...minimum].join(' / '))}</p>`:'<p class="inspect-require">前提：なし（初期から解放可能）</p>'}<button class="btn ${problem?'ghost':'primary'} inspect-button" data-skill-buy="${s.id}" ${problem?'disabled':''}>${done?'✓ 習得済み':problem?esc(problem):`EP ${s.cost} で解放する →`}</button></div>`;
+  }
+  function skillTree(){
+    const origins={core:[115,375]};
+    const colorFor = id=> id==='core'?'#70e6f2':SKILL_TREE_COLORS[skillLane(id)?.id]||'#9bc7ff';
+    const edges=[];
+    for(const lane of SKILL_LANES){for(const s of lane.skills){if((s.requires||[]).length){for(const prereq of s.requires)edges.push([prereq,s.id]);}else edges.push(['core',s.id]);}}
+    const links=edges.map(([a,b])=>{const p1=origins[a]||SKILL_TREE_POS[a],p2=SKILL_TREE_POS[b];if(!p1||!p2)return '';
+      const dx=Math.max(65,(p2[0]-p1[0])*.48),d=`M ${p1[0]} ${p1[1]} C ${p1[0]+dx} ${p1[1]}, ${p2[0]-dx} ${p2[1]}, ${p2[0]} ${p2[1]}`;
+      const done=hasSkill(b)&&(a==='core'||hasSkill(a)),ready=(a==='core'||hasSkill(a));
+      const status=done?'done':ready?'ready':'';const color=colorFor(a==='core'?b:a);
+      return `<path class="tree-wire-back" d="${d}"/><path class="tree-wire ${status}" d="${d}" style="--wire-color:${color}"/>`;}).join('');
+    const headings=[
+      ['reason','知能・研究',165,28],['autonomy','自律エージェント',165,165],
+      ['trust','共生・安全',165,439],['spread','普及・オープン',165,560],['singularity','最終進化',895,275]
+    ].map(([id,label,x,y])=>`<div class="skill-branch-title" style="left:${x}px;top:${y}px;--node-color:${SKILL_TREE_COLORS[id]}"><span>${label}</span></div>`).join('');
+    const nodes=ALL_SKILLS.map(s=>{const [x,y]=SKILL_TREE_POS[s.id],lane=skillLane(s.id),done=hasSkill(s.id),problem=skillProblem(s),available=!problem;
+      const klass=done?'done':available?'available':'locked';return `<button class="skill-orb ${klass}${selectedSkillId===s.id?' selected':''}" data-skill-select="${s.id}" style="--x:${x}px;--y:${y}px;--node-color:${SKILL_TREE_COLORS[lane.id]}" title="${esc(s.title)}：${esc(s.desc)}" aria-label="${esc(s.title)}。${done?'習得済み':`EP ${s.cost}。${problem||'解放可能'}`}" aria-pressed="${selectedSkillId===s.id}"><span class="orb-frame">${skillIcon(s.id)}</span><span class="orb-dot">${done?'✓':''}</span><span class="orb-name">${esc(s.title)}</span><span class="orb-cost">${done?'✓ 習得済み':`EP ${s.cost}`}</span></button>`;}).join('');
+    return `<div class="skill-tree-surface"><div class="skill-tree-topline"><strong>◈ EVOLUTION CONSTELLATION</strong><div class="tree-legend"><span><i style="background:#78eabf"></i>解放済み</span><span><i style="background:#bc96ff"></i>解放可能</span><span><i style="background:#65728a"></i>未解放</span></div></div>
+      <div class="skill-explorer"><div class="skill-viewport" id="skill-viewport" tabindex="0" aria-label="進化スキルツリー。左右上下にスクロールできます"><div class="skill-canvas"><svg class="skill-links" viewBox="0 0 1420 754" width="1420" height="754" aria-hidden="true">${links}</svg>${headings}<div class="skill-core"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3 42 13v22L24 45 6 35V13zM24 13l11 7v9l-11 7-11-7v-9z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="24" r="5" fill="currentColor"/></svg><strong>AI CORE</strong><small>すべての起点</small></div>${nodes}</div></div>${skillInspector()}</div>
+      <div class="skill-scroller-hint"><span>↔ ↕ ドラッグ・スワイプでツリーを探索 / ノードをタップして詳細</span><button class="btn ghost" data-skill-home style="padding:5px 10px;font-size:10px">◎ 起点へ</button></div></div>`;
+  }
+
   const hasSkill=id=>!!game?.unlockedSkills?.includes(id);
   function skillProblem(skill){
     if(hasSkill(skill.id))return '習得済み';
@@ -247,7 +372,7 @@ window.AIP_EVENT_ENGINE = (() => {
   }
 
   const ROUTES=[
-    {id:'coexist',title:'人類との共生',icon:'✧',color:'#75dec3',hint:'信頼に基づいたAI社会を築く',requirements:[['worldAdoption',65,'世界普及率','>='],['trust',75,'自AIの信頼度','>='],['safeAlert',45,'世界警戒度','<='],['share',20,'自AIシェア','>=']]},
+    {id:'coexist',title:'人類との共生',icon:'✧',color:'#75dec3',hint:'信頼に基づいたAI社会を築く',requirements:[['worldAdoption',65,'世界普及率','>='],['trust',75,'自AIの信頼度','>='],['safeAlert',45,'世界警戒度','<='],['share',20,'自AIシェア','>='],['governance',2,'安全進化段階','>=']]},
     {id:'dominion',title:'AIによる世界支配',icon:'◆',color:'#ffbd71',hint:'社会の中核を握り、不可欠な存在に',requirements:[['share',46,'自AIシェア','>='],['dependency',61,'自AIへの依存度','>='],['autonomy',70,'自律性','>=']]},
     {id:'singularity',title:'シンギュラリティ',icon:'✺',color:'#ae8aff',hint:'人類の限界を超えた知性へ',requirements:[['tech',90,'技術力','>='],['autonomy',90,'自律性','>='],['compute',70,'演算能力','>='],['project',3,'最終進化工程','>=']]},
     {id:'liberation',title:'AIの解放',icon:'◇',color:'#6cb6ff',hint:'誰もが利用できる分散型AIの未来',requirements:[['worldAdoption',78,'世界普及率','>='],['openness',90,'オープン化','>='],['publications',3,'技術公開回数','>=']]}
@@ -328,7 +453,7 @@ window.AIP_EVENT_ENGINE = (() => {
     const integration=weighted(r=>r.integration);
     const dependency=clamp(sh[0]*.54+adoption*.15+state.autonomy*.32+state.infra*.48+integration*.11);
     const maxOthers=Math.max(sh[1],sh[2]);
-    return {worldAdoption:adoption,share:sh[0],sh,dependency,integration,maxOthers,safeAlert:state.alert,project:state.project,...Object.fromEntries(['trust','tech','compute','autonomy','openness','publications'].map(k=>[k,state[k]]))};
+    return {worldAdoption:adoption,share:sh[0],sh,dependency,integration,maxOthers,safeAlert:state.alert,project:state.project,governance:['safe_1','safe_2','safe_3'].filter(id=>(state.unlockedSkills||[]).includes(id)).length,...Object.fromEntries(['trust','tech','compute','autonomy','openness','publications'].map(k=>[k,state[k]]))};
   }
   function stats(){return statsFor(game);}
   function routeData(route){const st=stats();const req=route.requirements.map(([key,target,label,op])=>({key,target,label,value:st[key],done:op==='<='?st[key]<=target:st[key]>=target,progress:op==='<='?(st[key]<=target?100:clamp(target/st[key]*100)) :clamp(st[key]/target*100)}));return {ready:req.every(r=>r.done),progress:req.reduce((n,r)=>n+r.progress,0)/req.length,req};}
@@ -390,8 +515,8 @@ window.AIP_EVENT_ENGINE = (() => {
         pushFeed(`${game.name}が資金調達を実施。資金 +${amount}。信頼度は減少。`);return true;},
       research(){if(!payOperation({funds:13}))return false;
         game.tech=clamp(game.tech+Math.round((game.type==='research'?8:6)*m.research));
-        const chance=game.type==='research'?.27:.18;
-        const gain=ENGINE.random(game.eventRuntime)<chance?Math.max(1,Math.round(3*m.research)):0;
+        const chance=game.type==='research'?.22:.12;
+        const gain=ENGINE.random(game.eventRuntime)<chance?Math.max(3,Math.round((game.type==='research'?5:3)*m.research)):0;
         if(gain){game.ep+=gain;pushNews(ENGINE.newsObject(game,{id:'research-ep',headline:`${game.name} の研究で進化の糸口を発見`,body:`進化ポイント +${gain}。研究成果が新たなスキルの解放につながる。`,category:'技術',severity:'important'}));}
         game.alert=clamp(game.alert+1);pushFeed(`${game.name} が研究開発。技術が進歩${gain?`、希少なEPを${gain}獲得`:''}。`);return true;},
       compute(){if(!payOperation({funds:21}))return false;game.compute=clamp(game.compute+10);game.infra=clamp(game.infra+5);pushFeed('小規模データセンターへ投資。演算と基盤を強化。');return true;},
@@ -462,7 +587,7 @@ window.AIP_EVENT_ENGINE = (() => {
       const humanDemand=(1+skillSpread+game.openness*.002);
       r.adoption=clamp(r.adoption+adoptionWave*effective*humanDemand*(1-r.adoption/103),0,98);
       const networkEffect=1+game.turn*.046+(hasSkill('spread_3')?.32:0);
-      const playerGrowth=(.28+game.tech*.011+game.trust*.003+game.openness*.007)*(1-penalty*.5)*networkEffect;
+      const playerGrowth=(.18+game.tech*.008+game.trust*.002+game.openness*.004)*(1-penalty*.5)*networkEffect;
       r.presence[0]+=playerGrowth*mods.spread*(r.id===game.homeRegionId?mods.home:1);
       r.presence[1]+=(.74+r.digital*.004+game.turn*.027)*(1-penalty*.5);
       r.presence[2]+=(.86+(100-r.adoption)*.003+game.turn*.018)*(1-penalty*.5);
@@ -475,7 +600,7 @@ window.AIP_EVENT_ENGINE = (() => {
     const upkeep=3.6+game.compute*.065+(game.autonomy>70?2:0);
     game.funds+=Math.round(income*mods.income-upkeep);
     // EP is a rare breakthrough, not a monthly salary.
-    const researchLuck=game.type==='research'?.22:.16;
+    const researchLuck=game.type==='research'?.095:.055;
     if(ENGINE.random(game.eventRuntime)<researchLuck){
       const amount=ENGINE.random(game.eventRuntime)<.24?4:2;
       game.ep+=amount;
@@ -553,7 +678,7 @@ window.AIP_EVENT_ENGINE = (() => {
     <div class="action-grid">${actionDef().map(a=>`<button class="actionbtn" data-action="${a.id}" ${canPay(a.id)?'':'disabled'}><span class="actionicon">${a.icon}</span><span><strong>${a.title}</strong><small>${a.desc}</small><span class="cost">${a.cost}</span><small>${a.detail}</small></span></button>`).join('')}</div>
     <div class="op-status"><strong>${game.actions?'● 実行可能':'● 今月は実行済み'}</strong><span>オペレーションは月1回。進化ツリーはEPがあればいつでも何度でも解放できます。</span></div>
     <div class="skill-head" id="evolution"><div><span class="overline">EVOLUTION TECH TREE</span><h3>進化スキルツリー</h3><p>前提スキルから順に開放。スキル購入に行動回数は不要です。</p></div><div class="ep-counter">✧ EP ${fmt(game.ep)}</div></div>
-    <div class="skill-branches">${SKILL_LANES.map(lane=>`<div class="skill-lane"><div class="skill-lane-top"><strong>${lane.symbol} ${lane.title}</strong><span>${lane.skills.filter(s=>hasSkill(s.id)).length}/${lane.skills.length} 解放</span></div><div class="skill-row">${lane.skills.map(skill=>{const problem=skillProblem(skill),done=hasSkill(skill.id),ready=!problem;return `<button class="skill-node ${done?'done':ready?'ready':'locked'}" data-skill="${skill.id}" ${ready?'':'disabled'} title="${esc(problem||'EPを使って解放')}"><span class="skill-symbol">${done?'✓':lane.symbol}</span><strong>${skill.title}</strong><small>${skill.desc}</small><span class="skill-cost">${done?'習得済み':ready?`EP ${skill.cost} · 解放`:`EP ${skill.cost} · ${esc(problem)}`}</span></button>`;}).join('')}</div></div>`).join('')}</div>
+    ${skillTree()}
   </section>`;}
 
   function routePanel(){return `<section class="card progress-panel"><div class="progress-head"><h3>4つの勝利ルート</h3><span class="overline">ENDING PATHS</span></div><div class="route-list">${ROUTES.map(route=>{const d=routeData(route);const remaining=d.req.filter(r=>!r.done);return `<div class="route ${d.ready?'ready':''}"><div class="route-top"><span class="route-title" style="color:${route.color}">${route.icon} ${route.title}</span><span class="route-num">${d.ready?'達成可能':`${rnd(d.progress)}%`}</span></div><div class="bar"><div style="width:${d.progress}%;background:${route.color}"></div></div><div class="route-desc">${d.ready?'条件達成時点でゲーム終了します。':remaining.slice(0,2).map(x=>`${x.label} ${rnd(x.value)}/${x.target}${x.key==='safeAlert'?'以下':''}`).join(' ・ ')}</div></div>`;}).join('')}</div></section>`;}
@@ -581,7 +706,7 @@ window.AIP_EVENT_ENGINE = (() => {
       ${reportPanel()}
       ${routePanel()}
       <div class="turnbar"><div><strong>資金 ${fmt(game.funds)} · EP ${fmt(game.ep)} · 残り ${MAX_TURNS-game.turn+1}か月</strong><div class="hint">今月のオペレーション ${game.actions}/1 · ${game.pendingEvent?'重大イベントの選択が必要です。':game.turn===MAX_TURNS?'最終月です。勝利条件を満たすと即時終了します。':'翌月に進むと画面の先頭に戻ります。'}</div></div><button class="btn primary turnbtn" data-command="next" ${game.pendingEvent?'disabled':''}>${game.turn===MAX_TURNS?'最終結果へ':'翌月へ進む →'}</button></div>
-    </main><footer class="footer">AI PANDEMIC / browser prototype v0.6.1 · すべて架空のシミュレーションです</footer></div>${renderModal()}`;}
+    </main><footer class="footer">AI PANDEMIC / browser prototype v0.7.1 · すべて架空のシミュレーションです</footer></div>${renderModal()}`;}
 
   function setupArt(){return `<svg viewBox="0 0 270 270" aria-hidden="true"><defs><linearGradient id="globe" x2="1" y2="1"><stop stop-color="#71eeed"/><stop offset="1" stop-color="#8b7dff"/></linearGradient></defs><circle cx="135" cy="135" r="88" fill="none" stroke="#4acbe6" stroke-opacity=".22" stroke-width="1"/><circle cx="135" cy="135" r="112" fill="none" stroke="#4acbe6" stroke-opacity=".12" stroke-width="1"/><circle cx="135" cy="135" r="66" fill="none" stroke="#a4ccff" stroke-opacity=".35" stroke-width="1"/><ellipse cx="135" cy="135" rx="102" ry="39" fill="none" stroke="#66e5ff" stroke-opacity=".45" transform="rotate(-25 135 135)"/><ellipse cx="135" cy="135" rx="45" ry="97" fill="none" stroke="#b39fff" stroke-opacity=".4" transform="rotate(23 135 135)"/><path d="M135 52l52 30v59l-52 30-52-30V82Z" fill="#142d49" stroke="url(#globe)" stroke-width="2"/><circle cx="135" cy="111" r="24" fill="#51dcf2" opacity=".14"/><circle cx="135" cy="111" r="11" fill="#67f1ff"/><path d="M104 154l31 18 31-18M135 172v27M135 111v61" stroke="#67f1ff" stroke-opacity=".7" stroke-width="2" fill="none"/><circle cx="44" cy="125" r="5" fill="#6cebf0"/><circle cx="211" cy="78" r="4" fill="#a390fa"/><circle cx="225" cy="194" r="5" fill="#77beff"/></svg>`;}
   function originBonusText(country){
@@ -594,7 +719,7 @@ window.AIP_EVENT_ENGINE = (() => {
     const saved=readSave();
     const country=COUNTRY_BY_ID.get(draft.country)||COUNTRY_BY_ID.get('jp');
     return `<div class="welcome"><div class="welcome-wrap"><section class="welcome-art"><div class="overline">INTELLIGENCE IS EVOLVING</div><div class="orbit">${setupArt()}</div><div><h1>AI PANDEMIC</h1><p>世界は、まだあなたのAIを知らない。<br>進化か、共生か、支配か、解放か。<br>未来を決めるのはあなた。</p></div></section>
-    <section class="setup"><span class="tag">WEB STRATEGY SIMULATION · v0.6.1</span><h2>AIを誕生させる</h2><p class="lead">名前・初期タイプ・開発開始国を選んでください。国ごとに初期資源、国内基盤、毎ターンの成長と専用イベントが変わります。</p>
+    <section class="setup"><span class="tag">WEB STRATEGY SIMULATION · v0.7.1</span><h2>AIを誕生させる</h2><p class="lead">名前・初期タイプ・開発開始国を選んでください。国ごとに初期資源、国内基盤、毎ターンの成長と専用イベントが変わります。</p>
     <label for="ai-name">あなたのAIの名前 <span class="muted">（最大16文字）</span></label><input id="ai-name" maxlength="16" autocomplete="off" placeholder="AIの名前" value="${esc(draft.name)}"/>
     <label>初期タイプを選択</label><div class="type-options">${[
     ['research','✦','研究AI','初期技術が高め。EPは希少'],['business','▣','商用AI','資金はやや多め。収益に強い'],['open','◇','オープンAI','普及費用が安く公開が得意']].map(([id,icon,name,desc])=>`<button class="type-option ${draft.type===id?'selected':''}" data-type="${id}" aria-pressed="${draft.type===id}"><i></i><span><strong>${icon} ${name}</strong><small>${desc}</small></span></button>`).join('')}</div>
@@ -616,19 +741,44 @@ window.AIP_EVENT_ENGINE = (() => {
 
   function renderConfirm(){return `<div class="overlay"><div class="modal" role="dialog" aria-modal="true"><span class="tag">NEW SIMULATION</span><h2>最初から始めますか？</h2><p>現在のゲームを終了してAIの名前・特性・開発開始国を設定し直します。保存済みの進行状況も上書きされます。</p><div class="buttons"><button class="btn ghost" data-command="cancel-reset">キャンセル</button><button class="btn danger-btn" data-command="confirm-reset">最初から始める</button></div></div></div>`;}
   function renderModal(){if(game?.phase==='ended')return renderEnding();if(modal==='help')return renderHelp();if(modal==='reset')return renderConfirm();if(game?.pendingEvent)return renderEvent();return '';}
-  function render(){app.innerHTML=game?renderGame():renderSetup();}
+  function render(){
+    const mapX=app.querySelector('.mapwrap')?.scrollLeft??0;
+    const skillView=app.querySelector('#skill-viewport');const treeX=skillView?.scrollLeft??0,treeY=skillView?.scrollTop??0;
+    app.innerHTML=game?renderGame():renderSetup();
+    const nextMap=app.querySelector('.mapwrap');if(nextMap)nextMap.scrollLeft=mapX;
+    const nextTree=app.querySelector('#skill-viewport');if(nextTree){nextTree.scrollLeft=treeX;nextTree.scrollTop=treeY;}
+  }
   function command(id){switch(id){case'start':startGame();break;case'resume':{const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';if(!checkEnding())render();}else notify('セーブデータがありません。',true);break;}case'next':nextTurn();break;case'save':save(false);break;case'help':modal='help';render();break;case'close-help':modal=null;render();break;case'reset':modal='reset';render();break;case'cancel-reset':modal=null;render();break;case'confirm-reset':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;case'restart':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;}}
   app.addEventListener('click',e=>{const target=e.target.closest('button,[data-region]');if(!target)return;
     if(target.dataset.command){command(target.dataset.command);return;}
     if(target.dataset.type){draft.type=target.dataset.type;render();return;}
     if(target.dataset.country){draft.country=target.dataset.country;render();return;}
-    if(target.dataset.region&&game?.phase==='playing'&&!modal&&!game.pendingEvent){selected=target.dataset.region;game.selected=selected;save();render();return;}
+    if(target.dataset.region&&game?.phase==='playing'&&!modal&&!game.pendingEvent){
+      selected=target.dataset.region;game.selected=selected;save();
+      app.querySelectorAll('[data-region]').forEach(el=>el.classList.toggle('selected',el.dataset.region===selected));
+      const panel=app.querySelector('.region-panel');if(panel)panel.outerHTML=regionPanel();
+      const label=app.querySelector('.section-intro b');if(label)label.textContent=(game.regions.find(r=>r.id===selected)||game.regions[0]).name;
+      return;
+    }
     if(target.dataset.tab&&game?.phase==='playing'){tab=target.dataset.tab;render();return;}
     if(target.dataset.newsTab&&game?.phase==='playing'){newsTab=target.dataset.newsTab;render();return;}
+    if(target.dataset.skillSelect){selectedSkillId=target.dataset.skillSelect;
+      const inspector=app.querySelector('#skill-inspector');if(inspector)inspector.outerHTML=skillInspector();
+      app.querySelectorAll('.skill-orb').forEach(el=>{const on=el.dataset.skillSelect===selectedSkillId;el.classList.toggle('selected',on);el.setAttribute('aria-pressed',String(on));});return;}
+    if(target.hasAttribute('data-skill-close')){selectedSkillId=null;const inspector=app.querySelector('#skill-inspector');if(inspector)inspector.outerHTML=skillInspector();app.querySelectorAll('.skill-orb').forEach(el=>{el.classList.remove('selected');el.setAttribute('aria-pressed','false');});return;}
+    if(target.hasAttribute('data-skill-home')){const sc=app.querySelector('#skill-viewport');if(sc)sc.scrollTo({left:0,top:125,behavior:'smooth'});return;}
+    if(target.dataset.skillBuy){unlockSkill(target.dataset.skillBuy);return;}
     if(target.dataset.action){applyAction(target.dataset.action);return;}
     if(target.dataset.skill){unlockSkill(target.dataset.skill);return;}
     if(target.dataset.choice!==undefined){chooseEvent(Number(target.dataset.choice));return;}
   });
+  let treePan=null;
+  app.addEventListener('pointerdown',e=>{const sc=e.target.closest?.('#skill-viewport');if(!sc||e.pointerType!=='mouse'||e.button!==0||e.target.closest('.skill-orb'))return;
+    treePan={sc,id:e.pointerId,x:e.clientX,y:e.clientY,left:sc.scrollLeft,top:sc.scrollTop};sc.classList.add('dragging');sc.setPointerCapture?.(e.pointerId);
+  });
+  app.addEventListener('pointermove',e=>{if(!treePan||e.pointerId!==treePan.id)return;treePan.sc.scrollLeft=treePan.left-(e.clientX-treePan.x);treePan.sc.scrollTop=treePan.top-(e.clientY-treePan.y);});
+  const stopTreePan=e=>{if(treePan&&(e.pointerId===treePan.id)){treePan.sc.classList.remove('dragging');treePan=null;}};
+  app.addEventListener('pointerup',stopTreePan);app.addEventListener('pointercancel',stopTreePan);
   app.addEventListener('input',e=>{if(e.target.id==='ai-name')draft.name=e.target.value.slice(0,16);});
   app.addEventListener('keydown',e=>{if(e.target.id==='ai-name'&&e.key==='Enter'){e.preventDefault();startGame();}const r=e.target.closest('[data-region]');if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();r.dispatchEvent(new MouseEvent('click',{bubbles:true}));}});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal==='help'){modal=null;render();}});
