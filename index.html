@@ -25,6 +25,21 @@
 @media(max-width:750px){.setup-container{grid-template-columns:minmax(0,1fr)}.setup-hero,.setup-form{min-width:0;max-width:100%;width:100%}.type-choices{grid-template-columns:repeat(3,minmax(0,1fr))}.countries-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.origin-core{width:100%}}
 @media(max-width:480px){.countries-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.setup-hero h1{overflow-wrap:anywhere}.setup-hero p{overflow-wrap:anywhere}.country-choice strong{font-size:10px}.type-choice b{font-size:11px}.type-choice small{font-size:8px}}
 .skill-node{scroll-margin:155px 80px}
+
+/* v1.0: clickable territories are the visible land itself. */
+.region-territory{fill-opacity:.25;stroke-opacity:.38;vector-effect:non-scaling-stroke;transition:fill-opacity .18s ease,stroke-opacity .18s ease;pointer-events:visiblePainted}
+.map-region:hover .region-territory,.map-region:focus-visible .region-territory{fill-opacity:.47;stroke-opacity:.92}
+.map-region.is-selected .region-territory{fill-opacity:.58;stroke:#a9ffec;stroke-opacity:1;filter:drop-shadow(0 0 6px #60f7db55)}
+.map-region:focus-visible{outline:none}
+.map-region:focus-visible .map-marker{stroke:#fff;stroke-width:3.5}
+.map-marker{transition:fill .15s,stroke-width .15s;cursor:pointer}
+.map-region:hover .map-marker{fill:#25465e;stroke-width:2.7}
+.map-region.is-selected .map-marker{fill:#123b48}
+.map-region-label{font-size:12px;paint-order:stroke;stroke:#061521;stroke-width:3.5px}
+.map-region.is-selected .map-region-label{fill:#d8fffa}
+.map-selection-readout rect{fill:#091b2de8;stroke:#428c9d;stroke-width:1}
+.map-selection-readout text{fill:#d4fbf1;font-size:11px;font-weight:750;letter-spacing:.02em}
+@media(max-width:750px){.map-region-label{font-size:13px}.map-selection-readout text{font-size:11.5px}}
 </style></head><body><div id="legacy-root" hidden></div><div id="root"></div><script>/*
  React v16.0.0
  react.production.min.js
@@ -778,6 +793,8 @@ const NUM = (x) => Math.round(x).toLocaleString('ja-JP');
 const pct = (x) => `${Math.round(x)}%`;
 const clamp = (n, a = 0, b = 100) => Math.min(b, Math.max(a, n));
 const colors = { player: '#4ce0d6', atlas: '#e9b46f', nova: '#b48dff' };
+const MAP_ANCHORS = {"nw":[160,140],"ne":[243,150],"sa":[315,285],"we":[455,136],"ee":[527,126],"na":[480,225],"af":[548,293],"me":[573,210],"in":[686,216],"ea":[741,135],"se":[768,260],"oc":[858,340]};
+const TERRITORY_CELLS = {"nw":"0.0,0.0 219.0,0.0 186.8,266.7 0.0,466.4","ne":"219.0,0.0 339.6,0.0 351.4,178.9 186.8,266.7","sa":"424.3,500.0 0.0,500.0 0.0,466.4 186.8,266.7 351.4,178.9 379.4,205.2 429.6,343.4","we":"339.6,0.0 472.8,0.0 496.7,172.3 379.4,205.2 351.4,178.9","ee":"472.8,0.0 639.5,0.0 634.4,121.8 634.3,121.8 521.1,183.8 496.7,172.3","na":"429.6,343.4 379.4,205.2 496.7,172.3 521.1,183.8 530.5,242.5","af":"675.2,500.0 424.3,500.0 429.6,343.4 530.5,242.5 626.4,271.3 668.6,346.9 683.4,445.8","me":"626.4,271.3 530.5,242.5 521.1,183.8 634.3,121.8","in":"668.6,346.9 626.4,271.3 634.3,121.8 634.4,121.8 748.0,198.9","ea":"639.5,0.0 960.0,0.0 960.0,145.9 939.7,157.5 748.0,198.9 634.4,121.8","se":"683.4,445.8 668.6,346.9 748.0,198.9 939.7,157.5","oc":"960.0,145.9 960.0,500.0 675.2,500.0 683.4,445.8 939.7,157.5"};
 const laneColors = { reason: '#66ceff', autonomy: '#b99bff', trust: '#65dfb3', spread: '#ffcd81', singularity: '#fa8fc3' };
 const opIcons = { campaign: 'radio', integrate: 'layers', research: 'brain', compute: 'cpu', safety: 'shield', fundraise: 'coins' };
 function Icon({ name, size = 20, className = '' }) {
@@ -886,7 +903,7 @@ class App extends React.Component {
         this.centerHome(); }
     centerHome() { const g = engine.getSnapshot(); const sc = this.mapRef.current; if (!g || !sc)
         return; const r = g.regions.find(r => r.id === g.selected); if (!r)
-        return; requestAnimationFrame(() => { const width = sc.scrollWidth; sc.scrollLeft = width * (r.cx / 960) - sc.clientWidth / 2; }); }
+        return; requestAnimationFrame(() => { const width = sc.scrollWidth; sc.scrollLeft = width * (MAP_ANCHORS[r.id][0] / 960) - sc.clientWidth / 2; }); }
     open(modal) { this.setState({ modal, selectedSkill: null }); }
     close() { this.setState({ modal: null }); }
     start() { engine.start(this.state.draftName.trim(), this.state.draftType, this.state.draftCountry); this.setState({ selectedOp: 'campaign', modal: null }); }
@@ -1086,7 +1103,7 @@ class App extends React.Component {
                         "\u7FCC\u6708\u3078\u9032\u3080 ",
                         React.createElement(Icon, { name: "arrow-right", size: 19 }))),
                 React.createElement("footer", { className: "app-footer" },
-                    "AI PANDEMIC \u00B7 v0.9 / EXPERIMENTAL INTELLIGENCE NETWORK ",
+                    "AI PANDEMIC \u00B7 v1.0 / EXPERIMENTAL INTELLIGENCE NETWORK ",
                     React.createElement("button", { onClick: () => this.open('reset') }, "\u65B0\u3057\u304F\u59CB\u3081\u308B"))));
     }
     renderStat(label, value, icon, color) { return React.createElement("div", { className: "stat-cell", key: label, style: { '--stat-color': color } },
@@ -1100,6 +1117,7 @@ class App extends React.Component {
         const selected = g.selected;
         const selectedRegion = g.regions.find(r => r.id === selected) || g.regions[0];
         const chosenLines = g.regions.filter(r => r.id !== selected && r.adoption > 2).sort((a, b) => b.adoption - a.adoption).slice(0, 8);
+        const [selectedX, selectedY] = MAP_ANCHORS[selectedRegion.id];
         return React.createElement("svg", { className: "world-svg", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 960 500", role: "group", "aria-label": "AI\u4E16\u754C\u52E2\u529B\u30DE\u30C3\u30D7" },
             React.createElement("defs", null,
                 React.createElement("linearGradient", { id: "world-ocean", x1: "0", y1: "0", x2: "1", y2: "1" },
@@ -1114,29 +1132,34 @@ class App extends React.Component {
                         React.createElement("feMergeNode", { in: "blur" }),
                         React.createElement("feMergeNode", { in: "SourceGraphic" }))),
                 React.createElement("pattern", { id: "map-grid", width: "40", height: "40", patternUnits: "userSpaceOnUse" },
-                    React.createElement("path", { d: "M40 0H0V40", fill: "none", stroke: "#3b5c79", strokeWidth: ".5", opacity: ".35" }))),
+                    React.createElement("path", { d: "M40 0H0V40", fill: "none", stroke: "#3b5c79", strokeWidth: ".5", opacity: ".35" })),
+                React.createElement("clipPath", { id: "world-land-clip", clipPathUnits: "userSpaceOnUse" }, React.createElement("path", { d: mapPath }))),
             React.createElement("rect", { width: "960", height: "500", rx: "8", fill: "url(#world-ocean)" }),
             React.createElement("rect", { width: "960", height: "500", fill: "url(#map-grid)" }),
-            React.createElement("path", { d: mapPath, fill: "#21425e", stroke: "#5286a7", strokeWidth: ".5", strokeOpacity: ".55", opacity: ".9" }),
-            chosenLines.map((r, i) => React.createElement("path", { key: r.id, className: "data-trace", style: { animationDelay: `-${i * .45}s` }, d: `M ${selectedRegion.cx} ${selectedRegion.cy} Q ${(selectedRegion.cx + r.cx) / 2} ${Math.min(selectedRegion.cy, r.cy) - 40}, ${r.cx} ${r.cy}`, fill: "none", stroke: colors.player, strokeWidth: "1.2", strokeOpacity: .20 + Math.min(.35, r.adoption * .007) })),
+            React.createElement("path", { d: mapPath, fill: "#21425e", opacity: ".9", pointerEvents: "none" }),
+            chosenLines.map((r, i) => React.createElement("path", { key: r.id, className: "data-trace", style: { animationDelay: `-${i * .45}s` }, d: `M ${selectedX} ${selectedY} Q ${(selectedX + MAP_ANCHORS[r.id][0]) / 2} ${Math.min(selectedY, MAP_ANCHORS[r.id][1]) - 40}, ${MAP_ANCHORS[r.id][0]} ${MAP_ANCHORS[r.id][1]}`, fill: "none", stroke: colors.player, strokeWidth: "1.2", strokeOpacity: .20 + Math.min(.35, r.adoption * .007) })),
             g.regions.map(r => {
                 const sh = shares(r);
                 const dominance = Math.max(...sh);
                 const lead = sh.indexOf(dominance);
                 const fill = [colors.player, colors.atlas, colors.nova][lead];
                 const active = r.id === selected;
+                const [cx, cy] = MAP_ANCHORS[r.id];
                 return React.createElement("g", { key: r.id, className: `map-region ${active ? 'is-selected' : ''}`, tabIndex: 0, role: "button", "aria-label": `${r.name}、普及率 ${pct(r.adoption)}`, onClick: () => this.selectRegion(r.id), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         this.selectRegion(r.id);
                     } } },
-                    React.createElement("polygon", { className: "region-hit", points: r.points, fill: fill, fillOpacity: active ? .18 : .07, stroke: active ? '#71f5e3' : fill, strokeOpacity: active ? 1 : .38, strokeWidth: active ? 2.7 : 1.2 }),
+                    React.createElement("polygon", { className: "region-territory", points: TERRITORY_CELLS[r.id], clipPath: "url(#world-land-clip)", fill: fill, stroke: fill, strokeWidth: active ? 3 : 1.2 }),
                     active ? React.createElement(React.Fragment, null,
-                        React.createElement("circle", { cx: r.cx, cy: r.cy, r: "51", fill: "url(#region-highlight)" }),
-                        React.createElement("circle", { cx: r.cx, cy: r.cy, r: "25", className: "select-ring" })) : null,
-                    React.createElement("circle", { className: "map-pulse", cx: r.cx, cy: r.cy, r: active ? 13 : 7, stroke: fill, strokeOpacity: ".55", fill: "none", style: { animationDelay: `-${r.cx / 150}s` } }),
-                    React.createElement("circle", { cx: r.cx, cy: r.cy, r: active ? 6.5 : 4.7, fill: active ? '#e9fffe' : fill, filter: active ? 'url(#map-glow)' : undefined }),
-                    React.createElement("text", { x: r.cx, y: r.cy + 25, textAnchor: "middle", className: `map-region-label ${active ? 'active' : ''}` }, r.short));
+                        React.createElement("circle", { cx, cy, r: "47", fill: "url(#region-highlight)", pointerEvents: "none" }),
+                        React.createElement("circle", { cx: cx, cy: cy, r: "25", className: "select-ring", pointerEvents: "none" })) : null,
+                    React.createElement("circle", { className: "map-pulse", cx: cx, cy: cy, r: active ? 13 : 7, stroke: fill, strokeOpacity: ".55", fill: "none", style: { animationDelay: `-${cx / 150}s` } }),
+                    React.createElement("circle", { className: "map-marker", cx, cy, r: active ? 17 : 14, fill: "#0c2134", fillOpacity: ".86", stroke: active ? "#b2fff1" : fill, strokeWidth: active ? 2.5 : 1.4 }),
+                    React.createElement("circle", { cx: cx, cy: cy, r: active ? 6.5 : 4.7, fill: active ? '#e9fffe' : fill, filter: active ? 'url(#map-glow)' : undefined }),
+                    React.createElement("text", { x: cx, y: cy + 31, textAnchor: "middle", className: `map-region-label ${active ? 'active' : ''}` }, r.short));
             }),
+            React.createElement("path", { d: mapPath, fill: "none", stroke: "#82a2b8", strokeWidth: ".7", strokeOpacity: ".75", pointerEvents: "none" }),
+            React.createElement("g", { className: "map-selection-readout", pointerEvents: "none" }, React.createElement("rect", { x: "684", y: "12", width: "258", height: "35", rx: "7" }), React.createElement("text", { x: "700", y: "34" }, `SELECTED / ${selectedRegion.short} · AI普及率 ${pct(selectedRegion.adoption)}`)),
             React.createElement("text", { x: "29", y: "468", className: "map-corner-label" }, "LIVE GLOBAL MARKET INFLUENCE \u2022 12 REGIONS"),
             React.createElement("text", { x: "892", y: "468", textAnchor: "end", className: "map-corner-label" }, "2030 \u2022 DIGITAL WORLD"));
     }
