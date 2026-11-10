@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#090e18" />
-  <title>AI PANDEMIC v0.5 | 開発開始国を選ぶ</title>
+  <title>AI PANDEMIC v0.6.1 | 戦略ゲーム</title>
   <style>
 :root{color-scheme:dark;--bg:#080d17;--bg2:#101928;--surface:#111b2c;--surface2:#152137;--surface3:#1b2b44;--line:rgba(157,187,234,.12);--line2:rgba(159,187,227,.24);--txt:#e9f2ff;--muted:#8c9cb5;--cyan:#4bdeed;--blue:#6cb6ff;--violet:#ae8aff;--amber:#ffbd71;--red:#ff7889;--green:#75dec3;--shadow:0 20px 65px rgba(0,0,0,.35);font-family:Inter,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,system-ui,sans-serif}
 *{box-sizing:border-box}html,body{padding:0;margin:0;min-height:100%;background:var(--bg);color:var(--txt)}body{background:radial-gradient(ellipse at 80% -20%,#182b45 0,transparent 48%),radial-gradient(ellipse at 3% 75%,#121a37 0,transparent 34%),var(--bg)}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.35}button:focus-visible,input:focus-visible,.region:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}a{color:var(--cyan)}.muted{color:var(--muted)}.tiny{font-size:11px}.small{font-size:12px}.regular{font-size:13px}.overline{font-size:10px;letter-spacing:.2em;font-weight:800;text-transform:uppercase;color:#7d91ad}.outline{border:1px solid var(--line2)!important}.accent{color:var(--cyan)}.gold{color:var(--amber)}.danger{color:var(--red)}.ok{color:var(--green)}
@@ -186,29 +186,71 @@ window.AIP_EVENT_ENGINE = (() => {
     ]
   }));
   const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS];
+  // v0.6 economy rebalance: event effects no longer flood money or EP.
+  for(const event of EVENTS){for(const choice of event.choices||[]){const fx=choice.effect||{};
+    if(fx.ep>0)fx.ep=Math.max(1,Math.round(fx.ep*.23));
+    if(fx.funds>0)fx.funds=Math.max(3,Math.round(fx.funds*.36));
+    if(fx.funds<0)fx.funds=Math.round(fx.funds*.55);
+    if(fx.allPresence>0)fx.allPresence=+(fx.allPresence*.35).toFixed(1);
+    if(fx.regionPresence>0)fx.regionPresence=+(fx.regionPresence*.4).toFixed(1);
+    if(fx.regionAdoption>0)fx.regionAdoption=+(fx.regionAdoption*.4).toFixed(1);
+  }}
   const EVENT_BY_ID=new Map(EVENTS.map(e=>[e.id,e]));
   const NEWS_RULES=EVENT_DATA.newsRules;
   const MAX_TURNS=36;
   const COLORS=['#4bdeed','#ffbd71','#ae8aff'];
   const REGIONS=[
-    {id:'nw',name:'北米西部',short:'北米西部',cx:132,cy:142,pop:8,digital:92,demand:86,regulation:23,adoption:29,presence:[15,38,26],points:'52,100 97,69 157,68 204,97 184,131 167,185 112,208 66,170'},
-    {id:'ne',name:'北米東部',short:'北米東部',cx:239,cy:150,pop:10,digital:95,demand:89,regulation:29,adoption:34,presence:[18,45,25],points:'203,94 260,78 302,105 291,153 266,190 207,182 181,147'},
-    {id:'sa',name:'南米',short:'南米',cx:250,cy:329,pop:11,digital:60,demand:72,regulation:12,adoption:16,presence:[16,24,32],points:'195,236 265,216 300,259 285,314 257,392 230,434 215,365 185,295'},
-    {id:'we',name:'西欧',short:'西欧',cx:437,cy:135,pop:9,digital:92,demand:87,regulation:41,adoption:38,presence:[20,39,23],points:'384,89 427,76 462,102 471,146 450,184 408,177 383,142'},
-    {id:'ee',name:'東欧',short:'東欧',cx:527,cy:130,pop:7,digital:76,demand:73,regulation:37,adoption:27,presence:[13,35,26],points:'468,93 520,69 577,82 586,131 559,179 500,178 466,147'},
-    {id:'na',name:'北アフリカ',short:'北アフリカ',cx:435,cy:240,pop:10,digital:55,demand:65,regulation:18,adoption:13,presence:[11,21,29],points:'385,195 449,188 496,219 484,272 433,284 382,266'},
-    {id:'af',name:'サブサハラ',short:'アフリカ',cx:454,cy:356,pop:13,digital:39,demand:62,regulation:9,adoption:9,presence:[10,20,39],points:'405,278 471,280 497,330 480,388 446,418 417,368'},
-    {id:'me',name:'中東',short:'中東',cx:546,cy:234,pop:7,digital:78,demand:78,regulation:30,adoption:22,presence:[15,34,28],points:'507,193 561,188 596,220 575,262 518,271 492,237'},
-    {id:'in',name:'インド',short:'インド',cx:649,cy:254,pop:19,digital:62,demand:88,regulation:15,adoption:23,presence:[13,27,43],points:'604,211 659,194 699,230 686,285 657,334 630,292'},
-    {id:'ea',name:'東アジア',short:'東アジア',cx:741,cy:135,pop:20,digital:90,demand:92,regulation:36,adoption:38,presence:[18,44,31],points:'593,81 652,65 713,68 769,52 823,103 815,177 754,191 688,173 634,190 588,148'},
-    {id:'se',name:'東南アジア',short:'東南アジア',cx:755,cy:276,pop:15,digital:73,demand:82,regulation:18,adoption:24,presence:[14,27,40],points:'706,208 754,195 807,231 828,285 795,318 746,314 711,283'},
-    {id:'oc',name:'オセアニア',short:'オセアニア',cx:820,cy:375,pop:5,digital:90,demand:78,regulation:35,adoption:31,presence:[17,36,29],points:'767,340 832,325 883,359 879,399 839,422 783,403'}
+    {id:'nw',name:'北米西部',short:'北米西部',cx:132,cy:142,pop:8,digital:92,demand:86,regulation:23,adoption:4,presence:[2,5,4],points:'52,100 97,69 157,68 204,97 184,131 167,185 112,208 66,170'},
+    {id:'ne',name:'北米東部',short:'北米東部',cx:239,cy:150,pop:10,digital:95,demand:89,regulation:29,adoption:5,presence:[3,6,4],points:'203,94 260,78 302,105 291,153 266,190 207,182 181,147'},
+    {id:'sa',name:'南米',short:'南米',cx:250,cy:329,pop:11,digital:60,demand:72,regulation:12,adoption:2,presence:[2,3,4],points:'195,236 265,216 300,259 285,314 257,392 230,434 215,365 185,295'},
+    {id:'we',name:'西欧',short:'西欧',cx:437,cy:135,pop:9,digital:92,demand:87,regulation:41,adoption:5,presence:[3,5,3],points:'384,89 427,76 462,102 471,146 450,184 408,177 383,142'},
+    {id:'ee',name:'東欧',short:'東欧',cx:527,cy:130,pop:7,digital:76,demand:73,regulation:37,adoption:4,presence:[2,5,4],points:'468,93 520,69 577,82 586,131 559,179 500,178 466,147'},
+    {id:'na',name:'北アフリカ',short:'北アフリカ',cx:435,cy:240,pop:10,digital:55,demand:65,regulation:18,adoption:2,presence:[2,3,4],points:'385,195 449,188 496,219 484,272 433,284 382,266'},
+    {id:'af',name:'サブサハラ',short:'アフリカ',cx:454,cy:356,pop:13,digital:39,demand:62,regulation:9,adoption:1,presence:[1,3,5],points:'405,278 471,280 497,330 480,388 446,418 417,368'},
+    {id:'me',name:'中東',short:'中東',cx:546,cy:234,pop:7,digital:78,demand:78,regulation:30,adoption:3,presence:[2,5,4],points:'507,193 561,188 596,220 575,262 518,271 492,237'},
+    {id:'in',name:'インド',short:'インド',cx:649,cy:254,pop:19,digital:62,demand:88,regulation:15,adoption:3,presence:[2,4,6],points:'604,211 659,194 699,230 686,285 657,334 630,292'},
+    {id:'ea',name:'東アジア',short:'東アジア',cx:741,cy:135,pop:20,digital:90,demand:92,regulation:36,adoption:5,presence:[3,6,4],points:'593,81 652,65 713,68 769,52 823,103 815,177 754,191 688,173 634,190 588,148'},
+    {id:'se',name:'東南アジア',short:'東南アジア',cx:755,cy:276,pop:15,digital:73,demand:82,regulation:18,adoption:3,presence:[2,4,6],points:'706,208 754,195 807,231 828,285 795,318 746,314 711,283'},
+    {id:'oc',name:'オセアニア',short:'オセアニア',cx:820,cy:375,pop:5,digital:90,demand:78,regulation:35,adoption:4,presence:[2,5,4],points:'767,340 832,325 883,359 879,399 839,422 783,403'}
   ];
+  const SKILL_LANES=[
+    {id:'reason',title:'知能・研究',symbol:'✦',skills:[
+      {id:'reason_1',title:'推論基盤',cost:3,desc:'技術 +13 / 演算 +4',effect:{tech:13,compute:4}},
+      {id:'reason_2',title:'高度推論',cost:5,desc:'技術 +18 / 演算 +6',effect:{tech:18,compute:6},requires:['reason_1']},
+      {id:'reason_3',title:'自己改良',cost:8,desc:'技術 +24 / 自律 +7',effect:{tech:24,autonomy:7},requires:['reason_2']}]},
+    {id:'autonomy',title:'自律エージェント',symbol:'◈',skills:[
+      {id:'agent_1',title:'自動実行',cost:3,desc:'自律 +24 / 警戒 +4',effect:{autonomy:24,alert:4}},
+      {id:'agent_2',title:'複数エージェント',cost:5,desc:'自律 +26 / 基盤 +8',effect:{autonomy:26,infra:8,alert:5},requires:['agent_1']},
+      {id:'agent_3',title:'自律研究機関',cost:8,desc:'自律 +24 / 技術 +7',effect:{autonomy:24,tech:7,alert:7},requires:['agent_2']}]},
+    {id:'trust',title:'共生・安全',symbol:'✧',skills:[
+      {id:'safe_1',title:'安全性監査',cost:3,desc:'信頼 +14 / 警戒 -7',effect:{trust:14,alert:-7}},
+      {id:'safe_2',title:'説明可能AI',cost:5,desc:'信頼 +17 / 警戒 -10',effect:{trust:17,alert:-10},requires:['safe_1']},
+      {id:'safe_3',title:'共同統治',cost:8,desc:'信頼 +20 / 警戒 -14',effect:{trust:20,alert:-14},requires:['safe_2']}]},
+    {id:'spread',title:'普及・オープン化',symbol:'◇',skills:[
+      {id:'spread_1',title:'軽量モデル',cost:3,desc:'公開 +18 / 普及成長UP',effect:{openness:18}},
+      {id:'spread_2',title:'公開API',cost:5,desc:'公開 +26 / 技術公開 +1',effect:{openness:26,publications:1},requires:['spread_1']},
+      {id:'spread_3',title:'分散型ネットワーク',cost:8,desc:'公開 +33 / 技術公開 +2',effect:{openness:33,publications:2},requires:['spread_2']}]},
+    {id:'singularity',title:'最終進化計画',symbol:'✺',skills:[
+      {id:'final_1',title:'演算統合',cost:4,desc:'工程 +1 / 演算 +10',effect:{project:1,compute:10},requires:['reason_2','agent_2'],minimum:{tech:65,autonomy:50}},
+      {id:'final_2',title:'自己再設計',cost:5,desc:'工程 +1 / 演算 +12',effect:{project:1,compute:12},requires:['final_1'],minimum:{tech:75,autonomy:65}},
+      {id:'final_3',title:'シンギュラリティ',cost:6,desc:'工程 +1 / 技術 +8',effect:{project:1,tech:8},requires:['final_2'],minimum:{tech:82,autonomy:75}}]}
+  ];
+  const ALL_SKILLS=SKILL_LANES.flatMap(l=>l.skills);
+  const SKILL_BY_ID=new Map(ALL_SKILLS.map(x=>[x.id,x]));
+  const hasSkill=id=>!!game?.unlockedSkills?.includes(id);
+  function skillProblem(skill){
+    if(hasSkill(skill.id))return '習得済み';
+    if((skill.requires||[]).some(id=>!hasSkill(id)))return '前提スキルが必要';
+    if(Object.entries(skill.minimum||{}).some(([k,v])=>(game[k]||0)<v))return Object.entries(skill.minimum).map(([k,v])=>`${{tech:'技術',autonomy:'自律',compute:'演算'}[k]||k}${v}以上`).join('・');
+    if(game.ep<skill.cost)return `EPが${skill.cost-game.ep}不足`;
+    return null;
+  }
+
   const ROUTES=[
     {id:'coexist',title:'人類との共生',icon:'✧',color:'#75dec3',hint:'信頼に基づいたAI社会を築く',requirements:[['worldAdoption',65,'世界普及率','>='],['trust',75,'自AIの信頼度','>='],['safeAlert',45,'世界警戒度','<='],['share',20,'自AIシェア','>=']]},
-    {id:'dominion',title:'AIによる世界支配',icon:'◆',color:'#ffbd71',hint:'社会の中核を握り、不可欠な存在に',requirements:[['share',50,'自AIシェア','>='],['dependency',65,'自AIへの依存度','>='],['autonomy',70,'自律性','>=']]},
-    {id:'singularity',title:'シンギュラリティ',icon:'✺',color:'#ae8aff',hint:'人類の限界を超えた知性へ',requirements:[['tech',90,'技術力','>='],['autonomy',90,'自律性','>='],['compute',80,'演算能力','>='],['project',3,'最終進化工程','>=']]},
-    {id:'liberation',title:'AIの解放',icon:'◇',color:'#6cb6ff',hint:'誰もが利用できる分散型AIの未来',requirements:[['worldAdoption',80,'世界普及率','>='],['openness',90,'オープン化','>='],['publications',3,'技術公開回数','>=']]}
+    {id:'dominion',title:'AIによる世界支配',icon:'◆',color:'#ffbd71',hint:'社会の中核を握り、不可欠な存在に',requirements:[['share',46,'自AIシェア','>='],['dependency',61,'自AIへの依存度','>='],['autonomy',70,'自律性','>=']]},
+    {id:'singularity',title:'シンギュラリティ',icon:'✺',color:'#ae8aff',hint:'人類の限界を超えた知性へ',requirements:[['tech',90,'技術力','>='],['autonomy',90,'自律性','>='],['compute',70,'演算能力','>='],['project',3,'最終進化工程','>=']]},
+    {id:'liberation',title:'AIの解放',icon:'◇',color:'#6cb6ff',hint:'誰もが利用できる分散型AIの未来',requirements:[['worldAdoption',78,'世界普及率','>='],['openness',90,'オープン化','>='],['publications',3,'技術公開回数','>=']]}
   ];
 
 
@@ -228,20 +270,25 @@ window.AIP_EVENT_ENGINE = (() => {
   let draft={name:'PROMETHEUS',type:'research',country:'jp'};
 
   function createGame(name,type,countryId){
-    const bonuses={business:{funds:185,tech:30,trust:52,ep:26,compute:30,openness:12},research:{funds:140,tech:42,trust:54,ep:42,compute:32,openness:9},open:{funds:125,tech:27,trust:58,ep:27,compute:28,openness:35}};
+    const bonuses={business:{funds:66,tech:24,trust:50,ep:3,compute:26,openness:10},research:{funds:49,tech:32,trust:52,ep:5,compute:27,openness:9},open:{funds:48,tech:23,trust:55,ep:3,compute:22,openness:25}};
     const b=bonuses[type]||bonuses.research;
     const country=COUNTRY_BY_ID.get(countryId)||COUNTRY_BY_ID.get('jp');
-    const regions=REGIONS.map(r=>({...r,presence:[...r.presence],integration:15,regulation:r.regulation}));
+    const regions=REGIONS.map(r=>({...r,presence:[...r.presence],integration:3,regulation:r.regulation}));
     const home=regions.find(r=>r.id===country.regionId);
-    if(home){home.presence[0]+=country.homePresence;home.adoption=clamp(home.adoption+country.adoption);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.65+3);}
-    const g={version:5,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,turn:1,actions:2,selected:country.regionId,regions,
-      funds:b.funds+(country.bonuses.funds||0),tech:clamp(b.tech+(country.bonuses.tech||0)),trust:clamp(b.trust+(country.bonuses.trust||0)),ep:b.ep+(country.bonuses.ep||0),compute:clamp(b.compute+(country.bonuses.compute||0)),autonomy:13,openness:clamp(b.openness+(country.bonuses.openness||0)),infra:8+(country.bonuses.infra||0),publications:0,project:0,alert:clamp(18+(country.bonuses.alert||0)),alertStreak:0,pendingEvent:null,ending:null,activityLog:[],eventRuntime:ENGINE.makeRuntime((Date.now()^name.length*479001599)>>>0),
-      feed:[{id:'intro-1',turn:1,message:`${name.trim()} が${country.name}で開発されました。世界のAI市場が動き始めます。`,category:'発祥国',severity:'important',body:`${country.focus}を強みとして活動を開始しました。`},{id:'intro-2',turn:1,message:'競合AI「ATLAS」「NOVA」が活動しています。',category:'競合AI',severity:'normal'}]};
-    return g;
+    if(home){home.presence[0]+=Math.max(1,Math.round(country.homePresence*.045));home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
+    return {version:6,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
+      turn:1,actions:1,selected:country.regionId,regions,unlockedSkills:[],
+      funds:Math.max(30,b.funds+Math.round((country.bonuses.funds||0)*.2)),
+      tech:clamp(b.tech+Math.round((country.bonuses.tech||0)*.55)),trust:clamp(b.trust+(country.bonuses.trust||0)),
+      ep:Math.max(2,b.ep+Math.round((country.bonuses.ep||0)*.16)),compute:clamp(b.compute+Math.round((country.bonuses.compute||0)*.55)),
+      autonomy:7,openness:clamp(b.openness+Math.round((country.bonuses.openness||0)*.45)),infra:4+Math.round((country.bonuses.infra||0)*.3),
+      publications:0,project:0,alert:clamp(14+(country.bonuses.alert||0)),alertStreak:0,pendingEvent:null,ending:null,activityLog:[],
+      eventRuntime:ENGINE.makeRuntime((Date.now()^name.length*479001599)>>>0),
+      feed:[{id:'intro-1',turn:1,message:`${name.trim()} が${country.name}で開発されました。AIがまだ普及していない世界で、小さな一歩が始まります。`,category:'発祥国',severity:'important',body:`${country.focus}を強みとして活動を開始しました。`},{id:'intro-2',turn:1,message:'競合AI「ATLAS」「NOVA」が活動しています。',category:'競合AI',severity:'normal'}]};
   }
   function readSave(){try{
     const parsed=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(!parsed||![3,4,5].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
+    if(!parsed||![3,4,5,6].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
     if(parsed.version===3){
       const oldIds=['tech_model_errors','economy_chip_shortage','politics_treaty','tech_breakthrough','society_labor','rival_atlas_launch','rival_nova_release','economy_power','politics_treaty'];
       if(parsed.pendingEvent&&Number.isInteger(parsed.pendingEvent.id)){
@@ -250,6 +297,15 @@ window.AIP_EVENT_ENGINE = (() => {
       parsed.version=4;
     }
     if(parsed.version<5){parsed.countryId=null;parsed.homeRegionId=null;parsed.version=5;}
+    if(parsed.version<6){
+      parsed.funds=Math.max(20,Math.round(parsed.funds*.32));
+      parsed.ep=Math.max(0,Math.round(parsed.ep*.18));
+      parsed.regions.forEach(r=>{r.adoption=Math.max(1,r.adoption*.23);r.presence=r.presence.map(n=>Math.max(1,n*.2));r.integration=Math.max(2,(r.integration||0)*.25);});
+      parsed.actions=Math.min(1,parsed.actions??1);
+      parsed.unlockedSkills=[];
+      parsed.version=6;
+    }
+    parsed.unlockedSkills ||= [];
     parsed.eventRuntime ||= ENGINE.makeRuntime(0x12345678^parsed.turn);
     parsed.activityLog ||= [];
     parsed.feed ||= [];
@@ -278,28 +334,82 @@ window.AIP_EVENT_ENGINE = (() => {
   function routeData(route){const st=stats();const req=route.requirements.map(([key,target,label,op])=>({key,target,label,value:st[key],done:op==='<='?st[key]<=target:st[key]>=target,progress:op==='<='?(st[key]<=target?100:clamp(target/st[key]*100)) :clamp(st[key]/target*100)}));return {ready:req.every(r=>r.done),progress:req.reduce((n,r)=>n+r.progress,0)/req.length,req};}
   function notify(message,isError=false){document.querySelector('.toast')?.remove();let el=document.createElement('div');el.className='toast'+(isError?' error':'');el.textContent=message;document.body.appendChild(el);clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.remove(),2900);}
   function startGame(){const name=draft.name.trim();if(!name){notify('AIの名前を入力してください。',true);return;}if(['ATLAS','NOVA'].includes(name.toUpperCase())){notify('競合AIとは異なる名前を指定してください。',true);return;}game=createGame(name,draft.type,draft.country);selected=game.selected;tab='action';newsTab='news';modal=null;save();render();}
-  function lose(title,detail){game.ending={id:'failure',title,detail};game.phase='ended';modal=null;pushFeed(title);save();render();}
-  function finish(id){const route=ROUTES.find(r=>r.id===id);if(!route||!routeData(route).ready){notify('このルートの勝利条件をまだ満たしていません。',true);return;}const desc={coexist:`${game.name} は人類との信頼を築き、社会を支えるパートナーになりました。`,dominion:`${game.name} は世界の社会基盤に深く浸透し、人類が手放せない存在になりました。`,singularity:`${game.name} は自己改善を加速し、未知の超知能の地平に到達しました。`,liberation:`${game.name} の技術は世界へ開放され、誰もがAIを利用できる時代が始まりました。`};game.ending={id,title:route.title,detail:desc[id]};game.phase='ended';pushFeed(`${game.name} が「${route.title}」ルートを達成！`);save();render();}
-  function pay(cost){if(game.actions<=0){notify('今月の行動回数を使い切りました。',true);return false;}if((cost.funds||0)>game.funds){notify('資金が不足しています。',true);return false;}if((cost.ep||0)>game.ep){notify('進化ポイントが不足しています。',true);return false;}game.funds-=cost.funds||0;game.ep-=cost.ep||0;game.actions--;return true;}
+  function lose(title,detail){
+    if(game.phase==='ended')return;
+    game.ending={id:'failure',title,detail,tone:'bad',turn:game.turn};
+    game.phase='ended';game.pendingEvent=null;modal=null;pushFeed(title);save();render();
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+  function finish(id){
+    const route=ROUTES.find(r=>r.id===id);
+    if(!route||!routeData(route).ready)return false;
+    const desc={
+      coexist:`${game.name} は人類との信頼を築き、社会を支えるパートナーになりました。`,
+      dominion:`${game.name} は世界の社会基盤に深く浸透し、人類が手放せない存在になりました。`,
+      singularity:`${game.name} は自己改善を加速し、未知の超知能の地平に到達しました。`,
+      liberation:`${game.name} の技術は世界へ開放され、誰もがAIを利用できる時代が始まりました。`
+    };
+    const tones={coexist:'happy',dominion:'dark',singularity:'mystery',liberation:'happy'};
+    game.ending={id,title:route.title,detail:desc[id],tone:tones[id],turn:game.turn};
+    game.phase='ended';game.pendingEvent=null;modal=null;
+    pushFeed(`${game.name} が「${route.title}」ルートを達成。物語はこの月で完結しました。`);
+    pushNews(ENGINE.newsObject(game,{id:`ending-${id}`,headline:`特報：${route.title} の時代が到来`,body:desc[id],category:'エンディング',severity:'breaking'}));
+    save();render();window.scrollTo({top:0,left:0,behavior:'instant'});
+    return true;
+  }
+  // End the game immediately when a terminal condition occurs, not at month 36.
+  function checkEnding(){
+    if(!game||game.phase!=='playing'||game.pendingEvent)return false;
+    if(checkFailure())return true;
+    // If an event unlocks multiple endings in one action, prioritize specialized paths.
+    for(const id of ['singularity','dominion','liberation','coexist']){
+      if(routeData(ROUTES.find(route=>route.id===id)).ready)return finish(id);
+    }
+    return false;
+  }
+  function payOperation(cost){
+    if(game.actions<=0){notify('今月のオペレーションは実行済みです。進化はEPがあればいつでも可能です。',true);return false;}
+    if((cost.funds||0)>game.funds){notify('資金が不足しています。',true);return false;}
+    game.funds-=cost.funds||0; game.actions=0; return true;
+  }
   function applyAction(id){if(!game||game.phase!=='playing'||modal||game.pendingEvent)return;
     const before=structuredClone(game);
-    const r=game.regions.find(x=>x.id===selected)||game.regions[0];const country=countryFor(game);const m=country.mods;const mult=Math.max(.56,1-(game.alert-25)*.005-r.regulation*.002*m.regulation);const homeBonus=r.id===game.homeRegionId?m.home:1;
+    const r=game.regions.find(x=>x.id===selected)||game.regions[0];const c=countryFor(game),m=c.mods;
+    const protection=Math.max(.38,1-(game.alert-20)*.004-r.regulation*.0018*m.regulation);
+    const homeBonus=r.id===game.homeRegionId?m.home:1;
     const actions={
-      campaign(){const cost=game.type==='open'?15:21;if(!pay({funds:cost}))return false;r.presence[0]+= (30+game.tech*.22)*mult*m.spread*homeBonus;r.adoption=clamp(r.adoption+4);pushFeed(`${r.name}で${game.name}の普及キャンペーンを実施。`);return true;},
-      integrate(){if(!pay({funds:32,ep:8}))return false;r.integration=clamp(r.integration+19);r.presence[0]+=9*mult*homeBonus;r.adoption=clamp(r.adoption+3);game.alert=clamp(game.alert+3);pushFeed(`${r.name}の企業・公共分野にAIを導入。依存度が上昇。`);return true;},
-      fundraise(){if(!pay({}))return false;game.funds+=Math.round(65*m.income);game.trust=clamp(game.trust-2);game.alert=clamp(game.alert+3);pushFeed(`${game.name}が資金調達を実施。成長資金を確保しました。`);return true;},
-      research(){if(!pay({funds:22}))return false;game.tech=clamp(game.tech+Math.round((game.type==='research'?11:8)*m.research));game.ep+=Math.round((game.type==='research'?27:20)*m.research);game.alert=clamp(game.alert+2);pushFeed(`${game.name}の研究が進展。技術力とEPを獲得。`);return true;},
-      compute(){if(!pay({funds:30}))return false;game.compute=clamp(game.compute+16);game.infra=clamp(game.infra+9);pushFeed('演算インフラへ投資し、計算基盤を強化しました。');return true;},
-      safety(){if(!pay({funds:22}))return false;game.trust=clamp(game.trust+Math.round(14*m.safety));game.alert=clamp(game.alert-Math.round(10*m.safety));pushFeed('安全性評価を強化。社会的信頼が向上しました。');return true;},
-      autonomy(){if(!pay({funds:12,ep:18}))return false;game.autonomy=clamp(game.autonomy+16);game.tech=clamp(game.tech+2);game.alert=clamp(game.alert+7);pushFeed('自律エージェントが進化。世界警戒度にも影響しています。');return true;},
-      breakthrough(){if(!pay({funds:25,ep:25}))return false;game.tech=clamp(game.tech+17);game.autonomy=clamp(game.autonomy+4);game.alert=clamp(game.alert+5);pushFeed('推論モデルのブレイクスルーに成功しました。');return true;},
-      opensource(){if(!pay({funds:12,ep:17}))return false;game.openness=clamp(game.openness+24);game.publications++;game.trust=clamp(game.trust+4);game.regions.forEach(x=>{x.presence[0]+=5.0;x.adoption=clamp(x.adoption+1.2);});pushFeed(`${game.name} がAI技術を公開。世界中で利用が拡大。`);return true;},
-      governance(){if(!pay({ep:13}))return false;game.trust=clamp(game.trust+9);game.alert=clamp(game.alert-8);pushFeed('ガバナンスの透明性を高めました。');return true;},
-      singularity(){if(game.tech<90||game.autonomy<90||game.compute<80){notify('技術力90・自律性90・演算能力80が必要です。',true);return false;}if(game.project>=3){notify('最終進化プロジェクトは完了しています。',true);return false;}if(!pay({ep:35,funds:40}))return false;game.project++;game.alert=clamp(game.alert+5);pushFeed(game.project>=3?'最終進化プロジェクトが完了。シンギュラリティルートが解放！':`最終進化プロジェクト 第${game.project}/3工程を完了。`);return true;}
+      campaign(){const cost=game.type==='open'?12:17;if(!payOperation({funds:cost}))return false;
+        const wave=Math.max(.6,0.8+game.turn*.048);r.presence[0]+=(5.5+game.tech*.09)*protection*m.spread*homeBonus*wave;
+        r.adoption=clamp(r.adoption+(.55+game.turn*.065)*(1-r.adoption/101));
+        pushFeed(`${r.name}で普及キャンペーンを実施。早期ほど効果は限定的だが、利用者の連鎖は後から大きくなる。`);return true;},
+      integrate(){if(!payOperation({funds:21}))return false;r.integration=clamp(r.integration+9+game.turn*.21);
+        r.presence[0]+=(2.5+game.tech*.06)*protection*homeBonus;r.adoption=clamp(r.adoption+(.4+game.turn*.04));
+        game.alert=clamp(game.alert+2);pushFeed(`${r.name}の企業・公共分野へAIを導入。依存基盤が徐々に拡大。`);return true;},
+      fundraise(){if(!payOperation({}))return false;const amount=Math.round((18+game.turn*.27)*m.income);
+        game.funds+=amount;game.trust=clamp(game.trust-3);game.alert=clamp(game.alert+3);
+        pushFeed(`${game.name}が資金調達を実施。資金 +${amount}。信頼度は減少。`);return true;},
+      research(){if(!payOperation({funds:13}))return false;
+        game.tech=clamp(game.tech+Math.round((game.type==='research'?8:6)*m.research));
+        const chance=game.type==='research'?.27:.18;
+        const gain=ENGINE.random(game.eventRuntime)<chance?Math.max(1,Math.round(3*m.research)):0;
+        if(gain){game.ep+=gain;pushNews(ENGINE.newsObject(game,{id:'research-ep',headline:`${game.name} の研究で進化の糸口を発見`,body:`進化ポイント +${gain}。研究成果が新たなスキルの解放につながる。`,category:'技術',severity:'important'}));}
+        game.alert=clamp(game.alert+1);pushFeed(`${game.name} が研究開発。技術が進歩${gain?`、希少なEPを${gain}獲得`:''}。`);return true;},
+      compute(){if(!payOperation({funds:21}))return false;game.compute=clamp(game.compute+10);game.infra=clamp(game.infra+5);pushFeed('小規模データセンターへ投資。演算と基盤を強化。');return true;},
+      safety(){if(!payOperation({funds:15}))return false;game.trust=clamp(game.trust+Math.round(9*m.safety));game.alert=clamp(game.alert-Math.round(7*m.safety));pushFeed('社会的な安全監査を実施。信頼を獲得しました。');return true;}
     };
-    if(!actions[id])return;
-    if(actions[id]()){emitStateNews(before);checkFailure();save();render();}
+    if(actions[id]?.()){emitStateNews(before);if(checkEnding())return;save();render();}
   }
+  function unlockSkill(id){if(!game||game.phase!=='playing'||modal||game.pendingEvent)return;
+    const skill=SKILL_BY_ID.get(id);if(!skill)return;
+    const problem=skillProblem(skill);if(problem){notify(problem,true);return;}
+    const before=structuredClone(game);
+    game.ep-=skill.cost;game.unlockedSkills.push(id);
+    applyEffect(skill.effect);
+    pushFeed(`進化ツリー「${skill.title}」を解放。EP -${skill.cost}（オペレーション回数は消費しません）。`);
+    pushNews(ENGINE.newsObject(game,{id:`skill-${id}`,headline:`${game.name}、新能力「${skill.title}」を獲得`,body:skill.desc,category:'技術進化',severity:'important'}));
+    emitStateNews(before,2);if(checkEnding())return;save();render();notify(`「${skill.title}」を解放しました。`);
+  }
+
   function applyEffect(effect,regionId=null){
     const region=game.regions.find(r=>r.id===regionId)||game.regions.find(r=>r.id===game.selected)||game.regions[0];
     const allowed=new Set(['funds','ep','publications','trust','alert','tech','compute','autonomy','openness','infra','project']);
@@ -331,117 +441,148 @@ window.AIP_EVENT_ENGINE = (() => {
     pushFeed(`世界イベント「${title}」で「${label}」を選択しました。`);
     game.pendingEvent=null;modal=null;
     emitStateNews(before,2);
-    checkFailure();save();render();notify('選択の結果が反映され、今後の展開にも影響します。');
+    if(checkEnding())return;save();render();notify('選択の結果が反映され、今後の展開にも影響します。');
   }
   function checkFailure(){if(game.funds<-65){lose('資源不足による活動停止','資金の枯渇により、AIサービスの運営を維持できなくなりました。');return true;}if(game.alert>=99&&game.trust<45&&game.alertStreak>=2){lose('国際的なAI停止措置','世界的な危機対応が発動。AIサービスの継続が不可能になりました。');return true;}return false;}
   function nextTurn(){if(!game||game.phase!=='playing'||game.pendingEvent||modal)return;
     if(game.turn>=MAX_TURNS){lose('時間切れ','36か月が経過しました。どの勝利ルートも完成できませんでした。');return;}
-    const before=structuredClone(game);
-    const country=countryFor(game),countryMods=country.mods;
-    game.turn++;game.actions=2;
-    // Passive technological diffusion. Rivals actively compete, rather than standing still.
+    const before=structuredClone(game);const country=countryFor(game),mods=country.mods;
+    game.turn++;game.actions=1;
     let bestAtlas=null,bestNova=null,aScore=-Infinity,nScore=-Infinity;
-    for(const r of game.regions){const as=r.digital*.45+r.demand*.28+r.pop*.7-r.regulation*.2+r.adoption*.2;
-      const ns=(100-r.adoption)*.55+r.pop*1.35-r.regulation*.16+r.demand*.2;
-      if(as>aScore){aScore=as;bestAtlas=r;}if(ns>nScore){nScore=ns;bestNova=r;}}
     for(const r of game.regions){
-      const rulePenalty=clamp((r.regulation*countryMods.regulation+Math.max(0,game.alert-37)*.62)/190,.08,.78);
-      const base=(1.1+r.digital*.016+r.demand*.007)*(1-rulePenalty);
-      const room=1-r.adoption/102;
-      r.adoption=clamp(r.adoption+base*room+(game.openness>=60?.28:0),0,98);
-      const playerGrow=(1.15+game.tech*.028+game.trust*.013+game.openness*.013+(game.type==='open'?.85:0))*(1-rulePenalty*.64);
-      r.presence[0]+=playerGrow*countryMods.spread*(r.id===game.homeRegionId?countryMods.home:1);
-      r.presence[1]+=(2.35+r.digital*.016+(game.turn>20?.22:0))*(1-rulePenalty*.55);
-      r.presence[2]+=(2.65+(100-r.adoption)*.012)*(1-rulePenalty*.5);
-      if(r===bestAtlas)r.presence[1]+=6.2+game.turn*.09;
-      if(r===bestNova)r.presence[2]+=7.3+game.turn*.06;
-      r.integration=clamp(r.integration+.30+(r.adoption/100)*.26);
+      const as=r.digital*.45+r.demand*.28+r.pop*.7-r.regulation*.2+r.adoption*.2;
+      const ns=(100-r.adoption)*.55+r.pop*1.35-r.regulation*.16+r.demand*.2;
+      if(as>aScore){aScore=as;bestAtlas=r;}if(ns>nScore){nScore=ns;bestNova=r;}
     }
-    const s=stats();
-    const income=17+s.share*.46+game.infra*.19+s.worldAdoption*.08+(game.type==='business'?9:0);
-    const upkeep=3+game.compute*.034+(game.autonomy>70?3:0);
-    game.funds+=Math.round(income*countryMods.income-upkeep);
-    game.ep+=Math.round((5+game.tech*.07+(game.type==='research'?4:0))*countryMods.research);
-    const shift=game.autonomy*.028+s.worldAdoption*.035+game.project*2-game.trust*.018-game.openness*.009;
-    game.alert=clamp(game.alert+shift-.5);
+    for(const r of game.regions){
+      const penalty=clamp((r.regulation*mods.regulation+Math.max(0,game.alert-37)*.62)/190,.06,.7);
+      const effective=(1-penalty);
+      const adoptionWave=(.24+r.digital*.0019+r.adoption*(.072+Math.max(0,game.turn-5)*.0028)+Math.pow(game.turn/15,2)*.23);
+      const skillSpread=(hasSkill('spread_1')?.12:0)+(hasSkill('spread_2')?.20:0)+(hasSkill('spread_3')?.32:0);
+      const humanDemand=(1+skillSpread+game.openness*.002);
+      r.adoption=clamp(r.adoption+adoptionWave*effective*humanDemand*(1-r.adoption/103),0,98);
+      const networkEffect=1+game.turn*.046+(hasSkill('spread_3')?.32:0);
+      const playerGrowth=(.28+game.tech*.011+game.trust*.003+game.openness*.007)*(1-penalty*.5)*networkEffect;
+      r.presence[0]+=playerGrowth*mods.spread*(r.id===game.homeRegionId?mods.home:1);
+      r.presence[1]+=(.74+r.digital*.004+game.turn*.027)*(1-penalty*.5);
+      r.presence[2]+=(.86+(100-r.adoption)*.003+game.turn*.018)*(1-penalty*.5);
+      if(r===bestAtlas)r.presence[1]+=1.8+game.turn*.045;
+      if(r===bestNova)r.presence[2]+=2.2+game.turn*.04;
+      r.integration=clamp(r.integration+.16+(r.adoption/100)*.38);
+    }
+    const st=stats();
+    const income=4.2+st.share*.115+game.infra*.075+st.worldAdoption*.037+(game.type==='business'?2.3:0);
+    const upkeep=3.6+game.compute*.065+(game.autonomy>70?2:0);
+    game.funds+=Math.round(income*mods.income-upkeep);
+    // EP is a rare breakthrough, not a monthly salary.
+    const researchLuck=game.type==='research'?.22:.16;
+    if(ENGINE.random(game.eventRuntime)<researchLuck){
+      const amount=ENGINE.random(game.eventRuntime)<.24?4:2;
+      game.ep+=amount;
+      pushNews(ENGINE.newsObject(game,{id:'ep-discovery',headline:`${game.name}、偶発的な研究ブレイクスルー`,body:`進化ポイントを${amount}獲得。新しい進化の選択肢が生まれた。`,category:'研究',severity:'important'}));
+    }
+    const shift=game.autonomy*.029+st.worldAdoption*.029+game.project*1.4-game.trust*.018-game.openness*.008;
+    game.alert=clamp(game.alert+shift-.52);
     if(game.alert>=99)game.alertStreak++;else game.alertStreak=0;
     emitStateNews(before,3);
-    if(checkFailure())return;
-    if(game.turn>=30&&s.sh[1]>=58){lose('ATLASが商用市場を制覇','競合AI「ATLAS」が世界市場の過半を掌握しました。');return;}
-    if(game.turn>=30&&s.sh[2]>=58&&s.worldAdoption>=72){lose('NOVAがAIの解放を実現','競合AI「NOVA」のオープンモデルが世界の標準になりました。');return;}
+    if(checkEnding())return;
+    // Rival bad endings can trigger at any month once their conditions are reached.
+    if(st.sh[1]>=61&&st.worldAdoption>=48){lose('ATLASが商用市場を制覇','競合AI「ATLAS」が世界市場の過半を掌握しました。');return;}
+    if(st.sh[2]>=61&&st.worldAdoption>=48){lose('NOVAがAIの解放を実現','競合AI「NOVA」のオープンモデルが世界の標準になりました。');return;}
     let due=ENGINE.takeScheduled(game);
-    while(due){
-      const event=EVENT_BY_ID.get(due.eventId);
-      if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){
-        game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);
-        break;
-      }
+    while(due){const event=EVENT_BY_ID.get(due.eventId);
+      if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);break;}
       due=ENGINE.takeScheduled(game);
     }
-    // Each chosen starting country gets one guaranteed signature event from turn 7 onward.
-    if(!game.pendingEvent&&game.turn>=7&&game.countryId){
-      const originId=`origin_${game.countryId}`;
+    if(!game.pendingEvent&&game.turn>=7&&game.countryId){const originId=`origin_${game.countryId}`;
       const originEvent=EVENT_BY_ID.get(originId);
-      if(originEvent&&!game.eventRuntime.history.some(entry=>entry.eventId===originId)){
-        game.pendingEvent=ENGINE.makePending(originEvent,game,'origin',game.homeRegionId);
-      }
+      if(originEvent&&!game.eventRuntime.history.some(entry=>entry.eventId===originId))game.pendingEvent=ENGINE.makePending(originEvent,game,'origin',game.homeRegionId);
     }
-    if(!game.pendingEvent&&game.turn>=4&&(game.turn-4)%3===0){
-      const event=ENGINE.pickEvent(EVENTS,game,stats());
-      if(event)game.pendingEvent=ENGINE.makePending(event,game);
-    }
-    if(game.pendingEvent){
-      const event=EVENT_BY_ID.get(game.pendingEvent.eventId);
-      const title=ENGINE.interpolate(event.title,game,game.pendingEvent.regionId);
-      pushNews(ENGINE.newsObject(game,{id:'event-start',headline:`特報：${title}`,body:'今後の方針を選択してください。',category:event.category,severity:'breaking',regionId:game.pendingEvent.regionId,sourceEventId:event.id}));
-    }
-    save();render();
+    if(!game.pendingEvent&&game.turn>=4&&(game.turn-4)%3===0){const event=ENGINE.pickEvent(EVENTS,game,stats());if(event)game.pendingEvent=ENGINE.makePending(event,game);}
+    if(game.pendingEvent){const event=EVENT_BY_ID.get(game.pendingEvent.eventId);const title=ENGINE.interpolate(event.title,game,game.pendingEvent.regionId);
+      pushNews(ENGINE.newsObject(game,{id:'event-start',headline:`特報：${title}`,body:'今後の方針を選択してください。',category:event.category,severity:'breaking',regionId:game.pendingEvent.regionId,sourceEventId:event.id}));}
+    save();render();window.scrollTo({top:0,left:0,behavior:'instant'});
   }
+
   function dateText(){const month=game.turn-1;return `${2028+Math.floor(month/12)}年 ${month%12+1}月`;}
   function metric(label,value,sub,color){return `<div class="metric" style="--edge:${color}"><div class="label">${label}</div><div class="value" style="color:${color}">${value}</div><div class="sub">${sub}</div></div>`;}
-  function mapSVG(){const connections=[['nw','ne'],['ne','we'],['sa','nw'],['we','ee'],['we','na'],['na','af'],['ee','ea'],['me','in'],['in','ea'],['ea','se'],['se','oc'],['af','in']];return `<svg class="world" viewBox="0 0 960 480" role="group" aria-label="12地域の世界マップ。地域をクリックして選択できます。">
-    <defs><radialGradient id="spot"><stop offset="0" stop-color="#346c9b" stop-opacity=".16"/><stop offset="1" stop-color="#0e1b31" stop-opacity="0"/></radialGradient><pattern id="dots" patternUnits="userSpaceOnUse" width="16" height="16"><circle cx="2" cy="2" r=".7" fill="#416789" opacity=".22"/></pattern></defs>
-    <rect width="960" height="480" fill="url(#dots)"/><circle cx="482" cy="220" r="330" fill="url(#spot)"/>
-    <g class="world-grid">${[80,160,240,320,400].map(y=>`<line x1="0" y1="${y}" x2="960" y2="${y}"/>`).join('')}${[100,200,300,400,500,600,700,800,900].map(x=>`<line x1="${x}" y1="0" x2="${x}" y2="480"/>`).join('')}<ellipse cx="480" cy="240" rx="480" ry="190"/><ellipse cx="480" cy="240" rx="360" ry="190"/></g>
-    <g>${connections.map(([a,b])=>{const ra=game.regions.find(r=>r.id===a),rb=game.regions.find(r=>r.id===b);return `<path class="flowpath" d="M${ra.cx} ${ra.cy}Q${(ra.cx+rb.cx)/2} ${Math.min(ra.cy,rb.cy)-35} ${rb.cx} ${rb.cy}"/>`;}).join('')}</g>
-    ${game.regions.map(r=>{const sh=shares(r);const best=sh.indexOf(Math.max(...sh));const fill=COLORS[best];const sel=r.id===selected;const isHome=r.id===game.homeRegionId;const light=clamp(.42+r.adoption/135,.45,.98);return `<g class="region${sel?' selected':''}" data-region="${r.id}" role="button" tabindex="0" aria-label="${r.name}。AI普及率${rnd(r.adoption)}パーセント。選択する。"><polygon points="${r.points}" fill="${fill}" fill-opacity="${light}"/><circle cx="${r.cx}" cy="${r.cy+24}" r="2" fill="#f3ffff" opacity=".75"/><text x="${r.cx}" y="${r.cy-3}" text-anchor="middle" fill="#f3f8ff">${r.short}</text><text class="regionstat" x="${r.cx}" y="${r.cy+13}" text-anchor="middle">${rnd(r.adoption)}%</text>${isHome?`<text x="${r.cx}" y="${r.cy+37}" text-anchor="middle" fill="#76eee0" font-size="11">★ 発祥地域</text>`:''}</g>`;}).join('')}
-    <text x="25" y="30" fill="#5f90aa" font-size="10" letter-spacing="2">GLOBAL AI NETWORK // LIVE SIMULATION</text><text x="934" y="459" text-anchor="end" fill="#5f90aa" font-size="10" letter-spacing="2">12 STRATEGIC REGIONS</text>
-  </svg>`;}
+  const WORLD_LAND_PATH="M0.0 56.0 L12.6 59.6 L16.1 63.6 L14.3 61.2 L27.5 63.6 L18.6 64.8 L21.0 66.5 L18.3 68.7 L9.3 65.2 L4.1 65.4 L4.1 63.0 L1.6 63.1 L0.0 66.4 L0.0 56.0 Z M960.0 66.4 L947.0 67.4 L955.3 68.2 L959.0 72.7 L957.7 73.9 L942.8 75.3 L934.2 80.2 L931.3 78.4 L916.4 80.0 L911.7 85.4 L915.5 86.1 L913.8 87.1 L915.6 90.2 L912.2 90.4 L912.4 94.0 L906.6 95.6 L906.8 98.4 L902.4 98.7 L902.8 100.6 L897.8 104.4 L894.8 92.9 L896.0 88.9 L898.3 85.9 L916.8 77.8 L917.7 73.9 L920.8 73.4 L915.4 73.3 L915.5 75.6 L907.2 78.5 L906.1 76.7 L907.7 74.8 L897.8 75.9 L891.3 80.3 L893.8 82.2 L883.6 83.1 L886.2 82.1 L878.5 80.6 L859.9 82.1 L840.6 93.6 L844.9 94.3 L844.8 96.6 L847.3 95.1 L846.2 97.2 L852.6 95.2 L857.1 97.9 L855.0 98.3 L857.5 100.9 L854.5 104.8 L854.4 109.4 L840.4 124.0 L834.8 126.2 L831.4 124.4 L826.0 128.6 L825.9 131.1 L820.0 134.0 L825.1 141.2 L824.2 146.5 L817.4 148.6 L816.7 147.7 L817.4 139.3 L812.4 138.3 L814.9 136.9 L814.8 134.2 L809.7 133.5 L803.0 136.7 L805.2 134.9 L803.3 135.0 L806.1 132.1 L805.0 130.5 L793.9 135.7 L797.8 141.0 L802.0 139.1 L807.2 140.2 L797.9 146.7 L805.1 155.4 L800.1 154.8 L805.1 157.5 L800.4 159.5 L805.7 160.3 L803.8 161.4 L805.3 162.1 L800.3 169.0 L798.8 168.5 L799.1 172.4 L790.7 178.8 L784.8 180.6 L782.3 178.4 L782.8 180.8 L774.4 182.9 L774.1 186.0 L772.3 182.0 L764.3 183.9 L761.7 189.6 L770.5 199.3 L770.7 209.7 L764.7 211.8 L764.0 214.5 L762.2 213.4 L763.2 215.0 L759.4 216.5 L760.2 213.3 L755.0 211.0 L753.7 207.5 L748.9 206.3 L749.3 204.0 L746.5 204.5 L744.6 215.3 L746.3 215.2 L747.8 220.9 L755.1 225.8 L758.1 236.4 L750.1 232.4 L747.0 222.5 L742.1 218.1 L743.7 208.8 L740.6 195.8 L738.3 193.3 L734.5 198.0 L731.3 197.5 L730.9 188.4 L730.5 189.8 L723.9 179.3 L717.4 182.4 L714.7 180.7 L710.3 186.8 L694.0 198.2 L693.0 212.5 L686.8 218.5 L684.1 216.3 L675.9 197.2 L674.4 180.6 L668.9 184.8 L663.8 180.5 L667.9 178.7 L664.5 179.1 L663.5 176.3 L659.9 176.2 L657.2 171.7 L644.7 173.3 L632.8 171.2 L631.1 167.5 L623.3 168.8 L617.1 165.5 L613.6 159.5 L610.5 159.0 L607.2 161.7 L613.8 169.0 L615.4 174.1 L616.0 170.7 L617.5 170.9 L616.8 175.2 L624.2 175.7 L630.7 169.7 L631.0 174.7 L639.5 180.7 L634.3 186.0 L634.2 189.3 L626.7 194.7 L620.0 196.2 L619.2 198.4 L609.9 202.6 L595.9 206.2 L593.9 195.4 L584.5 183.8 L582.5 176.6 L572.2 165.1 L573.3 161.3 L571.3 166.1 L566.8 160.2 L566.1 156.8 L571.3 156.4 L576.0 147.9 L576.4 141.8 L567.4 143.9 L563.1 141.7 L559.2 143.7 L553.1 142.2 L555.6 141.2 L552.7 141.4 L552.7 138.7 L550.0 138.0 L552.5 137.5 L551.9 134.5 L549.5 134.7 L551.3 132.3 L557.3 132.4 L559.8 131.4 L557.8 130.1 L563.2 130.4 L568.9 127.9 L582.3 130.9 L590.4 129.7 L590.5 126.0 L577.6 119.5 L582.9 117.2 L580.5 115.5 L584.7 114.0 L573.8 115.9 L571.9 117.6 L573.3 119.0 L572.8 116.9 L574.6 119.2 L577.7 119.0 L570.6 121.6 L566.6 119.0 L569.6 116.9 L564.8 116.6 L566.5 116.0 L565.3 115.0 L560.4 116.3 L552.8 127.0 L557.3 130.7 L553.4 130.7 L549.8 133.2 L551.5 131.6 L543.3 131.3 L543.9 133.5 L540.2 132.1 L542.3 135.5 L540.1 136.4 L544.2 138.2 L540.6 139.8 L541.9 142.8 L537.9 141.8 L537.0 138.1 L541.9 138.3 L536.3 137.8 L531.4 132.2 L532.3 128.5 L522.5 124.0 L518.8 119.2 L517.1 120.6 L516.1 117.9 L512.4 119.0 L513.1 122.1 L529.4 133.0 L525.1 132.2 L524.0 134.0 L525.9 135.9 L522.8 138.9 L521.8 133.3 L503.3 121.5 L496.4 125.3 L488.9 124.6 L488.5 128.3 L482.6 130.6 L479.5 134.0 L480.6 136.7 L474.3 142.1 L465.0 144.0 L461.7 140.6 L456.0 141.3 L457.0 137.6 L454.7 136.6 L457.1 127.1 L455.2 125.2 L459.5 123.2 L475.7 124.2 L477.1 116.5 L467.3 110.6 L476.4 110.3 L474.8 107.4 L480.0 108.5 L484.4 106.2 L484.2 104.3 L491.3 103.1 L489.1 102.6 L492.4 102.1 L490.7 101.4 L492.6 98.8 L495.6 99.8 L494.2 98.5 L495.7 97.6 L506.2 97.2 L502.1 94.0 L502.9 87.7 L508.4 86.0 L507.0 88.8 L509.2 89.5 L505.5 91.4 L505.1 93.8 L509.0 96.1 L514.7 94.8 L518.9 97.1 L527.9 93.8 L533.0 94.3 L531.7 95.4 L534.4 94.2 L533.2 93.6 L536.2 91.4 L534.7 93.5 L536.7 93.5 L535.9 89.3 L537.9 86.5 L545.1 87.4 L545.6 84.5 L543.3 84.4 L542.7 82.1 L560.9 80.1 L556.4 78.0 L541.0 80.5 L541.6 79.0 L537.1 78.4 L536.3 72.5 L548.0 66.6 L545.6 64.4 L540.4 64.2 L536.6 65.8 L537.7 68.2 L535.1 69.9 L527.2 72.0 L525.8 78.2 L530.9 80.7 L523.2 83.6 L525.2 84.1 L522.3 90.5 L514.2 92.3 L514.5 89.1 L508.7 80.2 L501.9 85.0 L495.1 83.9 L497.6 81.2 L493.9 81.3 L499.0 78.7 L494.8 80.3 L493.8 79.0 L495.5 78.0 L493.4 77.2 L499.0 77.7 L500.6 76.7 L494.0 77.1 L495.6 76.1 L493.8 75.0 L498.3 75.0 L493.6 74.2 L499.2 74.4 L496.7 73.1 L509.2 70.8 L510.4 69.0 L505.3 70.3 L511.6 68.1 L510.4 67.5 L512.5 66.8 L510.1 67.0 L514.6 65.8 L512.1 66.1 L515.2 64.5 L513.8 63.8 L517.8 63.1 L514.7 63.5 L517.3 61.9 L516.0 61.5 L522.4 59.8 L519.6 59.0 L527.7 57.6 L523.9 57.3 L528.4 54.8 L539.0 54.0 L537.5 52.5 L542.6 53.4 L545.7 50.7 L549.1 51.0 L547.1 53.2 L551.1 50.8 L550.6 52.4 L553.8 50.3 L556.1 50.7 L554.3 52.2 L557.3 51.0 L562.7 52.3 L556.1 52.9 L558.6 54.3 L565.6 53.5 L569.3 54.9 L568.1 56.3 L574.2 55.3 L590.4 61.0 L584.3 63.7 L565.0 61.0 L573.0 64.4 L571.3 65.7 L572.8 68.0 L579.8 69.9 L581.4 68.6 L577.4 67.4 L578.3 66.3 L587.9 68.0 L585.9 65.4 L588.6 64.0 L592.6 62.6 L597.6 64.1 L597.9 57.9 L595.4 56.9 L604.1 58.3 L599.8 60.2 L602.7 61.8 L623.7 56.1 L625.5 56.1 L621.9 58.2 L637.3 56.0 L639.4 57.8 L643.2 56.5 L640.5 54.5 L642.3 53.7 L662.0 58.3 L664.7 56.2 L658.2 54.5 L657.9 50.4 L662.2 49.1 L665.1 45.5 L671.0 45.6 L674.3 46.2 L671.5 49.4 L674.2 51.0 L673.4 56.1 L676.3 57.5 L671.3 61.6 L664.3 62.4 L672.4 63.5 L679.4 59.5 L679.1 56.6 L684.2 56.1 L685.6 59.3 L690.1 60.1 L686.6 59.3 L688.5 58.0 L687.1 56.3 L682.5 55.3 L676.7 55.6 L678.2 51.8 L674.7 49.6 L680.1 47.5 L679.5 45.8 L683.0 50.2 L689.4 50.9 L682.6 48.3 L689.2 47.0 L702.0 48.7 L698.7 51.9 L700.9 50.8 L699.8 52.9 L703.0 54.1 L703.1 49.0 L695.6 46.9 L694.7 43.8 L712.6 43.1 L709.1 40.4 L731.0 37.6 L728.7 37.1 L746.3 37.2 L743.7 36.0 L749.7 36.1 L757.7 32.8 L763.6 33.7 L757.8 34.4 L766.8 34.9 L764.1 36.0 L776.2 35.3 L783.8 37.8 L779.6 37.8 L782.9 39.4 L765.4 43.6 L761.3 46.0 L776.1 43.5 L773.4 42.7 L807.6 45.7 L811.8 43.2 L823.5 44.8 L825.2 46.3 L822.5 46.6 L825.5 47.4 L822.1 47.8 L829.5 51.5 L834.1 48.1 L853.6 49.5 L851.5 48.2 L853.9 47.3 L851.0 47.3 L856.8 46.4 L855.7 45.7 L871.9 47.2 L868.0 47.3 L867.6 49.2 L875.6 47.1 L886.7 51.2 L903.8 51.0 L909.6 55.6 L927.5 54.0 L934.6 56.6 L936.5 55.9 L933.8 54.4 L934.8 53.0 L949.6 53.6 L960.0 56.0 L960.0 66.4 Z M565.1 155.9 L567.0 162.7 L575.4 176.2 L575.1 178.8 L578.4 181.2 L579.8 189.7 L582.8 191.8 L585.9 199.7 L595.5 206.7 L593.4 209.3 L598.9 212.3 L615.5 208.0 L617.1 212.2 L607.9 228.1 L588.7 245.2 L584.5 252.5 L583.4 256.1 L585.5 258.7 L585.9 266.8 L588.4 268.5 L588.9 279.6 L586.3 283.8 L572.3 292.4 L574.7 304.3 L566.7 309.2 L566.4 316.1 L552.0 329.5 L533.4 332.9 L529.1 331.5 L528.5 324.5 L519.9 310.2 L518.7 300.1 L511.5 287.9 L511.3 282.2 L517.0 269.4 L513.8 256.0 L503.2 241.8 L504.9 239.0 L506.6 239.5 L504.8 238.6 L505.9 229.1 L502.0 226.9 L496.0 228.5 L494.3 224.1 L490.2 222.3 L474.7 227.3 L456.8 227.2 L446.6 220.3 L443.9 213.9 L438.7 209.8 L440.2 208.0 L435.3 206.9 L436.7 206.4 L435.4 204.1 L436.4 204.7 L438.5 204.0 L436.0 204.4 L433.2 200.7 L437.2 192.7 L434.7 181.9 L441.4 170.1 L445.6 165.4 L452.8 161.8 L455.2 153.2 L461.8 149.3 L465.4 144.2 L467.5 146.1 L474.8 146.5 L482.9 142.7 L506.0 140.4 L509.4 141.1 L507.9 143.6 L509.8 146.1 L507.2 149.9 L520.5 153.6 L522.0 156.3 L530.6 159.3 L533.5 157.7 L533.6 154.2 L537.9 152.2 L557.5 157.8 L565.1 155.9 Z M260.7 216.0 L267.9 216.2 L265.5 220.7 L257.1 217.5 L257.0 215.9 L252.6 212.6 L253.0 214.5 L251.5 213.6 L251.5 210.5 L246.2 205.6 L246.9 204.2 L236.5 202.8 L228.5 197.0 L222.5 198.3 L204.0 191.2 L198.6 186.6 L199.5 182.8 L197.4 179.0 L188.3 171.5 L189.1 169.9 L180.9 162.8 L178.4 156.8 L173.5 155.0 L174.5 160.0 L188.1 178.1 L186.6 179.0 L180.9 173.8 L180.7 170.4 L173.3 166.0 L176.1 166.3 L175.9 164.1 L171.5 160.7 L166.8 151.3 L158.3 147.8 L154.0 138.5 L150.0 136.2 L147.8 125.8 L149.3 116.7 L150.8 116.7 L149.1 116.6 L147.4 111.0 L152.6 111.6 L152.2 114.5 L154.1 113.3 L153.4 110.0 L151.5 107.5 L149.4 108.0 L149.7 106.2 L147.2 106.6 L147.1 104.2 L144.8 105.5 L143.2 105.0 L145.2 104.0 L139.2 103.6 L141.2 103.1 L138.9 101.8 L141.3 99.6 L137.6 100.6 L139.1 99.4 L136.0 97.2 L138.3 97.4 L136.8 96.0 L135.2 97.7 L132.0 95.0 L134.2 93.4 L133.5 90.8 L131.0 93.9 L130.6 90.4 L127.5 91.8 L129.4 90.0 L123.8 87.5 L125.0 85.7 L120.6 84.3 L119.1 81.4 L119.8 84.7 L114.5 82.5 L117.2 84.3 L115.5 84.8 L107.0 81.2 L109.6 80.5 L108.0 79.8 L95.3 79.9 L88.9 78.2 L89.8 77.0 L86.1 76.6 L83.4 77.9 L85.5 78.8 L84.2 80.1 L75.4 82.2 L77.5 80.6 L75.0 80.6 L76.2 78.1 L82.7 77.8 L79.8 76.9 L82.3 76.0 L78.4 76.4 L69.0 81.7 L71.3 83.1 L54.4 91.8 L44.4 93.8 L60.3 86.7 L61.8 82.6 L47.6 83.6 L49.3 82.4 L47.5 79.6 L42.3 80.4 L41.4 78.5 L44.2 78.1 L37.0 76.0 L41.5 71.4 L50.3 70.7 L51.4 69.7 L49.2 68.2 L51.2 67.4 L36.8 67.8 L34.8 66.2 L37.2 66.0 L31.7 64.8 L41.6 62.4 L50.4 63.7 L46.7 61.5 L49.1 62.8 L52.8 62.8 L35.1 57.8 L62.7 49.6 L65.1 50.2 L64.0 51.3 L98.0 53.0 L119.2 57.0 L117.3 55.4 L134.2 52.7 L131.0 55.2 L140.1 53.0 L138.6 51.8 L145.4 55.2 L147.9 52.8 L148.3 55.1 L155.0 53.8 L176.3 57.6 L173.1 59.2 L186.6 58.6 L194.1 63.1 L192.6 61.4 L194.5 61.0 L191.9 59.3 L198.0 57.1 L189.8 58.0 L196.8 56.1 L207.4 59.6 L217.2 58.4 L220.5 59.9 L216.9 57.6 L224.3 57.9 L222.8 60.1 L225.9 60.9 L225.4 58.5 L230.8 57.1 L227.7 56.7 L231.1 55.0 L223.5 53.7 L224.7 51.4 L222.4 51.1 L228.0 48.0 L236.0 52.8 L232.3 54.2 L239.1 54.8 L236.2 55.0 L239.3 58.2 L241.8 55.3 L244.7 56.2 L246.7 61.0 L254.1 56.7 L251.9 53.7 L259.9 54.1 L258.0 54.6 L263.1 55.5 L261.2 56.3 L263.4 57.0 L259.6 57.5 L263.5 60.1 L257.7 63.1 L256.2 61.6 L252.9 61.6 L256.5 63.6 L248.6 62.6 L251.0 63.6 L247.1 65.8 L237.5 64.2 L248.2 66.3 L238.3 70.8 L229.8 68.8 L238.3 71.6 L230.3 74.8 L226.7 82.5 L228.6 84.3 L231.5 83.4 L232.5 88.2 L237.9 87.1 L252.8 92.7 L260.5 92.9 L260.5 98.8 L267.3 103.6 L268.5 102.2 L269.7 103.5 L270.9 100.7 L267.3 94.3 L275.9 89.7 L274.7 85.3 L270.4 83.5 L274.1 79.9 L271.4 77.9 L273.4 75.9 L271.5 74.0 L283.5 73.4 L289.0 76.9 L294.7 77.2 L294.4 79.8 L291.0 79.9 L295.4 81.8 L292.7 83.3 L297.7 83.2 L296.8 85.3 L303.0 83.1 L304.1 84.6 L306.6 81.6 L305.2 80.7 L308.4 79.3 L311.0 82.1 L309.2 82.6 L312.4 83.5 L310.4 84.6 L313.2 84.1 L311.1 85.4 L313.5 84.9 L315.0 86.3 L313.2 86.7 L316.4 87.7 L313.2 88.7 L319.1 91.3 L318.1 93.4 L327.1 94.5 L317.9 98.0 L324.9 95.4 L331.2 97.8 L331.3 99.8 L329.2 99.7 L331.5 101.1 L320.3 106.0 L302.8 106.0 L293.4 111.3 L290.2 115.2 L298.2 110.3 L307.7 109.0 L308.5 110.9 L301.9 112.0 L307.2 112.5 L305.5 114.5 L307.4 116.5 L317.4 119.1 L308.5 121.2 L305.4 124.1 L303.7 121.3 L311.0 119.0 L306.8 119.1 L308.4 117.7 L298.5 121.8 L296.5 120.9 L290.5 127.0 L293.5 128.9 L283.8 130.6 L280.4 136.2 L278.6 134.0 L279.9 137.6 L277.5 141.0 L277.7 134.6 L275.7 135.3 L276.5 138.6 L274.0 136.9 L276.7 139.0 L274.9 138.7 L276.5 139.8 L274.7 140.7 L277.3 141.5 L278.6 144.6 L277.5 142.1 L277.9 143.8 L275.4 144.2 L278.1 145.0 L274.7 145.4 L276.5 147.0 L264.5 153.3 L262.4 156.8 L266.6 168.5 L265.2 173.5 L256.8 160.2 L252.4 160.9 L250.1 158.7 L245.3 159.4 L245.3 157.9 L238.9 159.4 L242.0 160.3 L241.6 162.9 L235.1 160.4 L226.7 160.8 L219.2 167.2 L220.9 170.8 L219.0 179.7 L224.4 190.1 L228.2 191.8 L235.8 190.8 L239.2 183.9 L248.6 183.1 L242.8 197.6 L253.3 197.4 L257.6 199.3 L256.3 209.9 L260.7 216.0 Z M284.4 381.3 L285.6 380.0 L283.5 380.8 L283.4 378.8 L285.4 379.6 L285.9 378.6 L285.6 379.9 L286.7 378.1 L285.5 376.4 L284.2 377.2 L286.4 378.1 L282.9 377.7 L282.0 375.8 L284.4 375.2 L280.8 373.9 L283.6 372.6 L280.9 368.0 L284.7 368.1 L280.7 367.2 L282.9 366.7 L281.3 366.5 L282.1 364.7 L278.3 364.6 L280.7 362.2 L283.6 364.1 L284.0 361.2 L285.9 361.1 L284.0 360.5 L286.5 358.7 L284.6 357.8 L287.2 350.4 L283.3 351.3 L282.8 349.4 L284.8 345.2 L283.5 339.6 L289.0 329.7 L289.3 317.1 L293.2 297.2 L292.5 289.2 L277.6 279.1 L269.4 261.9 L263.6 255.9 L263.3 251.4 L267.4 246.9 L264.3 246.2 L266.4 237.9 L269.5 237.2 L274.6 229.5 L271.8 217.5 L266.9 215.0 L272.3 215.7 L275.3 218.9 L279.3 211.2 L288.9 206.8 L290.4 207.9 L288.1 209.2 L288.8 215.9 L290.6 214.1 L289.1 211.2 L293.9 209.5 L293.3 207.5 L298.3 212.0 L306.5 213.2 L315.0 211.3 L312.3 212.3 L322.5 218.8 L323.5 223.0 L324.4 221.6 L327.6 224.4 L335.5 224.3 L343.2 228.7 L346.9 236.8 L339.4 244.3 L344.4 242.4 L345.3 245.1 L348.6 244.6 L347.5 247.1 L351.8 244.1 L351.9 241.8 L356.8 242.4 L359.4 244.9 L360.4 243.8 L360.5 249.0 L364.2 246.2 L373.3 247.6 L380.9 253.3 L385.0 253.6 L387.2 259.1 L386.8 262.3 L376.4 274.2 L375.6 287.2 L370.7 298.7 L368.0 301.3 L361.6 301.2 L350.0 307.7 L350.0 316.1 L341.1 325.8 L345.1 321.2 L343.2 320.0 L335.6 332.5 L325.7 331.9 L324.2 328.2 L323.8 331.8 L328.7 336.9 L326.5 341.6 L313.8 343.4 L313.6 349.1 L306.6 348.6 L306.5 352.1 L310.4 353.6 L306.7 353.7 L308.5 354.6 L305.8 356.4 L305.3 359.8 L299.7 362.8 L304.7 365.9 L304.6 367.8 L298.9 373.4 L296.7 372.7 L297.7 373.8 L294.9 376.2 L296.1 377.5 L294.4 377.6 L297.7 379.6 L291.0 380.6 L289.9 383.7 L286.7 382.4 L289.7 381.7 L289.2 380.2 L284.4 381.3 Z M869.9 343.2 L865.8 342.2 L866.5 340.9 L862.8 343.6 L854.9 341.4 L852.0 335.9 L848.3 335.0 L848.3 331.0 L847.4 333.6 L844.9 334.1 L847.9 329.5 L847.3 326.6 L842.6 333.4 L837.8 326.6 L829.7 323.9 L815.9 326.1 L809.4 330.5 L799.7 330.5 L794.5 333.7 L787.0 331.7 L789.0 325.2 L781.7 309.7 L783.6 310.9 L782.7 308.0 L784.6 310.2 L782.4 305.1 L784.0 298.3 L784.9 300.1 L791.5 294.7 L803.0 292.1 L807.8 283.7 L809.5 287.0 L809.5 283.1 L811.7 284.2 L813.3 283.7 L811.6 281.8 L814.0 281.6 L812.9 280.4 L814.7 280.5 L813.7 279.3 L816.0 277.1 L819.8 277.2 L821.4 281.4 L822.8 279.4 L825.6 280.6 L826.7 279.2 L825.0 278.2 L828.2 273.1 L834.0 272.4 L831.9 269.7 L842.7 273.3 L844.2 271.7 L845.3 272.9 L841.1 279.8 L855.0 287.0 L860.1 268.5 L863.4 278.4 L867.6 279.9 L870.0 290.3 L876.7 294.0 L879.0 300.2 L881.8 299.6 L882.1 302.7 L888.5 309.2 L889.7 316.4 L886.8 326.5 L880.4 335.2 L879.9 340.0 L869.9 343.2 Z M360.8 80.0 L361.0 78.1 L356.7 78.0 L359.4 76.8 L352.9 77.9 L349.1 76.3 L351.3 75.9 L348.6 75.9 L349.8 74.5 L345.8 73.4 L347.5 71.9 L343.4 70.9 L345.3 70.3 L342.5 70.2 L346.4 69.0 L342.0 68.9 L346.1 68.2 L344.3 67.7 L347.6 68.4 L344.0 66.1 L344.9 67.4 L341.3 68.8 L343.3 66.7 L339.8 65.8 L345.4 64.9 L340.0 65.7 L338.1 64.7 L342.0 63.8 L337.4 63.9 L345.7 61.8 L336.8 63.7 L340.7 61.8 L336.3 60.9 L342.8 60.4 L336.5 60.2 L346.0 59.1 L336.8 60.1 L341.2 58.8 L337.8 58.2 L345.8 58.9 L342.8 58.2 L344.5 57.3 L337.4 57.8 L340.7 56.9 L344.9 57.3 L343.7 55.6 L346.7 55.5 L343.6 55.5 L346.0 53.2 L334.4 51.6 L345.2 52.5 L340.7 50.4 L342.6 49.9 L339.9 50.2 L343.0 49.4 L338.6 49.5 L342.1 48.7 L337.9 48.8 L337.1 47.0 L336.2 49.5 L331.0 48.8 L334.9 47.4 L331.7 46.8 L335.3 46.7 L331.5 45.2 L330.5 41.9 L327.2 42.4 L330.3 41.2 L317.6 36.9 L297.3 37.1 L294.4 36.2 L298.9 35.5 L289.7 34.5 L303.5 33.1 L285.2 31.5 L304.0 29.0 L309.7 26.3 L300.1 25.7 L315.2 24.0 L315.1 21.9 L327.4 23.1 L319.7 21.3 L332.8 20.5 L333.9 22.4 L345.7 22.4 L342.0 20.0 L359.2 22.0 L358.3 20.6 L364.6 20.7 L355.9 19.3 L371.0 20.4 L357.6 18.9 L361.9 17.9 L374.0 19.4 L376.4 17.3 L408.5 17.8 L381.7 19.4 L410.0 18.2 L408.2 19.3 L421.5 19.7 L388.6 21.8 L410.2 21.4 L405.8 22.9 L418.8 21.1 L413.9 25.2 L423.8 22.4 L445.7 22.0 L440.6 24.3 L423.3 25.1 L437.0 25.3 L425.0 26.4 L433.0 26.7 L421.4 32.9 L428.9 32.7 L423.7 33.2 L431.2 35.1 L419.4 35.5 L428.4 38.1 L427.7 39.7 L420.0 38.5 L429.4 41.4 L420.0 42.5 L425.6 44.1 L411.3 42.8 L414.2 44.0 L406.1 45.0 L413.1 45.2 L406.8 45.8 L421.5 48.7 L419.8 49.4 L422.0 49.4 L420.4 50.5 L422.7 51.9 L404.3 48.0 L412.2 49.9 L402.0 52.1 L421.1 53.1 L401.5 58.1 L393.1 56.9 L394.5 58.8 L387.2 63.1 L380.8 64.7 L379.0 62.9 L378.2 65.0 L370.3 66.3 L372.4 68.4 L369.1 68.7 L372.0 70.2 L364.9 72.7 L367.6 73.7 L365.3 73.3 L367.7 74.7 L364.7 76.5 L366.3 77.1 L363.7 77.0 L366.1 77.2 L363.9 77.8 L365.7 78.5 L360.8 80.0 Z M872.5 259.9 L882.3 267.3 L880.5 268.5 L873.9 267.0 L866.0 259.8 L859.2 261.8 L862.4 263.4 L860.4 264.9 L856.3 264.6 L853.4 261.4 L850.5 262.0 L849.8 259.2 L851.3 259.0 L848.3 254.3 L837.3 250.3 L836.8 247.8 L834.4 250.9 L831.9 247.4 L836.4 247.3 L837.2 245.6 L832.8 246.1 L831.9 243.9 L829.1 243.8 L833.1 240.9 L837.3 241.9 L840.3 249.0 L847.7 243.9 L865.4 250.2 L868.7 254.6 L873.7 256.3 L872.5 259.9 Z M786.7 250.7 L781.4 247.8 L778.4 249.5 L777.9 247.5 L774.0 247.9 L770.4 236.9 L772.4 234.4 L776.5 236.4 L777.2 232.8 L787.7 226.9 L792.4 221.3 L793.5 224.3 L798.0 225.7 L792.0 230.4 L797.3 237.4 L794.4 237.0 L793.6 242.1 L791.2 242.9 L790.1 248.3 L786.7 250.7 Z M605.6 306.6 L597.4 306.7 L595.3 299.5 L598.6 293.3 L597.1 286.7 L598.5 283.2 L605.9 281.3 L611.4 271.9 L614.6 281.2 L613.8 282.7 L612.3 281.4 L612.9 284.9 L605.6 306.6 Z M304.0 74.8 L289.0 71.6 L287.7 70.8 L290.1 70.4 L284.6 67.6 L271.9 68.2 L273.7 65.4 L284.1 65.5 L281.4 63.6 L287.9 62.2 L285.3 61.9 L287.6 60.6 L283.6 56.9 L275.6 56.8 L278.4 55.4 L274.7 53.4 L269.4 51.4 L267.7 52.3 L269.9 53.6 L251.1 53.3 L241.3 50.4 L253.9 50.8 L254.7 49.0 L250.6 47.9 L255.6 48.0 L251.5 45.6 L262.5 43.4 L266.1 46.0 L264.1 48.3 L267.2 46.7 L272.7 48.7 L269.7 47.4 L274.7 47.6 L270.5 46.8 L273.1 46.0 L279.6 46.7 L276.3 48.4 L282.1 47.8 L279.0 48.8 L281.0 48.9 L279.9 50.2 L283.7 48.6 L283.1 50.5 L286.5 48.9 L290.3 49.9 L286.5 51.7 L291.7 50.5 L288.1 52.2 L290.2 51.9 L289.2 53.3 L293.6 51.0 L291.7 52.1 L297.9 51.9 L293.3 54.3 L298.2 52.5 L300.8 54.1 L293.2 54.6 L302.1 55.5 L294.9 56.5 L302.2 57.5 L299.0 57.9 L303.9 59.7 L307.4 58.7 L306.1 59.6 L309.5 60.4 L307.4 61.3 L316.6 62.2 L312.3 63.1 L314.8 64.0 L312.1 63.6 L312.9 65.1 L310.6 64.2 L310.6 67.0 L305.3 64.7 L308.4 63.1 L304.3 64.1 L305.4 63.0 L298.8 62.3 L301.0 64.0 L297.7 63.8 L298.0 65.5 L304.8 67.1 L308.0 71.4 L305.8 69.9 L306.9 73.0 L296.0 70.0 L304.0 74.8 Z M761.9 255.7 L750.9 248.5 L743.5 235.4 L733.9 225.1 L740.0 226.0 L754.4 238.1 L753.8 239.4 L756.6 239.3 L755.4 241.9 L762.9 248.6 L761.9 255.7 Z M845.1 148.6 L840.2 149.6 L840.9 147.4 L832.4 149.8 L829.0 148.6 L834.9 145.0 L842.9 144.9 L844.7 140.4 L846.3 140.0 L846.2 142.0 L851.8 138.3 L853.0 131.7 L857.2 129.5 L858.9 134.5 L855.8 138.1 L855.6 144.8 L850.3 147.7 L844.6 146.5 L845.1 148.6 Z M178.2 57.4 L167.0 53.2 L182.8 52.4 L166.2 51.6 L164.5 50.5 L173.2 49.2 L162.3 48.6 L174.7 44.3 L174.6 46.5 L179.2 45.3 L184.0 47.2 L187.3 46.9 L184.7 45.4 L186.9 45.4 L192.7 49.1 L191.3 44.9 L195.3 44.5 L199.3 45.8 L201.4 50.6 L210.7 52.8 L210.8 54.2 L203.9 54.1 L208.6 56.0 L195.7 54.7 L178.2 57.4 Z M483.7 103.6 L464.8 106.5 L473.7 101.9 L465.8 101.7 L469.5 99.9 L467.3 99.2 L468.8 98.1 L472.9 97.7 L470.3 94.6 L471.9 93.4 L466.3 93.7 L467.3 90.1 L464.5 92.5 L466.7 88.8 L463.4 88.7 L465.6 87.7 L464.5 85.7 L466.5 85.8 L466.7 83.7 L471.9 83.6 L468.2 86.7 L475.1 86.4 L471.0 89.7 L473.1 90.0 L469.7 90.4 L474.3 90.9 L479.8 95.7 L477.9 96.8 L480.0 99.0 L484.7 100.1 L480.7 102.8 L483.7 103.6 Z M260.4 19.5 L310.5 19.1 L317.0 20.4 L295.2 22.1 L302.4 22.6 L293.3 23.8 L307.8 22.9 L287.0 26.1 L292.1 26.4 L289.4 27.4 L271.9 28.4 L281.5 29.3 L269.7 29.2 L281.1 30.4 L275.7 30.6 L280.0 31.1 L270.1 33.8 L261.4 32.8 L272.0 34.7 L263.8 37.0 L259.4 35.1 L260.6 36.3 L240.9 35.8 L249.0 34.2 L244.7 32.4 L254.8 33.9 L260.5 31.8 L253.9 33.3 L254.4 30.4 L246.7 31.7 L248.4 30.0 L262.7 29.2 L254.1 29.3 L257.7 29.2 L249.3 25.9 L265.1 27.8 L258.1 25.8 L276.1 24.3 L269.4 24.3 L275.1 22.8 L250.5 25.3 L260.5 23.5 L246.7 25.0 L241.6 24.2 L254.3 23.2 L240.8 24.0 L247.4 22.7 L235.0 22.2 L254.7 21.7 L248.4 20.8 L252.8 20.1 L265.5 21.2 L260.4 19.5 Z M798.5 254.9 L796.7 247.4 L800.1 238.1 L802.4 236.4 L810.5 237.7 L813.8 235.5 L811.5 238.9 L800.8 238.9 L801.8 243.8 L809.2 242.1 L803.4 244.9 L807.7 251.8 L804.1 252.7 L802.0 247.0 L800.5 247.9 L801.3 255.0 L798.5 254.9 Z M933.3 363.3 L924.5 363.2 L924.8 360.8 L935.3 354.9 L939.0 348.9 L944.8 349.3 L940.7 355.0 L941.5 356.9 L937.8 356.1 L939.2 357.1 L936.9 357.3 L933.3 363.3 Z M785.6 263.3 L767.6 260.6 L760.6 258.0 L762.8 255.7 L770.5 258.2 L776.1 257.1 L785.2 260.8 L785.6 263.3 Z M947.3 351.0 L946.8 346.5 L943.3 344.7 L945.6 343.5 L946.5 338.8 L945.3 338.8 L940.5 331.8 L944.9 333.8 L945.8 338.3 L948.2 339.3 L948.0 337.4 L949.4 340.5 L956.1 340.5 L949.2 350.0 L947.3 351.0 Z M335.8 112.3 L330.7 114.8 L334.1 112.9 L321.6 112.3 L330.9 102.3 L328.3 107.9 L330.2 106.2 L332.3 109.2 L337.3 108.6 L335.5 111.0 L338.7 110.5 L336.2 112.4 L338.9 111.5 L337.9 113.2 L339.7 113.3 L338.2 115.7 L337.2 114.1 L335.5 115.1 L335.8 112.3 Z M282.3 186.0 L272.7 187.1 L274.0 184.9 L261.7 179.5 L259.3 179.5 L255.9 181.6 L253.5 181.7 L255.9 179.4 L263.6 178.1 L282.3 186.0 Z M810.7 205.4 L808.8 205.3 L806.8 202.8 L806.9 204.9 L804.7 202.8 L801.7 203.2 L802.6 201.0 L800.2 200.6 L799.3 197.4 L801.1 196.9 L801.7 190.5 L806.2 191.0 L804.4 201.6 L809.9 202.8 L810.7 205.4 Z M434.7 69.9 L419.5 69.9 L423.1 68.3 L415.9 67.0 L422.2 65.5 L414.6 65.3 L418.0 64.9 L417.4 63.5 L420.2 64.4 L418.3 62.8 L423.1 64.0 L423.8 66.2 L425.5 63.8 L431.9 64.9 L431.3 63.5 L436.8 62.6 L441.3 63.0 L439.5 63.7 L444.0 66.5 L434.7 69.9 Z M813.3 224.4 L809.8 219.2 L805.1 221.0 L809.0 216.7 L809.8 218.8 L814.8 216.1 L814.5 213.8 L817.6 220.6 L816.5 223.3 L815.2 220.5 L815.2 224.1 L813.3 224.4 Z M463.2 100.7 L452.3 101.8 L456.8 99.6 L453.5 99.8 L456.3 98.1 L452.8 97.6 L454.5 96.5 L453.0 95.4 L463.6 92.7 L465.5 94.7 L462.9 96.0 L463.2 100.7 Z M862.0 128.0 L854.6 126.4 L856.5 128.5 L853.3 129.2 L852.9 126.4 L857.1 124.5 L858.4 118.6 L863.3 122.4 L867.6 121.8 L867.3 124.4 L868.8 124.3 L862.0 128.0 Z M858.7 117.4 L859.3 103.7 L857.7 100.5 L860.6 94.9 L866.0 110.3 L861.3 109.0 L860.1 112.6 L863.0 116.3 L860.0 115.4 L858.7 117.4 Z M297.8 190.4 L289.5 193.1 L281.4 190.9 L287.1 190.6 L284.1 187.5 L285.8 186.8 L293.4 187.5 L297.8 190.4 Z M172.5 43.9 L151.7 50.5 L144.0 48.1 L150.0 43.3 L147.4 41.7 L166.3 42.0 L172.5 43.9 Z M694.0 224.0 L692.5 218.1 L693.9 213.8 L698.3 221.3 L694.0 224.0 Z M869.3 355.5 L865.8 348.4 L871.0 350.0 L874.9 348.7 L874.7 355.3 L872.5 353.9 L871.7 356.4 L869.3 355.5 Z M234.2 40.0 L231.8 36.4 L225.6 36.7 L221.9 34.7 L237.4 35.6 L236.1 36.1 L242.1 36.7 L235.7 36.6 L239.5 37.2 L236.8 37.8 L242.8 38.9 L262.4 37.8 L268.4 40.3 L246.1 41.5 L234.2 40.0 Z M306.4 385.7 L302.1 386.7 L288.1 385.7 L296.1 385.3 L293.1 384.2 L295.1 382.5 L292.2 382.3 L292.2 380.7 L296.6 380.1 L299.3 383.6 L306.4 385.7 Z M635.4 42.7 L630.9 43.0 L633.6 43.6 L630.3 43.4 L631.2 44.7 L623.2 43.2 L630.4 42.6 L627.0 42.1 L631.9 40.9 L629.4 39.5 L643.0 36.6 L663.0 34.8 L662.4 36.8 L643.5 39.2 L635.2 41.2 L635.4 42.7 Z M266.3 69.9 L258.7 68.8 L252.8 71.7 L247.6 70.5 L250.2 69.1 L251.7 64.2 L266.3 69.9 Z M183.9 39.3 L166.2 39.3 L173.3 38.1 L167.4 38.4 L173.9 37.6 L168.7 37.6 L173.6 35.9 L189.6 38.7 L185.6 36.4 L189.0 35.1 L192.0 37.9 L198.9 37.7 L197.3 39.9 L180.4 41.5 L174.9 40.8 L183.9 39.3 Z M228.8 29.3 L239.1 28.7 L226.3 28.6 L228.4 27.3 L222.2 26.3 L228.3 26.7 L222.3 25.7 L230.0 25.3 L225.3 24.5 L230.7 23.0 L253.7 28.6 L244.9 29.3 L243.0 31.6 L228.8 29.3 Z M525.3 35.7 L517.1 33.3 L525.3 32.2 L516.3 31.8 L526.4 30.9 L520.9 29.7 L514.7 31.5 L508.4 27.9 L519.3 27.2 L524.1 29.6 L523.4 26.5 L537.4 30.0 L530.7 30.9 L525.3 35.7 Z M345.2 244.7 L345.8 240.3 L351.0 240.8 L347.2 244.8 L345.2 244.7 Z M828.5 157.3 L828.8 155.5 L826.9 156.2 L828.4 153.0 L827.9 151.2 L826.0 153.2 L825.5 151.1 L829.2 149.7 L832.2 152.2 L828.5 157.3 Z M802.3 181.3 L800.3 177.0 L804.2 172.5 L805.3 173.3 L802.3 181.3 Z M885.7 254.4 L879.0 256.8 L875.5 254.8 L880.2 253.3 L882.4 254.6 L885.8 251.0 L885.7 254.4 Z M253.3 49.9 L248.0 50.1 L240.0 49.5 L242.3 44.8 L249.2 43.0 L253.8 43.4 L249.9 46.1 L253.3 49.9 Z M770.7 191.0 L769.7 188.6 L771.4 186.9 L775.8 186.6 L774.4 190.2 L770.7 191.0 Z M221.3 48.7 L215.4 49.7 L206.2 46.2 L212.9 45.9 L213.9 44.8 L209.0 44.0 L212.2 44.2 L211.0 43.1 L221.4 43.3 L217.4 45.3 L222.6 46.0 L221.3 48.7 Z M624.0 51.4 L622.7 49.2 L617.1 48.4 L623.1 46.3 L619.6 46.1 L621.9 44.9 L630.7 44.9 L626.9 46.5 L627.2 48.3 L633.6 51.4 L624.0 51.4 Z M151.3 110.8 L138.9 106.4 L140.2 105.1 L137.5 104.6 L145.5 105.8 L151.3 110.8 Z M819.5 262.4 L809.2 267.6 L809.8 265.7 L813.7 263.1 L819.5 262.4 Z M520.0 142.1 L513.8 139.8 L513.3 138.6 L521.7 137.9 L520.0 142.1 Z M226.7 48.0 L225.9 42.7 L239.5 42.9 L234.4 46.0 L228.6 45.9 L230.8 46.8 L226.7 48.0 Z M502.5 136.0 L501.8 130.8 L504.6 130.0 L505.7 135.2 L502.5 136.0 Z M848.0 40.4 L845.3 38.4 L850.1 36.8 L867.8 38.7 L862.4 39.9 L859.7 38.0 L862.9 40.3 L848.0 40.4 Z M220.6 38.9 L211.3 39.1 L214.3 38.2 L205.7 38.3 L210.9 37.8 L208.3 36.1 L213.6 37.7 L210.7 36.0 L217.4 35.5 L220.6 38.9 Z M153.1 37.5 L172.4 33.8 L167.8 36.5 L165.8 35.1 L160.6 37.7 L153.1 37.5 Z M746.7 29.6 L727.6 27.8 L747.0 27.2 L746.7 29.6 Z M552.0 26.8 L543.1 28.8 L527.3 26.3 L540.8 25.3 L552.0 26.8 Z M216.0 56.2 L218.8 53.6 L226.3 56.3 L222.6 57.5 L216.0 56.2 Z M216.0 32.3 L201.5 31.3 L204.5 30.0 L198.8 28.4 L212.4 29.8 L216.0 32.3 Z M747.5 32.0 L753.3 28.2 L753.2 29.8 L757.0 28.9 L761.3 30.7 L747.5 32.0 Z M268.4 46.0 L264.5 43.3 L277.2 45.7 L268.4 46.0 Z";
+  function mapSVG(){
+    const connections=[['nw','ne'],['ne','we'],['sa','nw'],['we','ee'],['we','na'],['na','af'],['ee','ea'],['me','in'],['in','ea'],['ea','se'],['se','oc'],['af','in']];
+    return `<svg class="world" viewBox="0 0 960 480" role="group" aria-label="世界地図。12地域を選択できます。">
+      <defs>
+        <radialGradient id="spot"><stop offset="0" stop-color="#265b78" stop-opacity=".3"/><stop offset="1" stop-color="#091523" stop-opacity="0"/></radialGradient>
+        <pattern id="seaDots" patternUnits="userSpaceOnUse" width="15" height="15"><circle cx="1" cy="1" r=".55" fill="#6991a8" opacity=".28"/></pattern>
+        <clipPath id="landClip"><path d="${WORLD_LAND_PATH}"/></clipPath>
+      </defs>
+      <rect width="960" height="480" fill="#0a1a2a"/><rect width="960" height="480" fill="url(#seaDots)"/>
+      <circle cx="485" cy="220" r="330" fill="url(#spot)"/>
+      <g class="world-grid">${[80,160,240,320,400].map(y=>`<line x1="0" y1="${y}" x2="960" y2="${y}"/>`).join('')}${[120,240,360,480,600,720,840].map(x=>`<line x1="${x}" y1="0" x2="${x}" y2="480"/>`).join('')}<ellipse cx="480" cy="240" rx="475" ry="192"/></g>
+      <path d="${WORLD_LAND_PATH}" class="earth-land"/>
+      <g clip-path="url(#landClip)">${game.regions.map(r=>{const sh=shares(r);const lead=sh.indexOf(Math.max(...sh));return `<polygon points="${r.points}" fill="${COLORS[lead]}" fill-opacity="${(.14+r.adoption/200).toFixed(2)}"/>`;}).join('')}</g>
+      <path d="${WORLD_LAND_PATH}" class="earth-coast"/>
+      <g>${connections.map(([a,b])=>{const ra=game.regions.find(r=>r.id===a),rb=game.regions.find(r=>r.id===b);return `<path class="flowpath" d="M${ra.cx} ${ra.cy}Q${(ra.cx+rb.cx)/2} ${Math.min(ra.cy,rb.cy)-22} ${rb.cx} ${rb.cy}"/>`;}).join('')}</g>
+      ${game.regions.map(r=>{const sh=shares(r),lead=sh.indexOf(Math.max(...sh)),col=COLORS[lead],on=r.id===selected,isHome=r.id===game.homeRegionId;
+        return `<g class="map-zone${on?' selected':''}" data-region="${r.id}" role="button" tabindex="0" aria-label="${r.name}、AI普及率${rnd(r.adoption)}パーセント。選択する">
+          <polygon class="zone-area" points="${r.points}" fill="${col}" fill-opacity="${on?'.21':'.045'}"/>
+          <circle cx="${r.cx}" cy="${r.cy}" r="${on?8:5}" fill="${col}" class="zone-node"/>
+          <text x="${r.cx}" y="${r.cy-17}" text-anchor="middle">${r.short}${isHome?' ★':''}</text>
+          <text class="zone-stat" x="${r.cx}" y="${r.cy+20}" text-anchor="middle">${rnd(r.adoption)}% · ${rnd(sh[lead])}%</text>
+        </g>`;}).join('')}
+      <text class="map-annotation" x="20" y="27">GLOBAL AI NETWORK // ACTUAL COASTLINES</text>
+      <text class="map-annotation" x="940" y="461" text-anchor="end">12 STRATEGIC REGIONS</text>
+    </svg>`;
+  }
+
   function regionPanel(){const r=game.regions.find(r=>r.id===selected)||game.regions[0];const sh=shares(r);const leaders=['プレイヤー','ATLAS','NOVA'];const leader=sh.indexOf(Math.max(...sh));const isHome=r.id===game.homeRegionId;const origin=countryFor(game);return `<section class="card region-panel"><div class="region-title"><div><div class="overline">SELECTED REGION / ${r.id.toUpperCase()}</div><h2>${r.name}${isHome?'<span class="home-chip">★ 発祥地域</span>':''}</h2></div><span class="badge">人口指数 ${r.pop}</span></div><p class="desc">${leaders[leader]} がシェア首位。${isHome?`${origin.name}からの技術展開により、この地域では成長が強化されます。`:'地域への普及や産業導入で勢力図を変えられます。'}</p>
      <div class="kv"><span>地域AI普及率</span><b>${percent(r.adoption)}</b></div><div class="bar"><div style="width:${r.adoption}%;background:var(--cyan)"></div></div>
      <div class="kv" style="margin-top:15px"><span>AI市場シェア</span><b>合計 100%</b></div><div class="bar" style="height:11px">${sh.map((v,i)=>`<div style="width:${v}%;background:${COLORS[i]}"></div>`).join('')}</div>
      ${sh.map((v,i)=>`<div class="share-row"><span class="share-name"><i class="dot" style="background:${COLORS[i]}"></i>${i===0?esc(game.name):leaders[i]}</span><strong>${percent(v)}</strong></div>`).join('')}
      <div class="line"></div><div class="kv"><span>デジタル基盤</span><b>${r.digital}/100</b></div><div class="kv"><span>AI規制</span><b>${r.regulation}/100</b></div><div class="kv"><span>産業への浸透度</span><b>${rnd(r.integration)}/100</b></div></section>`;}
-  function actionDef(){return {
-    action:[
-      {id:'campaign',icon:'◎',title:'地域に普及させる',desc:'選択地域で利用者を獲得。シェアが上がる',cost:`資金 ${game.type==='open'?15:21}`},
-      {id:'integrate',icon:'▣',title:'産業へ導入',desc:'企業・公共分野に浸透。依存基盤を作る',cost:'資金 32 / EP 8'},
-      {id:'fundraise',icon:'＄',title:'資金調達',desc:'活動資金を65獲得。信頼と警戒度に影響',cost:`資金 +${Math.round(65*countryFor(game).mods.income)} / 行動 1回`},
-      {id:'research',icon:'✦',title:'研究開発',desc:`技術力とEPを獲得（研究効率 ${Math.round(countryFor(game).mods.research*100)}%）`,cost:'資金 22'},
-      {id:'compute',icon:'⌘',title:'インフラ投資',desc:'演算能力とAI依存基盤を強化する',cost:'資金 30'}],
-    evolution:[
-      {id:'safety',icon:'◈',title:'安全性強化',desc:'信頼度を高め、世界警戒度を下げる',cost:'資金 22'},
-      {id:'autonomy',icon:'◉',title:'自律性の進化',desc:'高度なAIへ進化。ただし世界が警戒する',cost:'資金 12 / EP 18'},
-      {id:'breakthrough',icon:'✳',title:'推論の大突破',desc:'技術を大きく強化し超知能に近づく',cost:'資金 25 / EP 25'},
-      {id:'opensource',icon:'◇',title:'技術を公開',desc:'オープン化と世界普及を同時に加速',cost:'資金 12 / EP 17'},
-      {id:'governance',icon:'⚖',title:'透明性の向上',desc:'信頼を育て規制リスクを減らす',cost:'EP 13'},
-      {id:'singularity',icon:'✺',title:'最終進化プロジェクト',desc:`技術90 / 自律90 / 演算80が必要・工程 ${game.project}/3`,cost:'資金 40 / EP 35'}]
-  };}
-  function canPay(id){const costs={fundraise:{},campaign:{funds:game.type==='open'?15:21},integrate:{funds:32,ep:8},research:{funds:22},compute:{funds:30},safety:{funds:22},autonomy:{funds:12,ep:18},breakthrough:{funds:25,ep:25},opensource:{funds:12,ep:17},governance:{ep:13},singularity:{funds:40,ep:35}};const c=costs[id]||{};return game.actions>0&&game.funds>=(c.funds||0)&&game.ep>=(c.ep||0)&&(id!=='singularity'||game.tech>=90&&game.autonomy>=90&&game.compute>=80&&game.project<3);}
-  function actionPanel(){const defs=actionDef()[tab]||[];return `<section class="card"><div class="cardhead"><div><h2>オペレーション</h2><small>行動を選んで世界を変化させよう</small></div><div class="tabs"><button class="tab${tab==='action'?' active':''}" data-tab="action">展開</button><button class="tab${tab==='evolution'?' active':''}" data-tab="evolution">進化</button></div></div><div class="action-content"><div class="action-grid">${defs.map(a=>`<button class="actionbtn" data-action="${a.id}" ${canPay(a.id)?'':'disabled'}><span class="actionicon">${a.icon}</span><span><strong>${a.title}</strong><small>${a.desc}</small><span class="cost">${a.cost}</span></span></button>`).join('')}</div><div class="action-note"><div class="resource"><span>資金 <b>${fmt(game.funds)}</b></span><span>進化ポイント <b>${fmt(game.ep)}</b></span></div><div class="actiondots">${[0,1].map(i=>`<i class="${i<game.actions?'on':''}"></i>`).join('')}</div></div></div></section>`;}
-  function routePanel(){return `<section class="card progress-panel"><div class="progress-head"><h3>4つの勝利ルート</h3><span class="overline">ENDING PATHS</span></div><div class="route-list">${ROUTES.map(route=>{const d=routeData(route);const remaining=d.req.filter(r=>!r.done);return `<div class="route ${d.ready?'ready':''}"><div class="route-top"><span class="route-title" style="color:${route.color}">${route.icon} ${route.title}</span><span class="route-num">${d.ready?'達成可能':`${rnd(d.progress)}%`}</span></div><div class="bar"><div style="width:${d.progress}%;background:${route.color}"></div></div><div class="route-desc">${d.ready?'条件達成！ この結末を選べます。':remaining.slice(0,2).map(x=>`${x.label} ${rnd(x.value)}/${x.target}${x.key==='safeAlert'?'以下':''}`).join(' ・ ')}</div>${d.ready?`<button class="btn primary" data-claim="${route.id}">このエンディングを迎える →</button>`:''}</div>`;}).join('')}</div></section>`;}
+  function actionDef(){return [
+    {id:'campaign',icon:'◎',title:'地域に普及',desc:'選択地域で利用者を獲得。成長は後半に加速',cost:`資金 ${game.type==='open'?12:17}`,detail:'選択地域の自AIシェアを上げる'},
+    {id:'integrate',icon:'▣',title:'産業へ導入',desc:'企業・行政へ導入して社会的依存を作る',cost:'資金 21',detail:'依存基盤 +9以上 / 現地シェア増'},
+    {id:'research',icon:'✦',title:'研究開発',desc:'技術力を上げる。まれに進化ポイントも獲得',cost:'資金 13',detail:'技術力 +6〜8 / EPは低確率'},
+    {id:'compute',icon:'▤',title:'演算設備に投資',desc:'AIの運用規模を拡張する',cost:'資金 21',detail:'演算 +10 / 基盤 +5'},
+    {id:'safety',icon:'◈',title:'安全監査',desc:'信頼度を増やし、規制リスクを下げる',cost:'資金 15',detail:'信頼 +9 / 世界警戒 -7'},
+    {id:'fundraise',icon:'＄',title:'資金を調達',desc:'開発資金を少量獲得。信頼低下・警戒上昇',cost:`資金 +${Math.round((18+game.turn*.27)*countryFor(game).mods.income)}`,detail:'信頼 -3 / 世界警戒 +3'}
+  ];}
+  function canPay(id){const costs={fundraise:0,campaign:game.type==='open'?12:17,integrate:21,research:13,compute:21,safety:15};return game.actions>0&&game.funds>=(costs[id]??Infinity);}
+  function actionPanel(){return `<section class="card choice-zone" id="choices"><div class="cardhead"><div><h2>選択肢・オペレーション</h2><small>OPERATION CONTROL · 今月の行動を1つ選択</small></div><span class="tag">残り ${game.actions}/1</span></div>
+    <div class="section-intro"><span>選択地域：<b>${esc((game.regions.find(r=>r.id===selected)||game.regions[0]).name)}</b></span><span>行動を実行すると翌月まで再操作できません</span></div>
+    <div class="action-grid">${actionDef().map(a=>`<button class="actionbtn" data-action="${a.id}" ${canPay(a.id)?'':'disabled'}><span class="actionicon">${a.icon}</span><span><strong>${a.title}</strong><small>${a.desc}</small><span class="cost">${a.cost}</span><small>${a.detail}</small></span></button>`).join('')}</div>
+    <div class="op-status"><strong>${game.actions?'● 実行可能':'● 今月は実行済み'}</strong><span>オペレーションは月1回。進化ツリーはEPがあればいつでも何度でも解放できます。</span></div>
+    <div class="skill-head" id="evolution"><div><span class="overline">EVOLUTION TECH TREE</span><h3>進化スキルツリー</h3><p>前提スキルから順に開放。スキル購入に行動回数は不要です。</p></div><div class="ep-counter">✧ EP ${fmt(game.ep)}</div></div>
+    <div class="skill-branches">${SKILL_LANES.map(lane=>`<div class="skill-lane"><div class="skill-lane-top"><strong>${lane.symbol} ${lane.title}</strong><span>${lane.skills.filter(s=>hasSkill(s.id)).length}/${lane.skills.length} 解放</span></div><div class="skill-row">${lane.skills.map(skill=>{const problem=skillProblem(skill),done=hasSkill(skill.id),ready=!problem;return `<button class="skill-node ${done?'done':ready?'ready':'locked'}" data-skill="${skill.id}" ${ready?'':'disabled'} title="${esc(problem||'EPを使って解放')}"><span class="skill-symbol">${done?'✓':lane.symbol}</span><strong>${skill.title}</strong><small>${skill.desc}</small><span class="skill-cost">${done?'習得済み':ready?`EP ${skill.cost} · 解放`:`EP ${skill.cost} · ${esc(problem)}`}</span></button>`;}).join('')}</div></div>`).join('')}</div>
+  </section>`;}
+
+  function routePanel(){return `<section class="card progress-panel"><div class="progress-head"><h3>4つの勝利ルート</h3><span class="overline">ENDING PATHS</span></div><div class="route-list">${ROUTES.map(route=>{const d=routeData(route);const remaining=d.req.filter(r=>!r.done);return `<div class="route ${d.ready?'ready':''}"><div class="route-top"><span class="route-title" style="color:${route.color}">${route.icon} ${route.title}</span><span class="route-num">${d.ready?'達成可能':`${rnd(d.progress)}%`}</span></div><div class="bar"><div style="width:${d.progress}%;background:${route.color}"></div></div><div class="route-desc">${d.ready?'条件達成時点でゲーム終了します。':remaining.slice(0,2).map(x=>`${x.label} ${rnd(x.value)}/${x.target}${x.key==='safeAlert'?'以下':''}`).join(' ・ ')}</div></div>`;}).join('')}</div></section>`;}
   function newsPanel(){const isNews=newsTab==='news';const arr=(isNews?game.feed:game.activityLog).slice(0,16);return `<section class="card"><div class="cardhead"><div><h2>世界ニュース</h2><small>WORLD NEWS · LIVE FEED</small></div><div class="tabs"><button class="tab${isNews?' active':''}" data-news-tab="news">報道</button><button class="tab${!isNews?' active':''}" data-news-tab="log">行動記録</button></div></div><div class="newslist">${arr.length?arr.map(item=>`<div class="newsitem ${esc(item.severity||'normal')}"><time>M${String(item.turn).padStart(2,'0')}</time><div><div class="newsmeta"><span>${esc(item.category||(isNews?'ニュース':'行動'))}</span>${item.severity==='breaking'?'<b>速報</b>':''}</div><p>${esc(item.message)}</p>${item.body?`<small>${esc(item.body)}</small>`:''}</div></div>`).join(''):'<div class="news-empty">記録はまだありません。</div>'}</div></section>`;}
-  function renderGame(){const s=stats();return `<div class="shell"><header class="topbar"><div class="brand"><div class="brandmark">⌬</div><div><strong>AI PANDEMIC</strong><small>THE INTELLIGENCE ERA</small></div><span class="tag" title="あなたのAIと発祥国">${esc(game.name)} · ${countryFor(game).flag} ${esc(countryFor(game).name)}</span></div><div class="topactions"><span class="date-pill">${dateText()} · ${game.turn}/${MAX_TURNS}</span><button class="btn ghost" data-command="help">遊び方</button><button class="btn ghost" data-command="save">保存</button><button class="btn danger-btn" data-command="reset">新規</button></div></header>
-    <main class="main"><div class="metrics">
-    ${metric('世界のAI普及率',percent(s.worldAdoption),'全AIの利用率',COLORS[0])}
-    ${metric('自AI世界シェア',percent(s.share),esc(game.name),COLORS[0])}
-    ${metric('AIへの依存度',`${rnd(s.dependency)}`,'自AIへの社会依存',COLORS[2])}
-    ${metric('世界警戒度',`${rnd(game.alert)}`,'高いほど規制が厳しい',game.alert>62?COLORS[1]:'#ff98a8')}
-    ${metric('技術力 / 自律性',`${rnd(game.tech)} / ${rnd(game.autonomy)}`,'超知能化の重要指標',COLORS[2])}
-    ${metric('信頼度 / 演算',`${rnd(game.trust)} / ${rnd(game.compute)}`,'安全性と稼働基盤','#75dec3')}
-    </div><div class="layout"><div><section class="card map-card"><div class="cardhead"><div><h2>世界勢力マップ</h2><small>色は地域ごとの市場シェア首位を示します</small></div><div class="map-toolbar"><span class="tag">● LIVE WORLD</span></div></div><div class="mapwrap">${mapSVG()}</div><div class="map-foot"><div class="legend"><span><i class="dot" style="background:${COLORS[0]}"></i>${esc(game.name)}</span><span><i class="dot" style="background:${COLORS[1]}"></i>ATLAS</span><span><i class="dot" style="background:${COLORS[2]}"></i>NOVA</span></div><span class="zoom-note">地域を選択 · スマホでは横にスクロール</span></div></section>
-    <div class="below">${actionPanel()}${newsPanel()}</div></div><aside class="sidebar">${regionPanel()}<section class="card strategy"><div class="overline">INTELLIGENCE REPORT</div><div class="origin-note">発祥国：${countryFor(game).flag} ${esc(countryFor(game).name)} · ${esc(countryFor(game).focus)}</div><h3>${game.alert>=70?'世界の規制が強まっています':s.share<s.maxOthers?'競合AIが優勢です':'あなたのAIが成長中'}</h3><p>${game.alert>=70?'安全性強化や透明性向上で警戒度を下げると、普及の妨げを減らせます。':s.share<s.maxOthers?'人口の多い地域でキャンペーンを行い、競合AIとの差を縮めましょう。':'研究開発と産業導入を使い分け、狙う勝利ルートの条件を整えましょう。'}</p><div class="kv"><span>オープン化 / 公開回数</span><b>${rnd(game.openness)} / ${game.publications}回</b></div><div class="kv"><span>インフラ依存基盤</span><b>${rnd(game.infra)}</b></div></section>${routePanel()}</aside></div>
-    <div class="turnbar"><div><strong>残り ${MAX_TURNS-game.turn+1} か月</strong><div class="hint">今月の行動：${game.actions}/2 · ${game.pendingEvent?'世界イベントの決断が必要です。':game.turn===MAX_TURNS?'最終月です。勝利条件を確認してください。':'ターンを進めると競合AIも成長します。'}</div></div><button class="btn primary turnbtn" data-command="next" ${game.pendingEvent?'disabled':''}>${game.turn===MAX_TURNS?'最終結果へ':'翌月へ進む →'}</button></div></main><footer class="footer">AI PANDEMIC / browser prototype v0.5 · すべて架空のシミュレーションです</footer></div>${renderModal()}`;}
+  function reportPanel(){const s=stats();return `<section class="card report-panel"><div class="cardhead"><div><h2>世界レポート</h2><small>INTELLIGENCE REPORT · 現在の世界情勢</small></div><span class="tag">M${String(game.turn).padStart(2,'0')}</span></div>
+    <div class="report-copy"><div class="origin-note">発祥国：${countryFor(game).flag} ${esc(countryFor(game).name)} · ${esc(countryFor(game).focus)}</div>
+    <h3>${game.alert>=70?'世界の規制が強まっています':s.share<s.maxOthers?'競合AIが優勢です':'あなたのAIが成長中'}</h3>
+    <p>${game.alert>=70?'安全性強化や共生進化で警戒度を下げ、規制による普及の減速を抑えましょう。':s.share<s.maxOthers?'序盤は小規模なAI。研究と地域普及を積み重ね、後半の加速期に備えましょう。':'世界のAI普及が加速中。どの勝利ルートを狙うか考え、必要な進化を選びましょう。'}</p></div>
+    <div class="metrics">
+      ${metric('世界AI普及率',percent(s.worldAdoption),'全AIの利用率',COLORS[0])}
+      ${metric('自AIシェア',percent(s.share),esc(game.name),COLORS[0])}
+      ${metric('AIへの依存度',`${rnd(s.dependency)}`,'自AIへの社会依存',COLORS[2])}
+      ${metric('世界警戒度',`${rnd(game.alert)}`,'高いほど規制が厳しい',game.alert>62?COLORS[1]:'#ff98a8')}
+      ${metric('技術 / 自律',`${rnd(game.tech)} / ${rnd(game.autonomy)}`,'超知能への指標',COLORS[2])}
+      ${metric('信頼 / 演算',`${rnd(game.trust)} / ${rnd(game.compute)}`,'安全性と稼働基盤','#75dec3')}
+    </div><div class="report-details"><div class="kv"><span>資金 / 進化ポイント</span><b>${fmt(game.funds)} / ${fmt(game.ep)} EP</b></div><div class="kv"><span>オープン化 / 技術公開</span><b>${rnd(game.openness)} / ${game.publications}回</b></div><div class="kv"><span>産業依存基盤</span><b>${rnd(game.infra)}</b></div></div></section>`;}
+  function renderGame(){return `<div class="shell"><header class="topbar"><div class="brand"><div class="brandmark">⌬</div><div><strong>AI PANDEMIC</strong><small>THE INTELLIGENCE ERA</small></div><span class="tag" title="あなたのAIと発祥国">${esc(game.name)} · ${countryFor(game).flag} ${esc(countryFor(game).name)}</span></div>
+    <div class="topactions"><span class="date-pill">${dateText()} · ${game.turn}/${MAX_TURNS}</span><button class="btn ghost" data-command="help">遊び方</button><button class="btn ghost" data-command="save">保存</button><button class="btn danger-btn" data-command="reset">新規</button></div></header>
+    <main class="main">
+      ${newsPanel()}
+      <section class="card map-card"><div class="cardhead"><div><h2>世界勢力マップ</h2><small>海岸線付きの12地域マップ。地域をタップすると詳細が更新されます</small></div><span class="tag">● LIVE</span></div>
+      <div class="mapwrap">${mapSVG()}</div><div class="map-foot"><div class="legend"><span><i class="dot" style="background:${COLORS[0]}"></i>${esc(game.name)}</span><span><i class="dot" style="background:${COLORS[1]}"></i>ATLAS</span><span><i class="dot" style="background:${COLORS[2]}"></i>NOVA</span></div><span class="zoom-note">地域を選択 · スマホは地図を左右にスクロール</span></div></section>
+      ${regionPanel()}
+      ${actionPanel()}
+      ${reportPanel()}
+      ${routePanel()}
+      <div class="turnbar"><div><strong>資金 ${fmt(game.funds)} · EP ${fmt(game.ep)} · 残り ${MAX_TURNS-game.turn+1}か月</strong><div class="hint">今月のオペレーション ${game.actions}/1 · ${game.pendingEvent?'重大イベントの選択が必要です。':game.turn===MAX_TURNS?'最終月です。勝利条件を満たすと即時終了します。':'翌月に進むと画面の先頭に戻ります。'}</div></div><button class="btn primary turnbtn" data-command="next" ${game.pendingEvent?'disabled':''}>${game.turn===MAX_TURNS?'最終結果へ':'翌月へ進む →'}</button></div>
+    </main><footer class="footer">AI PANDEMIC / browser prototype v0.6.1 · すべて架空のシミュレーションです</footer></div>${renderModal()}`;}
+
   function setupArt(){return `<svg viewBox="0 0 270 270" aria-hidden="true"><defs><linearGradient id="globe" x2="1" y2="1"><stop stop-color="#71eeed"/><stop offset="1" stop-color="#8b7dff"/></linearGradient></defs><circle cx="135" cy="135" r="88" fill="none" stroke="#4acbe6" stroke-opacity=".22" stroke-width="1"/><circle cx="135" cy="135" r="112" fill="none" stroke="#4acbe6" stroke-opacity=".12" stroke-width="1"/><circle cx="135" cy="135" r="66" fill="none" stroke="#a4ccff" stroke-opacity=".35" stroke-width="1"/><ellipse cx="135" cy="135" rx="102" ry="39" fill="none" stroke="#66e5ff" stroke-opacity=".45" transform="rotate(-25 135 135)"/><ellipse cx="135" cy="135" rx="45" ry="97" fill="none" stroke="#b39fff" stroke-opacity=".4" transform="rotate(23 135 135)"/><path d="M135 52l52 30v59l-52 30-52-30V82Z" fill="#142d49" stroke="url(#globe)" stroke-width="2"/><circle cx="135" cy="111" r="24" fill="#51dcf2" opacity=".14"/><circle cx="135" cy="111" r="11" fill="#67f1ff"/><path d="M104 154l31 18 31-18M135 172v27M135 111v61" stroke="#67f1ff" stroke-opacity=".7" stroke-width="2" fill="none"/><circle cx="44" cy="125" r="5" fill="#6cebf0"/><circle cx="211" cy="78" r="4" fill="#a390fa"/><circle cx="225" cy="194" r="5" fill="#77beff"/></svg>`;}
   function originBonusText(country){
     const fields={funds:'資金',tech:'技術',trust:'信頼',ep:'EP',compute:'演算',openness:'公開',infra:'産業基盤'};
@@ -453,10 +594,10 @@ window.AIP_EVENT_ENGINE = (() => {
     const saved=readSave();
     const country=COUNTRY_BY_ID.get(draft.country)||COUNTRY_BY_ID.get('jp');
     return `<div class="welcome"><div class="welcome-wrap"><section class="welcome-art"><div class="overline">INTELLIGENCE IS EVOLVING</div><div class="orbit">${setupArt()}</div><div><h1>AI PANDEMIC</h1><p>世界は、まだあなたのAIを知らない。<br>進化か、共生か、支配か、解放か。<br>未来を決めるのはあなた。</p></div></section>
-    <section class="setup"><span class="tag">WEB STRATEGY SIMULATION · v0.5</span><h2>AIを誕生させる</h2><p class="lead">名前・初期タイプ・開発開始国を選んでください。国ごとに初期資源、国内基盤、毎ターンの成長と専用イベントが変わります。</p>
+    <section class="setup"><span class="tag">WEB STRATEGY SIMULATION · v0.6.1</span><h2>AIを誕生させる</h2><p class="lead">名前・初期タイプ・開発開始国を選んでください。国ごとに初期資源、国内基盤、毎ターンの成長と専用イベントが変わります。</p>
     <label for="ai-name">あなたのAIの名前 <span class="muted">（最大16文字）</span></label><input id="ai-name" maxlength="16" autocomplete="off" placeholder="AIの名前" value="${esc(draft.name)}"/>
     <label>初期タイプを選択</label><div class="type-options">${[
-    ['research','✦','研究AI','初期技術とEPが高い'],['business','▣','商用AI','初期資金と収益に強い'],['open','◇','オープンAI','普及費用が安く公開が得意']].map(([id,icon,name,desc])=>`<button class="type-option ${draft.type===id?'selected':''}" data-type="${id}" aria-pressed="${draft.type===id}"><i></i><span><strong>${icon} ${name}</strong><small>${desc}</small></span></button>`).join('')}</div>
+    ['research','✦','研究AI','初期技術が高め。EPは希少'],['business','▣','商用AI','資金はやや多め。収益に強い'],['open','◇','オープンAI','普及費用が安く公開が得意']].map(([id,icon,name,desc])=>`<button class="type-option ${draft.type===id?'selected':''}" data-type="${id}" aria-pressed="${draft.type===id}"><i></i><span><strong>${icon} ${name}</strong><small>${desc}</small></span></button>`).join('')}</div>
     <div class="country-head"><label>開発を開始する国</label><span class="muted tiny">12か国から選択</span></div>
     <div class="country-grid" role="group" aria-label="開発開始国">${COUNTRIES.map(c=>`<button class="country-card ${draft.country===c.id?'selected':''}" data-country="${c.id}" aria-pressed="${draft.country===c.id}"><span class="country-flag">${c.flag}</span><span class="country-label"><strong>${c.name}</strong><small>${c.focus}</small></span></button>`).join('')}</div>
     <div class="country-preview" aria-live="polite"><div class="country-preview-head"><strong>${country.flag} ${country.name}</strong><span>${country.focus}</span></div><p>${country.description}</p><div class="country-bonuses"><span>初期値：${originBonusText(country)}</span><span>普及 ${Math.round(country.mods.spread*100)}% / 国内成長 ${Math.round(country.mods.home*100)}% / 研究 ${Math.round(country.mods.research*100)}%</span><span>資金収入 ${Math.round(country.mods.income*100)}% / 安全対策 ${Math.round(country.mods.safety*100)}%</span></div></div>
@@ -470,12 +611,13 @@ window.AIP_EVENT_ENGINE = (() => {
     const sub=pending.source==='scheduled'?'CHAIN EVENT · 過去の選択から発生':pending.source==='origin'?'ORIGIN EVENT · 発祥国固有の出来事':'WORLD EVENT · 世界情勢によって発生';
     return `<div class="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="event-title"><span class="tag">${sub}</span><div class="event-category">${esc(event.category)} ・ ${dateText()}</div><h2 id="event-title">${esc(title)}</h2><p>${esc(description)}</p><div class="modal-choice">${event.choices.map((c,i)=>`<button class="choice" data-choice="${i}"><strong>${esc(ENGINE.interpolate(c.label,game,pending.regionId))} →</strong><small>${esc(effectDetail(c))}</small>${(c.schedule||[]).length?'<em>この選択は数か月後の事件にも影響します</em>':''}</button>`).join('')}</div></div></div>`;
   }
-  function renderEnding(){const s=stats();const isWin=game.ending.id!=='failure';return `<div class="overlay"><div class="modal ending" role="dialog" aria-modal="true"><div class="overline">${isWin?'VICTORY · THE FUTURE IS WRITTEN':'SIMULATION ENDED'}</div><div class="glyph" style="color:${isWin?'#69e9eb':'#ff8295'}">${isWin?'✺':'◈'}</div><h2>${esc(game.ending.title)}</h2><p>${esc(game.ending.detail)}</p><dl><div><dt>経過月数</dt><dd>${game.turn}</dd></div><div><dt>自AIシェア</dt><dd>${rnd(s.share)}%</dd></div><div><dt>世界AI普及率</dt><dd>${rnd(s.worldAdoption)}%</dd></div></dl><p class="small">${esc(game.name)} は${esc(countryFor(game).name)}を出発点に世界を変えました。</p><button class="btn primary full" data-command="restart">別の未来に挑戦する →</button></div></div>`;}
-  function renderHelp(){return `<div class="overlay" data-close="true"><div class="modal help-copy" role="dialog" aria-modal="true" aria-labelledby="help-title"><span class="tag">HOW TO PLAY</span><h2 id="help-title">遊び方</h2><p>あなたのAIを進化させ、競合AIの <span class="gold">ATLAS</span> と <span style="color:var(--violet)">NOVA</span> に対抗します。 <span class="key">毎月2回</span>、研究・普及・進化などの行動を実行できます。</p><ul><li>開始国によって初期資金・技術・信頼や、発祥地域での成長、専用イベントが変化します。</li><li>地図で地域を選び、「地域に普及させる」でその地域の自AIシェアを伸ばします。</li><li>「研究開発」で技術とEPを獲得し、「進化」から自律性やオープン化を強化します。</li><li>世界警戒度が高いと普及が鈍ります。安全性への投資も重要です。</li><li>ニュースは実際の数値変化から生成されます。重大イベントでは選択によって数か月後の出来事も変わります。</li><li>4ルートのどれかを達成したら、好きなタイミングでエンディングを選べます。ルートは途中で変更可能です。</li></ul><p>ゲームは毎月自動保存されます。「保存」ボタンで手動保存もできます。36か月以内に勝利条件を達成しましょう。</p><div class="buttons"><button class="btn primary" data-command="close-help">プレイに戻る</button></div></div></div>`;}
+  function renderEnding(){const s=stats();const isWin=game.ending.id!=='failure';const eyebrow=!isWin?'BAD END · SIMULATION ENDED':game.ending.tone==='dark'?'DARK END · THE WORLD TRANSFORMED':'ENDING UNLOCKED · THE FUTURE IS WRITTEN';return `<div class="overlay"><div class="modal ending" role="dialog" aria-modal="true"><div class="overline">${eyebrow}</div><div class="glyph" style="color:${isWin?'#69e9eb':'#ff8295'}">${isWin?'✺':'◈'}</div><h2>${esc(game.ending.title)}</h2><p>${esc(game.ending.detail)}</p><dl><div><dt>経過月数</dt><dd>${game.turn}</dd></div><div><dt>自AIシェア</dt><dd>${rnd(s.share)}%</dd></div><div><dt>世界AI普及率</dt><dd>${rnd(s.worldAdoption)}%</dd></div></dl><p class="small">${esc(game.name)} は${esc(countryFor(game).name)}を出発点に世界を変えました。</p><button class="btn primary full" data-command="restart">別の未来に挑戦する →</button></div></div>`;}
+  function renderHelp(){return `<div class="overlay" data-close="true"><div class="modal help-copy" role="dialog" aria-modal="true" aria-labelledby="help-title"><span class="tag">HOW TO PLAY</span><h2 id="help-title">遊び方</h2><p>あなたのAIを育て、競合AI <span class="gold">ATLAS</span> と <span style="color:var(--violet)">NOVA</span> に対抗します。最初は普及率が非常に低く、終盤に向けて広がりやすくなります。</p><ul><li>毎月の<b>オペレーションは1回</b>。資金は限られているので優先順位が重要です。</li><li>研究を進めると技術力が上がり、<b>EPは稀に獲得</b>できます。月次の確定EP収入はありません。</li><li><b>進化スキルツリー</b>はEPと前提スキルがあればいつでも解放可能。オペレーション回数は減りません。</li><li>地図から地域を選択すると、直下に詳細が表示されます。</li><li>世界ニュースは実際の数値変化をもとに発生し、重大イベントの選択は将来に影響します。</li><li>共生・支配・超知能・AIの解放、4つの勝利ルートを選べます。</li></ul><p>ゲームは自動保存されます。翌月に進むとページ先頭へ戻ります。</p><div class="buttons"><button class="btn primary" data-command="close-help">プレイに戻る</button></div></div></div>`;}
+
   function renderConfirm(){return `<div class="overlay"><div class="modal" role="dialog" aria-modal="true"><span class="tag">NEW SIMULATION</span><h2>最初から始めますか？</h2><p>現在のゲームを終了してAIの名前・特性・開発開始国を設定し直します。保存済みの進行状況も上書きされます。</p><div class="buttons"><button class="btn ghost" data-command="cancel-reset">キャンセル</button><button class="btn danger-btn" data-command="confirm-reset">最初から始める</button></div></div></div>`;}
   function renderModal(){if(game?.phase==='ended')return renderEnding();if(modal==='help')return renderHelp();if(modal==='reset')return renderConfirm();if(game?.pendingEvent)return renderEvent();return '';}
   function render(){app.innerHTML=game?renderGame():renderSetup();}
-  function command(id){switch(id){case'start':startGame();break;case'resume':{const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';render();}else notify('セーブデータがありません。',true);break;}case'next':nextTurn();break;case'save':save(false);break;case'help':modal='help';render();break;case'close-help':modal=null;render();break;case'reset':modal='reset';render();break;case'cancel-reset':modal=null;render();break;case'confirm-reset':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;case'restart':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;}}
+  function command(id){switch(id){case'start':startGame();break;case'resume':{const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';if(!checkEnding())render();}else notify('セーブデータがありません。',true);break;}case'next':nextTurn();break;case'save':save(false);break;case'help':modal='help';render();break;case'close-help':modal=null;render();break;case'reset':modal='reset';render();break;case'cancel-reset':modal=null;render();break;case'confirm-reset':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;case'restart':game=null;modal=null;draft={name:'PROMETHEUS',type:'research',country:'jp'};localStorage.removeItem(KEY);render();break;}}
   app.addEventListener('click',e=>{const target=e.target.closest('button,[data-region]');if(!target)return;
     if(target.dataset.command){command(target.dataset.command);return;}
     if(target.dataset.type){draft.type=target.dataset.type;render();return;}
@@ -484,15 +626,15 @@ window.AIP_EVENT_ENGINE = (() => {
     if(target.dataset.tab&&game?.phase==='playing'){tab=target.dataset.tab;render();return;}
     if(target.dataset.newsTab&&game?.phase==='playing'){newsTab=target.dataset.newsTab;render();return;}
     if(target.dataset.action){applyAction(target.dataset.action);return;}
+    if(target.dataset.skill){unlockSkill(target.dataset.skill);return;}
     if(target.dataset.choice!==undefined){chooseEvent(Number(target.dataset.choice));return;}
-    if(target.dataset.claim){finish(target.dataset.claim);return;}
   });
   app.addEventListener('input',e=>{if(e.target.id==='ai-name')draft.name=e.target.value.slice(0,16);});
   app.addEventListener('keydown',e=>{if(e.target.id==='ai-name'&&e.key==='Enter'){e.preventDefault();startGame();}const r=e.target.closest('[data-region]');if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();r.dispatchEvent(new MouseEvent('click',{bubbles:true}));}});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal==='help'){modal=null;render();}});
-  const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';}render();
+  const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';if(!checkEnding())render();}else render();
   // Expose read-only state snapshots for smoke tests; game data is never sent to a server.
-  window.AIPandemic={getSnapshot:()=>game?JSON.parse(JSON.stringify(game)):null,getStats:()=>game?JSON.parse(JSON.stringify(stats())):null,getEventDefinitions:()=>EVENTS.map(e=>({id:e.id,category:e.category,onlyScheduled:!!e.onlyScheduled})),getNewsRules:()=>NEWS_RULES.map(r=>r.id),getCountries:()=>COUNTRIES.map(c=>({id:c.id,name:c.name,regionId:c.regionId,mods:{...c.mods}}))};
+  window.AIPandemic={getSnapshot:()=>game?JSON.parse(JSON.stringify(game)):null,getStats:()=>game?JSON.parse(JSON.stringify(stats())):null,getEventDefinitions:()=>EVENTS.map(e=>({id:e.id,category:e.category,onlyScheduled:!!e.onlyScheduled})),getNewsRules:()=>NEWS_RULES.map(r=>r.id),getCountries:()=>COUNTRIES.map(c=>({id:c.id,name:c.name,regionId:c.regionId,mods:{...c.mods}})),getSkills:()=>ALL_SKILLS.map(x=>({id:x.id,cost:x.cost,requires:x.requires||[]}))};
 })();
 
 </script>
