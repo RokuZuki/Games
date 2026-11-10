@@ -29,6 +29,8 @@ const NUM=(x:number)=>Math.round(x).toLocaleString('ja-JP');
 const pct=(x:number)=>`${Math.round(x)}%`;
 const clamp=(n:number,a=0,b=100)=>Math.min(b,Math.max(a,n));
 const colors={player:'#4ce0d6',atlas:'#e9b46f',nova:'#b48dff'};
+const MAP_ANCHORS = {"nw":[160,140],"ne":[243,150],"sa":[315,285],"we":[455,136],"ee":[527,126],"na":[480,225],"af":[548,293],"me":[573,210],"in":[686,216],"ea":[741,135],"se":[768,260],"oc":[858,340]};
+const TERRITORY_CELLS = {"nw":"0.0,0.0 219.0,0.0 186.8,266.7 0.0,466.4","ne":"219.0,0.0 339.6,0.0 351.4,178.9 186.8,266.7","sa":"424.3,500.0 0.0,500.0 0.0,466.4 186.8,266.7 351.4,178.9 379.4,205.2 429.6,343.4","we":"339.6,0.0 472.8,0.0 496.7,172.3 379.4,205.2 351.4,178.9","ee":"472.8,0.0 639.5,0.0 634.4,121.8 634.3,121.8 521.1,183.8 496.7,172.3","na":"429.6,343.4 379.4,205.2 496.7,172.3 521.1,183.8 530.5,242.5","af":"675.2,500.0 424.3,500.0 429.6,343.4 530.5,242.5 626.4,271.3 668.6,346.9 683.4,445.8","me":"626.4,271.3 530.5,242.5 521.1,183.8 634.3,121.8","in":"668.6,346.9 626.4,271.3 634.3,121.8 634.4,121.8 748.0,198.9","ea":"639.5,0.0 960.0,0.0 960.0,145.9 939.7,157.5 748.0,198.9 634.4,121.8","se":"683.4,445.8 668.6,346.9 748.0,198.9 939.7,157.5","oc":"960.0,145.9 960.0,500.0 675.2,500.0 683.4,445.8 939.7,157.5"};
 const laneColors:Record<string,string>={reason:'#66ceff',autonomy:'#b99bff',trust:'#65dfb3',spread:'#ffcd81',singularity:'#fa8fc3'};
 const opIcons:Record<string,string>={campaign:'radio',integrate:'layers',research:'brain',compute:'cpu',safety:'shield',fundraise:'coins'};
 
@@ -80,7 +82,7 @@ class App extends React.Component<{},UIState> {
  componentDidMount(){window.addEventListener('aip:updated',this.listener);this.centerHome();}
  componentWillUnmount(){window.removeEventListener('aip:updated',this.listener);}
  componentDidUpdate(_prev:{},previous:UIState){const g=engine.getSnapshot();if(previous.revision!==this.state.revision&&g?.turn===1&&previous.revision===0)this.centerHome();}
- centerHome(){const g=engine.getSnapshot();const sc=this.mapRef.current;if(!g||!sc)return;const r=g.regions.find(r=>r.id===g.selected);if(!r)return;requestAnimationFrame(()=>{const width=sc.scrollWidth;sc.scrollLeft=width*(r.cx/960)-sc.clientWidth/2;});}
+ centerHome(){const g=engine.getSnapshot();const sc=this.mapRef.current;if(!g||!sc)return;const r=g.regions.find(r=>r.id===g.selected);if(!r)return;requestAnimationFrame(()=>{const width=sc.scrollWidth;sc.scrollLeft=width*(MAP_ANCHORS[r.id][0]/960)-sc.clientWidth/2;});}
  open(modal:Panel){this.setState({modal,selectedSkill:null});}
  close(){this.setState({modal:null});}
  start(){engine.start(this.state.draftName.trim(),this.state.draftType,this.state.draftCountry);this.setState({selectedOp:'campaign',modal:null});}
@@ -92,7 +94,7 @@ class App extends React.Component<{},UIState> {
  renderSetup(){const countries=engine.getCountries();const types:{id:AIType;title:string;sub:string;icon:IconName}[]=[{id:'business',title:'商用AI',sub:'収益と企業への浸透',icon:'coins'},{id:'research',title:'研究AI',sub:'高度な推論と技術進化',icon:'brain'},{id:'open',title:'オープンAI',sub:'共有技術と普及力',icon:'globe'}];const country=countries.find(c=>c.id===this.state.draftCountry)!;
  return <main className="setup-page">
    <div className="setup-background"><span/><span/><span/></div>
-   <header className="setup-top"><Brand/><span className="version-pill">PREVIEW BUILD <b>0.9</b></span></header>
+   <header className="setup-top"><Brand/><span className="version-pill">PREVIEW BUILD <b>1.0</b></span></header>
    <div className="setup-container">
     <section className="setup-hero"><Tag>SIMULATION INITIALIZATION</Tag><h1>知性は、生まれた場所から<br/><em>世界の形を変えていく。</em></h1><p>AIを開発し、競合に先んじて技術を進化させ、世界を動かす。あなたの選択が、人類の未来を決める。</p>
     <div className="origin-core"><div className="orbit orbit-a"/><div className="orbit orbit-b"/><div className="orbit orbit-c"/><div className="core-hex"><Icon name="logo" size={66}/></div><div className="orbit-label orbit-label-a">NEURAL CORE</div><div className="orbit-label orbit-label-b">SYSTEM ONLINE</div><div className="spark s1"/><div className="spark s2"/><div className="spark s3"/></div>
@@ -122,7 +124,7 @@ class App extends React.Component<{},UIState> {
      <section className="world-panel panel-glass">
       <div className="section-heading"><div><span className="eyebrow"><span className="online-dot"/> TACTICAL OVERVIEW</span><h1>世界勢力マップ</h1></div><button className="small-link" onClick={()=>this.open('report')}><Icon name="chart" size={16}/> 世界レポート</button></div>
       <div className="map-frame"><div className="map-noise" aria-hidden="true"/><div className="map-scroller" ref={el=>{this.mapRef.current=el;}}>{this.renderMap(g)}</div><div className="map-scanline" aria-hidden="true"/></div>
-      <div className="map-legend"><span><i style={{background:colors.player}}/> {g.name}</span><span><i style={{background:colors.atlas}}/> ATLAS</span><span><i style={{background:colors.nova}}/> NOVA</span><span className="legend-hint">地域をタップして選択 · スワイプで移動</span></div>
+      <div className="map-legend"><span><i style={{background:colors.player}}/> {g.name}</span><span><i style={{background:colors.atlas}}/> ATLAS</span><span><i style={{background:colors.nova}}/> NOVA</span><span className="legend-hint">着色された陸地か丸いマーカーをタップ · スワイプで移動</span></div>
      </section>
      <div className="news-preview panel-glass"><div className="news-intro"><span className="news-red"><Icon name="radio" size={17}/></span><div><span className="eyebrow">WORLD NEWS / {today}</span><p>{newest?.message||'世界ネットワークに接続しています'}</p></div></div><button className="small-link" onClick={()=>this.open('news')}>すべて見る <Icon name="arrow-right" size={16}/></button></div>
      <div className="quick-launch"><button onClick={()=>this.open('evolution')}><span className="q-icon violet"><Icon name="branch"/></span><span><b>進化ツリー</b><small>EPを使って能力を解放</small></span><span className="counter-chip">EP {g.ep}</span><Icon name="chevron-right" size={17}/></button><button onClick={()=>this.open('routes')}><span className="q-icon cyan"><Icon name="target"/></span><span><b>勝利ルート</b><small>4つの結末の達成状況</small></span><Icon name="chevron-right" size={17}/></button></div>
@@ -133,24 +135,24 @@ class App extends React.Component<{},UIState> {
      </div>
    </div>
    <div className="turn-footer panel-glass"><div><span className="eyebrow">NEXT CYCLE / {g.turn} OF 36</span><b>{g.actions>0?'次の一手を選ぼう':'今月のアクションは完了しました'}</b><small>各月のオペレーションは1回 · 進化はEPがあれば自由</small></div><button type="button" className="primary-button next-button" disabled={!!g.pendingEvent} onClick={()=>this.next()}>翌月へ進む <Icon name="arrow-right" size={19}/></button></div>
-   <footer className="app-footer">AI PANDEMIC · v0.9 / EXPERIMENTAL INTELLIGENCE NETWORK <button onClick={()=>this.open('reset')}>新しく始める</button></footer>
+   <footer className="app-footer">AI PANDEMIC · v1.0 / EXPERIMENTAL INTELLIGENCE NETWORK <button onClick={()=>this.open('reset')}>新しく始める</button></footer>
    </div>
  </div>}
  renderStat(label:string,value:string,icon:string,color:string){return <div className="stat-cell" key={label} style={{'--stat-color':color} as React.CSSProperties}><span><Icon name={icon} size={16}/>{label}</span><strong>{value}</strong><div className="stat-undershine"/></div>}
- renderMap(g:Game){const mapPath=engine.getMapPath();const selected=g.selected;const selectedRegion=g.regions.find(r=>r.id===selected)||g.regions[0];const chosenLines=g.regions.filter(r=>r.id!==selected&&r.adoption>2).sort((a,b)=>b.adoption-a.adoption).slice(0,8);
+ renderMap(g:Game){const mapPath=engine.getMapPath();const selected=g.selected;const selectedRegion=g.regions.find(r=>r.id===selected)||g.regions[0];const chosenLines=g.regions.filter(r=>r.id!==selected&&r.adoption>2).sort((a,b)=>b.adoption-a.adoption).slice(0,8);const [selectedX,selectedY]=MAP_ANCHORS[selectedRegion.id];
  return <svg className="world-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="group" aria-label="AI世界勢力マップ">
-   <defs><linearGradient id="world-ocean" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#0b2440"/><stop offset="1" stopColor="#071122"/></linearGradient><radialGradient id="region-highlight"><stop stopColor="#53f5de" stopOpacity=".25"/><stop offset="1" stopColor="#53f5de" stopOpacity="0"/></radialGradient><filter id="map-glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><pattern id="map-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#3b5c79" strokeWidth=".5" opacity=".35"/></pattern></defs>
+   <defs><linearGradient id="world-ocean" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#0b2440"/><stop offset="1" stopColor="#071122"/></linearGradient><radialGradient id="region-highlight"><stop stopColor="#53f5de" stopOpacity=".25"/><stop offset="1" stopColor="#53f5de" stopOpacity="0"/></radialGradient><filter id="map-glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><pattern id="map-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#3b5c79" strokeWidth=".5" opacity=".35"/></pattern><clipPath id="world-land-clip" clipPathUnits="userSpaceOnUse"><path d={mapPath}/></clipPath></defs>
    <rect width="960" height="500" rx="8" fill="url(#world-ocean)"/><rect width="960" height="500" fill="url(#map-grid)"/>
-   <path d={mapPath} fill="#21425e" stroke="#5286a7" strokeWidth=".5" strokeOpacity=".55" opacity=".9"/>
-   {chosenLines.map((r,i)=><path key={r.id} className="data-trace" style={{animationDelay:`-${i*.45}s`}} d={`M ${selectedRegion.cx} ${selectedRegion.cy} Q ${(selectedRegion.cx+r.cx)/2} ${Math.min(selectedRegion.cy,r.cy)-40}, ${r.cx} ${r.cy}`} fill="none" stroke={colors.player} strokeWidth="1.2" strokeOpacity={.20+Math.min(.35,r.adoption*.007)}/>)}
-   {g.regions.map(r=>{const sh=shares(r);const dominance=Math.max(...sh);const lead=sh.indexOf(dominance);const fill=[colors.player,colors.atlas,colors.nova][lead];const active=r.id===selected;return <g key={r.id} className={`map-region ${active?'is-selected':''}`} tabIndex={0} role="button" aria-label={`${r.name}、普及率 ${pct(r.adoption)}`} onClick={()=>this.selectRegion(r.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();this.selectRegion(r.id);}}}>
-      <polygon className="region-hit" points={r.points} fill={fill} fillOpacity={active?.18:.07} stroke={active?'#71f5e3':fill} strokeOpacity={active?1:.38} strokeWidth={active?2.7:1.2}/>
-      {active?<><circle cx={r.cx} cy={r.cy} r="51" fill="url(#region-highlight)"/><circle cx={r.cx} cy={r.cy} r="25" className="select-ring"/></>:null}
-      <circle className="map-pulse" cx={r.cx} cy={r.cy} r={active?13:7} stroke={fill} strokeOpacity=".55" fill="none" style={{animationDelay:`-${r.cx/150}s`}}/>
-      <circle cx={r.cx} cy={r.cy} r={active?6.5:4.7} fill={active?'#e9fffe':fill} filter={active?'url(#map-glow)':undefined}/>
-      <text x={r.cx} y={r.cy+25} textAnchor="middle" className={`map-region-label ${active?'active':''}`}>{r.short}</text>
+   <path d={mapPath} fill="#21425e" opacity=".9" pointerEvents="none"/>
+   {chosenLines.map((r,i)=><path key={r.id} className="data-trace" style={{animationDelay:`-${i*.45}s`}} d={`M ${selectedX} ${selectedY} Q ${(selectedX+MAP_ANCHORS[r.id][0])/2} ${Math.min(selectedY,MAP_ANCHORS[r.id][1])-40}, ${MAP_ANCHORS[r.id][0]} ${MAP_ANCHORS[r.id][1]}`} fill="none" stroke={colors.player} strokeWidth="1.2" strokeOpacity={.20+Math.min(.35,r.adoption*.007)}/>)}
+   {g.regions.map(r=>{const sh=shares(r);const dominance=Math.max(...sh);const lead=sh.indexOf(dominance);const fill=[colors.player,colors.atlas,colors.nova][lead];const active=r.id===selected;const [cx,cy]=MAP_ANCHORS[r.id];return <g key={r.id} className={`map-region ${active?'is-selected':''}`} tabIndex={0} role="button" aria-label={`${r.name}、普及率 ${pct(r.adoption)}`} onClick={()=>this.selectRegion(r.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();this.selectRegion(r.id);}}}>
+      <polygon className="region-territory" points={TERRITORY_CELLS[r.id]} clipPath="url(#world-land-clip)" fill={fill} stroke={fill} strokeWidth={active?3:1.2}/>
+      {active?<><circle cx={cx} cy={cy} r="47" pointerEvents="none" fill="url(#region-highlight)"/><circle cx={cx} cy={cy} r="25" className="select-ring" pointerEvents="none"/></>:null}
+      <circle className="map-pulse" cx={cx} cy={cy} r={active?13:7} stroke={fill} strokeOpacity=".55" fill="none" style={{animationDelay:`-${cx/150}s`}}/>
+      <circle className="map-marker" cx={cx} cy={cy} r={active?17:14} fill="#0c2134" fillOpacity=".86" stroke={active?'#b2fff1':fill} strokeWidth={active?2.5:1.4}/><circle cx={cx} cy={cy} r={active?6.5:4.7} fill={active?'#e9fffe':fill} filter={active?'url(#map-glow)':undefined}/>
+      <text x={cx} y={cy+31} textAnchor="middle" className={`map-region-label ${active?'active':''}`}>{r.short}</text>
     </g>})}
-   <text x="29" y="468" className="map-corner-label">LIVE GLOBAL MARKET INFLUENCE • 12 REGIONS</text><text x="892" y="468" textAnchor="end" className="map-corner-label">2030 • DIGITAL WORLD</text>
+   <path d={mapPath} fill="none" stroke="#82a2b8" strokeWidth=".7" strokeOpacity=".75" pointerEvents="none"/><g className="map-selection-readout" pointerEvents="none"><rect x="684" y="12" width="258" height="35" rx="7"/><text x="700" y="34">SELECTED / {selectedRegion.short} · AI普及率 {pct(selectedRegion.adoption)}</text></g><text x="29" y="468" className="map-corner-label">LIVE GLOBAL MARKET INFLUENCE • 12 REGIONS</text><text x="892" y="468" textAnchor="end" className="map-corner-label">2030 • DIGITAL WORLD</text>
   </svg>}
  renderRegion(g:Game,r:Region){const sh=shares(r);return <section className="region-panel panel-glass"><div className="section-heading"><div><span className="eyebrow">SELECTED REGION / {r.id.toUpperCase()}</span><h2>{r.name}</h2></div><span className="region-flag"><Icon name="globe" size={22}/></span></div>
    <div className="region-primary"><div><span>AI普及率</span><b>{pct(r.adoption)}</b></div><div><span>規制レベル</span><b>{Math.round(r.regulation)}<small> / 100</small></b></div><div><span>現地の自AIシェア</span><b style={{color:colors.player}}>{pct(sh[0])}</b></div></div>
