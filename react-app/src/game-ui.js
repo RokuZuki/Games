@@ -173,6 +173,9 @@ class App extends React.Component {
         super(props);
         this.bgmRef = { current: null };
         this.mapRef = { current: null };
+        this.mapView = { zoom: 1, x: 0, y: 0 };
+        this.mapGesture = null;
+        this.didMapDrag = false;
         this.treeRef = { current: null };
         this.rewardSequence = 0;
         this.treeDrag = null;
@@ -192,7 +195,7 @@ class App extends React.Component {
         };
         this.resumeBgmOnGesture = () => { if (engine.getSnapshot()?.phase === 'playing' && this.bgmRef.current?.paused)
             this.tryPlayBgm(); };
-        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, drawerTab: 'actions', treeZoom: 0.65, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
+        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, drawerTab: 'actions', mapZoom: 1, mapX: 0, mapY: 0, treeZoom: 0.65, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
     }
     componentDidMount() { window.addEventListener('aip:updated', this.listener); document.addEventListener('visibilitychange', this.onVisible); document.addEventListener('pointerdown', this.resumeBgmOnGesture, { passive: true }); this.lastClock = performance.now(); this.clockTimer = window.setInterval(this.advanceClock, 100); this.syncBgmSettings(); this.centerHome(); }
     componentWillUnmount() { window.removeEventListener('aip:updated', this.listener); document.removeEventListener('visibilitychange', this.onVisible); document.removeEventListener('pointerdown', this.resumeBgmOnGesture); window.clearInterval(this.clockTimer); window.clearTimeout(this.rewardTimer); this.bgmRef.current?.pause(); }
@@ -231,9 +234,7 @@ class App extends React.Component {
                 React.createElement("input", { type: "range", min: "0", max: "100", step: "1", value: this.state.bgmVolume, onChange: e => this.changeBgmVolume(Number(e.currentTarget.value)), "aria-label": "\u97F3\u697D\u306E\u97F3\u91CF" })),
             React.createElement("button", { type: "button", className: "bgm-popover-toggle", onClick: () => this.toggleBgmMute() }, this.state.bgmMuted ? '▶ ミュート解除' : '◼ ミュートする'),
             this.state.bgmBlocked ? React.createElement("p", null, "\u30D6\u30E9\u30A6\u30B6\u306E\u518D\u751F\u5236\u9650\u4E2D\u3067\u3059\u3002BGM\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\u3002") : React.createElement("small", null, "\u97F3\u91CF\u30FB\u30DF\u30E5\u30FC\u30C8\u8A2D\u5B9A\u306F\u3053\u306E\u30D6\u30E9\u30A6\u30B6\u306B\u4FDD\u5B58\u3055\u308C\u307E\u3059")) : null); }
-    centerHome() { const g = engine.getSnapshot(); const sc = this.mapRef.current; if (!g || !sc)
-        return; const r = g.regions.find(r => r.id === g.selected); if (!r)
-        return; requestAnimationFrame(() => { const width = sc.scrollWidth; const [cx] = MAP_ANCHORS[r.id]; sc.scrollLeft = width * (cx / 960) - sc.clientWidth / 2; }); }
+    centerHome() {}
     open(modal) { this.setState({ modal, selectedSkill: null }); }
     close() { this.setState({ modal: null }); }
     start() { engine.start(this.state.draftName.trim(), this.state.draftType, this.state.draftCountry); this.lastClock = performance.now(); this.setState({ selectedOp: 'campaign', modal: null, playing: true, speed: 1 }); this.tryPlayBgm(); }
@@ -241,7 +242,7 @@ class App extends React.Component {
     executeOp() { engine.operation(this.state.selectedOp); }
     togglePlay() { this.lastClock = performance.now(); this.setState(s => ({ playing: !s.playing })); }
     restart() { this.bgmRef.current?.pause(); if (this.bgmRef.current)
-        this.bgmRef.current.currentTime = 0; engine.reset(); this.setState({ modal: null, selectedOp: 'campaign', selectedSkill: null, playing: true, speed: 1, draftName: 'PROMETHEUS', reward: null }); window.scrollTo({ top: 0 }); }
+        this.bgmRef.current.currentTime = 0; engine.reset(); this.mapView = { zoom: 1, x: 0, y: 0 }; this.setState({ mapZoom: 1, mapX: 0, mapY: 0, modal: null, selectedOp: 'campaign', selectedSkill: null, playing: true, speed: 1, draftName: 'PROMETHEUS', reward: null }); window.scrollTo({ top: 0 }); }
     render() { const g = engine.getSnapshot(); const reward = this.state.reward; return React.createElement("div", { className: "site-root" },
         React.createElement("audio", { ref: el => { this.bgmRef.current = el; }, src: BGM_URL, loop: true, preload: "none", "aria-hidden": "true" }),
         g ? this.renderGame(g) : this.renderSetup(),
@@ -267,6 +268,35 @@ class App extends React.Component {
         engine.collectPickup(drop.id);
         this.rewardTimer = window.setTimeout(() => this.setState(current => current.reward?.id === id ? { reward: null } : null), 1500);
     }
+    updateMapView(zoom,x,y) {
+        zoom=Math.max(1,Math.min(4,zoom));
+        if(zoom===1){x=0;y=0;}
+        this.mapView={zoom,x,y};this.setState({mapZoom:zoom,mapX:x,mapY:y});
+    }
+    changeMapZoom(factor) {const v=this.mapView;this.updateMapView(v.zoom*factor,v.x*factor,v.y*factor);}
+    bindMap(el) {
+        if(this.mapRef.current===el)return;const old=this.mapRef.current;
+        if(old&&this.mapHandlers)for(const [type,fn] of Object.entries(this.mapHandlers))old.removeEventListener(type,fn);
+        this.mapRef.current=el;if(!el)return;
+        const start=e=>{
+            if(e.touches.length===2){const a=e.touches[0],b=e.touches[1],r=el.getBoundingClientRect(),v=this.mapView;
+                this.mapGesture={pinch:true,distance:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),zoom:v.zoom,x:v.x,y:v.y,cx:(a.clientX+b.clientX)/2-(r.left+r.width/2),cy:(a.clientY+b.clientY)/2-(r.top+r.height/2)};this.didMapDrag=true;
+            }else if(e.touches.length===1){const t=e.touches[0],v=this.mapView;this.mapGesture={pinch:false,startX:t.clientX,startY:t.clientY,x:v.x,y:v.y,moved:false};this.didMapDrag=false;}
+        };
+        const move=e=>{const d=this.mapGesture;if(!d)return;
+            if(d.pinch&&e.touches.length>=2){e.preventDefault();const a=e.touches[0],b=e.touches[1],r=el.getBoundingClientRect();
+                const zoom=Math.max(1,Math.min(4,d.zoom*Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/Math.max(1,d.distance)));
+                const cx=(a.clientX+b.clientX)/2-(r.left+r.width/2),cy=(a.clientY+b.clientY)/2-(r.top+r.height/2),ratio=zoom/d.zoom;
+                this.updateMapView(zoom,cx-(d.cx-d.x)*ratio,cy-(d.cy-d.y)*ratio);
+            }else if(!d.pinch&&e.touches.length===1&&this.mapView.zoom>1){const t=e.touches[0],dx=t.clientX-d.startX,dy=t.clientY-d.startY;if(d.moved||Math.hypot(dx,dy)>6){d.moved=true;this.didMapDrag=true;e.preventDefault();this.updateMapView(this.mapView.zoom,d.x+dx,d.y+dy);}}
+        };
+        const end=e=>{if(!e.touches.length){this.mapGesture=null;window.setTimeout(()=>{this.didMapDrag=false},120)}};
+        this.mapHandlers={touchstart:start,touchmove:move,touchend:end,touchcancel:end,pointerdown:e=>this.onMapPointerDown(e),pointermove:e=>this.onMapPointerMove(e),pointerup:e=>this.onMapPointerEnd(e),pointercancel:e=>this.onMapPointerEnd(e)};
+        for(const [type,fn] of Object.entries(this.mapHandlers))el.addEventListener(type,fn,{passive:false});
+    }
+    onMapPointerDown(e){if(e.pointerType!=='mouse'||e.button!==0||this.mapView.zoom<=1)return;this.mapMouse={id:e.pointerId,x:e.clientX,y:e.clientY,view:{...this.mapView},moved:false};this.didMapDrag=false;}
+    onMapPointerMove(e){const d=this.mapMouse;if(!d||d.id!==e.pointerId)return;const dx=e.clientX-d.x,dy=e.clientY-d.y;if(d.moved||Math.hypot(dx,dy)>6){d.moved=true;this.didMapDrag=true;e.currentTarget.setPointerCapture(e.pointerId);this.updateMapView(d.view.zoom,d.view.x+dx,d.view.y+dy);}}
+    onMapPointerEnd(e){if(!this.mapMouse||this.mapMouse.id!==e.pointerId)return;this.mapMouse=null;if(e.currentTarget.hasPointerCapture(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);window.setTimeout(()=>{this.didMapDrag=false},0);}
     bindTree(el) {
         if (this.treeRef.current === el) return;
         const old = this.treeRef.current;
@@ -294,7 +324,7 @@ class App extends React.Component {
             }
         };
         const end = e => { if(e.touches.length===0){this.treeTouch=null;window.setTimeout(()=>{this.didTreeDrag=false;},100);} };
-        this.treeTouchHandlers={touchstart:start,touchmove:move,touchend:end,touchcancel:end};
+        this.treeTouchHandlers={touchstart:start,touchmove:move,touchend:end,touchcancel:end,pointerdown:e=>this.onTreePointerDown(e),pointermove:e=>this.onTreePointerMove(e),pointerup:e=>this.onTreePointerEnd(e),pointercancel:e=>this.onTreePointerEnd(e)};
         for(const [type,handler] of Object.entries(this.treeTouchHandlers)) el.addEventListener(type,handler,{passive:false});
     }
     changeTreeZoom(factor) {
@@ -462,8 +492,12 @@ class App extends React.Component {
                             this.renderTimeDock(g),
                             React.createElement("div", { className: "map-frame" },
                                 React.createElement("div", { className: "map-noise", "aria-hidden": "true" }),
-                                React.createElement("div", { className: "map-scroller", ref: el => { this.mapRef.current = el; } }, this.renderMap(g)),
+                                React.createElement("div", { className: "map-scroller", ref: el => this.bindMap(el), onClickCapture: e => { if (this.didMapDrag) { e.preventDefault(); e.stopPropagation(); } } }, this.renderMap(g)),
                                 React.createElement("div", { className: "map-scanline", "aria-hidden": "true" })),
+                            React.createElement("div", { className: "map-zoom-controls", "aria-label": "マップの拡大縮小" },
+                                React.createElement("button", { type: "button", onClick: () => this.changeMapZoom(1/1.3), "aria-label": "マップを縮小", disabled: this.state.mapZoom <= 1 }, "−"),
+                                React.createElement("button", { type: "button", onClick: () => this.updateMapView(1,0,0), "aria-label": "マップ全体を表示" }, "全体"),
+                                React.createElement("button", { type: "button", onClick: () => this.changeMapZoom(1.3), "aria-label": "マップを拡大", disabled: this.state.mapZoom >= 4 }, "+")),
                             React.createElement("div", { className: "map-legend" },
                                 React.createElement("span", null,
                                     React.createElement("i", { style: { background: colors.player } }),
@@ -554,7 +588,7 @@ class App extends React.Component {
         const selectedRegion = g.regions.find(r => r.id === selected) || g.regions[0];
         const chosenLines = g.regions.filter(r => r.id !== selected && r.adoption > 2).sort((a, b) => b.adoption - a.adoption).slice(0, 8);
         const [selectedX, selectedY] = MAP_ANCHORS[selectedRegion.id];
-        return React.createElement("svg", { className: "world-svg", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 960 500", role: "group", "aria-label": "AI\u4E16\u754C\u52E2\u529B\u30DE\u30C3\u30D7\u3002\u7740\u8272\u3055\u308C\u305F\u9678\u5730\u304B\u4E38\u3044\u5730\u57DF\u30DE\u30FC\u30AB\u30FC\u3092\u62BC\u3057\u3066\u5730\u57DF\u3092\u9078\u629E\u3067\u304D\u307E\u3059" },
+        return React.createElement("svg", { className: "world-svg", style: { transform: `translate(${this.state.mapX}px, ${this.state.mapY}px) scale(${this.state.mapZoom})` }, xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 960 500", role: "group", "aria-label": "AI\u4E16\u754C\u52E2\u529B\u30DE\u30C3\u30D7\u3002\u7740\u8272\u3055\u308C\u305F\u9678\u5730\u304B\u4E38\u3044\u5730\u57DF\u30DE\u30FC\u30AB\u30FC\u3092\u62BC\u3057\u3066\u5730\u57DF\u3092\u9078\u629E\u3067\u304D\u307E\u3059" },
             React.createElement("defs", null,
                 React.createElement("linearGradient", { id: "world-ocean", x1: "0", y1: "0", x2: "1", y2: "1" },
                     React.createElement("stop", { stopColor: "#0b2440" }),
@@ -814,7 +848,7 @@ class App extends React.Component {
                             " / ",
                             all.length,
                             " \u7FD2\u5F97"))),
-                React.createElement("div", { className: "tree-scroll", ref: el => this.bindTree(el), onPointerDown: e => this.onTreePointerDown(e), onPointerMove: e => this.onTreePointerMove(e), onPointerUp: e => this.onTreePointerEnd(e), onPointerCancel: e => this.onTreePointerEnd(e) },
+                React.createElement("div", { className: "tree-scroll", ref: el => this.bindTree(el) },
                     React.createElement("div", { className: "tree-zoom-frame", style: { width: 2090 * this.state.treeZoom, height: 1680 * this.state.treeZoom } },
                     React.createElement("div", { className: "tree-surface", style: { transform: `scale(${this.state.treeZoom})`, transformOrigin: "top left" } },
                         React.createElement("div", { className: "tree-surface-grid" }),
@@ -826,7 +860,7 @@ class App extends React.Component {
                             React.createElement(Icon, { name: "logo", size: 37 }),
                             React.createElement("small", null, "CORE")),
                         lanes.map(l => { const origin = l.skills[0]; return React.createElement("div", { key: l.id, className: "tree-lane-label", style: { left: origin.position[0] - 80, top: origin.position[1] - 95, color: laneColors[l.id] } }, l.title.toUpperCase()); }),
-                        all.map(s => { const done = g.unlockedSkills.includes(s.id); const problem = skillStatus(s); const active = this.state.selectedSkill === s.id; return React.createElement("button", { key: s.id, type: "button", style: { left: s.position[0], top: s.position[1], '--node-color': laneColors[lanes.find(l => l.skills.includes(s)).id] }, className: `skill-node ${done ? 'acquired' : !problem ? 'available' : 'locked'} ${active ? 'active' : ''}`, onClick: e => { if (this.didTreeDrag) {
+                        all.map(s => { const done = g.unlockedSkills.includes(s.id); const problem = skillStatus(s); const active = this.state.selectedSkill === s.id; return React.createElement("button", { key: s.id, type: "button", style: { left: s.position[0], top: s.position[1], '--node-color': laneColors[lanes.find(l => l.skills.includes(s)).id] }, className: `skill-node ${done ? 'acquired' : !problem ? 'available' : 'locked'} ${active ? 'active' : ''}`, onMouseDown: e => e.preventDefault(), onClick: e => { if (this.didTreeDrag) {
                                 e.preventDefault();
                                 return;
                             } this.setState({ selectedSkill: s.id }); }, "aria-label": `${s.title}、EP ${s.cost}、${done ? '習得済み' : problem || '解放可能'}` },

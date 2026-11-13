@@ -240,3 +240,13 @@
 @media(max-width:750px){.tree-toolbar{flex-wrap:wrap;gap:5px}.tree-zoom-controls button{min-width:34px;min-height:32px}.tree-counters{margin-left:auto}}
 
 @media(max-width:750px) and (max-height:650px){.game-shell .operation-panel .section-heading{display:none}.game-shell .operation-intro{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.game-shell .op-inspector p{display:none}.game-shell .op-inspector{margin:4px 9px;padding:4px 7px}.game-shell .op-choice{min-height:43px}}
+
+/* Fit the complete map; magnify inside the clipped map viewport. */
+.game-shell .map-frame{inset:112px 0 108px;min-height:0}
+.game-shell .map-scroller{display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
+.game-shell .world-svg{min-width:0;width:100%;height:100%;max-height:none;aspect-ratio:auto;flex:none;transform-origin:center;will-change:transform}
+.map-zoom-controls{position:absolute;z-index:30;right:10px;bottom:106px;display:flex;gap:4px;padding:4px;background:#0b2438eF;border:1px solid #315669;border-radius:9px}
+.map-zoom-controls button{height:34px;min-width:36px;border:1px solid #477281;border-radius:6px;background:#123a4b;color:#e3fff8;font-size:17px;font-weight:800;touch-action:manipulation}.map-zoom-controls button:nth-child(2){font-size:11px;padding:0 8px}
+.skill-node:not(:disabled):active{transform:translate(-50%,-50%)}
+.skill-node.active .node-rim,.skill-node:hover:not(:disabled) .node-rim{transform:rotate(45deg);border-color:#e1f9ff}
+@media(max-width:750px){.game-shell .map-frame{inset:100px 0 100px}.map-zoom-controls{right:5px;bottom:99px}.map-zoom-controls button{height:32px;min-width:33px}.evolution-layout{grid-template-rows:minmax(0,1fr) minmax(0,32%)}.tree-main{min-height:0}.tree-scroll{min-height:0}.skill-inspector{min-height:0;max-height:none}}
