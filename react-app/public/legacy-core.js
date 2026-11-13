@@ -181,9 +181,9 @@
     const bonuses={business:{funds:66,tech:24,trust:50,ep:3,compute:26,openness:10},research:{funds:49,tech:32,trust:52,ep:5,compute:27,openness:9},open:{funds:48,tech:23,trust:55,ep:3,compute:22,openness:25}};
     const b=bonuses[type]||bonuses.research;
     const country=COUNTRY_BY_ID.get(countryId)||COUNTRY_BY_ID.get('jp');
-    const regions=REGIONS.map(r=>({...r,presence:[...r.presence],integration:3,regulation:r.regulation}));
+    const regions=REGIONS.map(r=>({...r,presence:[0,r.presence[1],r.presence[2]],integration:3,regulation:r.regulation}));
     const home=regions.find(r=>r.id===country.regionId);
-    if(home){home.presence[0]+=Math.max(1,Math.round(country.homePresence*.045));home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
+    if(home){home.presence[0]=Math.max(0.05,Math.round(country.homePresence*.002*100)/100);home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
     return {version:6,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
       turn:1,actions:1,selected:country.regionId,regions,unlockedSkills:[],
       funds:Math.max(30,b.funds+Math.round((country.bonuses.funds||0)*.2)),
