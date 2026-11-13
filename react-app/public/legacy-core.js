@@ -426,7 +426,7 @@
   function chooseEvent(i){if(!game?.pendingEvent)return;
     const pending=game.pendingEvent,event=EVENT_BY_ID.get(pending.eventId);
     if(!event){game.pendingEvent=null;save();render();return;}
-    if(i===-1){game.pendingEvent=null;modal=null;save();render();return;}
+    if(i===-1){const rt=game.eventRuntime;rt.lastTriggered[event.id]=game.turn;rt.history.push({eventId:event.id,turn:game.turn,choiceId:'skip',regionId:pending.regionId||null});rt.history=rt.history.slice(-150);game.pendingEvent=null;modal=null;save();render();return;}
     const choice=event.choices[i];if(!choice)return;
     if((choice.effect?.funds||0)<0 && game.funds+(choice.effect.funds)<0){notify('資金が不足しています',true);return;}
     const before=structuredClone(game);
