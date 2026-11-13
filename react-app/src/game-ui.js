@@ -48,6 +48,43 @@ const client_1 = require("react-dom/client");
 require("./style.css");
 const engine = window.AIPandemic;
 const NUM = (x) => Math.round(x).toLocaleString('ja-JP');
+const MATRIX_GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン012345789<>/{}[]=+';
+function startMatrixRain(canvas) {
+    if (!canvas || !canvas.getContext || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return () => {};
+    const ctx = canvas.getContext('2d'); if (!ctx) return () => {};
+    let width = 0, height = 0, dpr = 1, frame = 0, last = 0, columns = [];
+    const font = 12, gap = 32;
+    const randomGlyph = () => MATRIX_GLYPHS[Math.floor(Math.random() * MATRIX_GLYPHS.length)];
+    const resize = () => {
+        const rect = canvas.parentElement?.getBoundingClientRect(); if (!rect) return;
+        width = rect.width; height = rect.height; dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        columns = Array.from({ length: Math.ceil(width / gap) }, (_, i) => {
+            const length = 6 + Math.floor(Math.random() * 9);
+            return { x: i * gap + Math.random() * 8, y: Math.random() * height, length, speed: .1 + Math.random() * .16, symbols: Array.from({ length }, randomGlyph) };
+        });
+    };
+    const draw = time => {
+        frame = window.requestAnimationFrame(draw); if (time - last < 72) return; last = time;
+        ctx.clearRect(0, 0, width, height); ctx.font = '12px monospace'; ctx.textAlign = 'center';
+        for (const column of columns) {
+            for (let i = 0; i < column.length; i++) {
+                const y = column.y - i * 14; if (y < -14 || y > height + 14) continue;
+                ctx.globalAlpha = i === 0 ? .86 : .07 + .29 * (1 - i / column.length);
+                ctx.fillStyle = i === 0 ? '#d4ffd2' : (i % 3 === 0 ? '#83ff4d' : '#25e76c');
+                if (Math.random() < .012) column.symbols[i] = randomGlyph();
+                if (i === 0) { ctx.shadowColor = '#8dff63'; ctx.shadowBlur = 9; } else ctx.shadowBlur = 0;
+                ctx.fillText(column.symbols[i], column.x, y);
+            }
+            column.y += column.speed * font;
+            if (column.y - column.length * 14 > height) { column.y = -Math.random() * height * .42; column.speed = .1 + Math.random() * .16; }
+        }
+        ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+    };
+    resize(); const observer = window.ResizeObserver ? new ResizeObserver(resize) : null; observer?.observe(canvas.parentElement); window.addEventListener('resize', resize, { passive: true }); frame = window.requestAnimationFrame(draw);
+    return () => { window.cancelAnimationFrame(frame); observer?.disconnect(); window.removeEventListener('resize', resize); ctx.clearRect(0, 0, width, height); };
+}
+
 const pct = (x) => `${Math.round(x)}%`;
 const clamp = (n, a = 0, b = 100) => Math.min(b, Math.max(a, n));
 const colors = { player: '#4ce0d6', atlas: '#e9b46f', nova: '#b48dff' };
@@ -172,6 +209,8 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.bgmRef = { current: null };
+        this.matrixRef = { current: null };
+        this.bindMatrix = el => { if (el !== this.matrixRef.current) { this.matrixRainCleanup?.(); this.matrixRef.current = el; this.matrixRainCleanup = el ? startMatrixRain(el) : null; } };
         this.mapRef = { current: null };
         this.mapView = { zoom: 1, x: 0, y: 0 };
         this.mapGesture = null;
@@ -198,7 +237,7 @@ class App extends React.Component {
         this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, drawerTab: 'actions', mapZoom: 1, mapX: 0, mapY: 0, treeZoom: 0.65, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
     }
     componentDidMount() { window.addEventListener('aip:updated', this.listener); document.addEventListener('visibilitychange', this.onVisible); document.addEventListener('pointerdown', this.resumeBgmOnGesture, { passive: true }); this.lastClock = performance.now(); this.clockTimer = window.setInterval(this.advanceClock, 100); this.syncBgmSettings(); this.centerHome(); }
-    componentWillUnmount() { window.removeEventListener('aip:updated', this.listener); document.removeEventListener('visibilitychange', this.onVisible); document.removeEventListener('pointerdown', this.resumeBgmOnGesture); window.clearInterval(this.clockTimer); window.clearTimeout(this.rewardTimer); this.bgmRef.current?.pause(); }
+    componentWillUnmount() { window.removeEventListener('aip:updated', this.listener); document.removeEventListener('visibilitychange', this.onVisible); document.removeEventListener('pointerdown', this.resumeBgmOnGesture); window.clearInterval(this.clockTimer); window.clearTimeout(this.rewardTimer); this.matrixRainCleanup?.(); this.matrixRef.current = null; this.bgmRef.current?.pause(); }
     componentDidUpdate(_prev, previous) { const g = engine.getSnapshot(); if (previous.revision !== this.state.revision && g?.turn === 1 && previous.revision === 0)
         this.centerHome(); if (previous.bgmVolume !== this.state.bgmVolume || previous.bgmMuted !== this.state.bgmMuted)
         this.syncBgmSettings(); }
@@ -493,7 +532,8 @@ class App extends React.Component {
                             React.createElement("div", { className: "map-frame" },
                                 React.createElement("div", { className: "map-noise", "aria-hidden": "true" }),
                                 React.createElement("div", { className: "map-scroller", ref: el => this.bindMap(el), onClickCapture: e => { if (this.didMapDrag) { e.preventDefault(); e.stopPropagation(); } } }, this.renderMap(g)),
-                                React.createElement("div", { className: "map-scanline", "aria-hidden": "true" })),
+                                React.createElement("div", { className: "map-scanline", "aria-hidden": "true" }),
+                                React.createElement("canvas", { className: "matrix-rain", ref: this.bindMatrix, "aria-hidden": "true" })),
                             React.createElement("div", { className: "map-zoom-controls", "aria-label": "マップの拡大縮小" },
                                 React.createElement("button", { type: "button", onClick: () => this.changeMapZoom(1/1.3), "aria-label": "マップを縮小", disabled: this.state.mapZoom <= 1 }, "−"),
                                 React.createElement("button", { type: "button", onClick: () => this.updateMapView(1,0,0), "aria-label": "マップ全体を表示" }, "全体"),
