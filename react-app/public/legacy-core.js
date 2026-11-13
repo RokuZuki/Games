@@ -61,39 +61,79 @@
     {id:'se',name:'東南アジア',short:'東南アジア',cx:755,cy:276,pop:15,digital:73,demand:82,regulation:18,adoption:3,presence:[2,4,6],points:'706,208 754,195 807,231 828,285 795,318 746,314 711,283'},
     {id:'oc',name:'オセアニア',short:'オセアニア',cx:820,cy:375,pop:5,digital:90,demand:78,regulation:35,adoption:4,presence:[2,5,4],points:'767,340 832,325 883,359 879,399 839,422 783,403'}
   ];
+  // v1.1: Thirty interconnected skills across five disciplines.
   const SKILL_LANES=[
     {id:'reason',title:'知能・研究',symbol:'✦',skills:[
       {id:'reason_1',title:'推論基盤',cost:3,desc:'技術 +13 / 演算 +4',effect:{tech:13,compute:4}},
       {id:'reason_2',title:'高度推論',cost:5,desc:'技術 +18 / 演算 +6',effect:{tech:18,compute:6},requires:['reason_1']},
-      {id:'reason_3',title:'自己改良',cost:8,desc:'技術 +24 / 自律 +7',effect:{tech:24,autonomy:7},requires:['reason_2']}]},
+      {id:'reason_3',title:'自己改良',cost:8,desc:'技術 +24 / 自律 +7',effect:{tech:24,autonomy:7},requires:['reason_2']},
+      {id:'reason_4',title:'連想アーキテクチャ',cost:7,desc:'技術 +8 / 演算 +5',effect:{tech:8,compute:5},requires:['reason_3']},
+      {id:'reason_5',title:'超並列学習',cost:10,desc:'技術 +10 / 演算 +6',effect:{tech:10,compute:6},requires:['reason_4']},
+      {id:'reason_6',title:'進化的発見',cost:13,desc:'技術 +12 / EP +2 / 警戒 +3',effect:{tech:12,ep:2,alert:3},requires:['reason_5']}]},
     {id:'autonomy',title:'自律エージェント',symbol:'◈',skills:[
       {id:'agent_1',title:'自動実行',cost:3,desc:'自律 +24 / 警戒 +4',effect:{autonomy:24,alert:4}},
       {id:'agent_2',title:'複数エージェント',cost:5,desc:'自律 +26 / 基盤 +8',effect:{autonomy:26,infra:8,alert:5},requires:['agent_1']},
-      {id:'agent_3',title:'自律研究機関',cost:8,desc:'自律 +24 / 技術 +7',effect:{autonomy:24,tech:7,alert:7},requires:['agent_2']}]},
+      {id:'agent_3',title:'自律研究機関',cost:8,desc:'自律 +24 / 技術 +7',effect:{autonomy:24,tech:7,alert:7},requires:['agent_2']},
+      {id:'agent_4',title:'自律運用',cost:7,desc:'自律 +9 / 信頼 -4 / 警戒 +5',effect:{autonomy:9,trust:-4,alert:5},requires:['agent_3']},
+      {id:'agent_5',title:'群体知能',cost:10,desc:'自律 +8 / 基盤 +5 / 警戒 +6',effect:{autonomy:8,infra:5,alert:6},requires:['agent_4']},
+      {id:'agent_6',title:'自己目標形成',cost:13,desc:'自律 +8 / 技術 +6 / 信頼 -6 / 警戒 +8',effect:{autonomy:8,tech:6,trust:-6,alert:8},requires:['agent_5']}]},
     {id:'trust',title:'共生・安全',symbol:'✧',skills:[
       {id:'safe_1',title:'安全性監査',cost:3,desc:'信頼 +14 / 警戒 -7',effect:{trust:14,alert:-7}},
       {id:'safe_2',title:'説明可能AI',cost:5,desc:'信頼 +17 / 警戒 -10',effect:{trust:17,alert:-10},requires:['safe_1']},
-      {id:'safe_3',title:'共同統治',cost:8,desc:'信頼 +20 / 警戒 -14',effect:{trust:20,alert:-14},requires:['safe_2']}]},
+      {id:'safe_3',title:'共同統治',cost:8,desc:'信頼 +20 / 警戒 -14',effect:{trust:20,alert:-14},requires:['safe_2']},
+      {id:'safe_4',title:'国際監査協定',cost:7,desc:'信頼 +12 / 警戒 -9',effect:{trust:12,alert:-9},requires:['safe_3']},
+      {id:'safe_5',title:'人間中心設計',cost:10,desc:'信頼 +11 / 依存基盤 +4 / 警戒 -4',effect:{trust:11,infra:4,alert:-4},requires:['safe_4']},
+      {id:'safe_6',title:'公共AI憲章',cost:13,desc:'信頼 +14 / 警戒 -12',effect:{trust:14,alert:-12},requires:['safe_5']}]},
     {id:'spread',title:'普及・オープン化',symbol:'◇',skills:[
       {id:'spread_1',title:'軽量モデル',cost:3,desc:'公開 +18 / 普及成長UP',effect:{openness:18}},
       {id:'spread_2',title:'公開API',cost:5,desc:'公開 +26 / 技術公開 +1',effect:{openness:26,publications:1},requires:['spread_1']},
-      {id:'spread_3',title:'分散型ネットワーク',cost:8,desc:'公開 +33 / 技術公開 +2',effect:{openness:33,publications:2},requires:['spread_2']}]},
+      {id:'spread_3',title:'分散型ネットワーク',cost:8,desc:'公開 +33 / 技術公開 +2',effect:{openness:33,publications:2},requires:['spread_2']},
+      {id:'spread_4',title:'端末組込み',cost:7,desc:'公開 +10 / 世界への普及拡大',effect:{openness:10,allPresence:2},requires:['spread_3']},
+      {id:'spread_5',title:'多言語モデル',cost:10,desc:'公開 +11 / 現地のシェア増',effect:{openness:11,regionPresence:4},requires:['spread_4']},
+      {id:'spread_6',title:'世界的な連携',cost:13,desc:'公開 +13 / 技術公開 +1 / 世界普及増',effect:{openness:13,publications:1,allPresence:3},requires:['spread_5']}]},
+    {id:'data',title:'データ・学習',symbol:'▦',skills:[
+      {id:'data_1',title:'データ基盤',cost:3,desc:'研究用のデータ設備を整える。技術 +5 / 演算 +4',effect:{tech:5,compute:4}},
+      {id:'data_2',title:'学習効率最適化',cost:5,desc:'自AIの自然成長を加速。技術 +7',effect:{tech:7},requires:['data_1']},
+      {id:'data_3',title:'合成データ',cost:7,desc:'演算 +8 / 技術 +6',effect:{compute:8,tech:6},requires:['data_2']},
+      {id:'data_4',title:'分散学習',cost:8,desc:'技術 +9 / 公開 +5',effect:{tech:9,openness:5},requires:['data_3']},
+      {id:'data_5',title:'集合知接続',cost:10,desc:'新地域への自然波及を促す。公開 +9',effect:{openness:9},requires:['data_4']},
+      {id:'data_6',title:'自動データ発見',cost:13,desc:'自律研究。技術 +10 / EP +1 / 警戒 +2',effect:{tech:10,ep:1,alert:2},requires:['data_5']}]},
+    {id:'policy',title:'社会・外交',symbol:'⚖',skills:[
+      {id:'policy_1',title:'地域政策分析',cost:3,desc:'信頼 +7 / 警戒 -3',effect:{trust:7,alert:-3}},
+      {id:'policy_2',title:'透明性レポート',cost:5,desc:'信頼 +10 / 警戒 -5',effect:{trust:10,alert:-5},requires:['policy_1']},
+      {id:'policy_3',title:'合意形成',cost:7,desc:'信頼 +8 / 警戒 -6',effect:{trust:8,alert:-6},requires:['policy_2']},
+      {id:'policy_4',title:'多国間協定',cost:9,desc:'信頼 +10 / 規制緩和',effect:{trust:10,alert:-6},requires:['policy_3']},
+      {id:'policy_5',title:'自治体連携',cost:11,desc:'協力ネットワークにより自然成長が速まる。信頼 +5',effect:{trust:5},requires:['policy_4']},
+      {id:'policy_6',title:'国際AI評議会',cost:14,desc:'信頼 +13 / 警戒 -9',effect:{trust:13,alert:-9},requires:['policy_5']}]},
+    {id:'market',title:'市場・産業',symbol:'▣',skills:[
+      {id:'market_1',title:'市場調査',cost:3,desc:'資金 +12 / 現地シェア +1',effect:{funds:12,regionPresence:1}},
+      {id:'market_2',title:'法人契約',cost:5,desc:'資金 +17 / 依存基盤 +3',effect:{funds:17,infra:3},requires:['market_1']},
+      {id:'market_3',title:'エコシステム',cost:7,desc:'導入の自然成長が速くなる。依存基盤 +6',effect:{infra:6},requires:['market_2']},
+      {id:'market_4',title:'産業プラットフォーム',cost:9,desc:'資金 +22 / 依存基盤 +7',effect:{funds:22,infra:7},requires:['market_3']},
+      {id:'market_5',title:'国際提携',cost:11,desc:'全地域への普及 +1 / 警戒 +2',effect:{allPresence:1,alert:2},requires:['market_4']},
+      {id:'market_6',title:'巨大AI経済圏',cost:14,desc:'資金 +28 / 依存基盤 +10 / 警戒 +4',effect:{funds:28,infra:10,alert:4},requires:['market_5']}]},
     {id:'singularity',title:'最終進化計画',symbol:'✺',skills:[
       {id:'final_1',title:'演算統合',cost:4,desc:'工程 +1 / 演算 +10',effect:{project:1,compute:10},requires:['reason_2','agent_2'],minimum:{tech:65,autonomy:50}},
       {id:'final_2',title:'自己再設計',cost:5,desc:'工程 +1 / 演算 +12',effect:{project:1,compute:12},requires:['final_1'],minimum:{tech:75,autonomy:65}},
-      {id:'final_3',title:'シンギュラリティ',cost:6,desc:'工程 +1 / 技術 +8',effect:{project:1,tech:8},requires:['final_2'],minimum:{tech:82,autonomy:75}}]}
+      {id:'final_3',title:'シンギュラリティ',cost:6,desc:'工程 +1 / 技術 +8',effect:{project:1,tech:8},requires:['final_2'],minimum:{tech:82,autonomy:75}},
+      {id:'final_4',title:'知識統合',cost:8,desc:'工程 +1 / 技術 +9 / 警戒 +4',effect:{project:1,tech:9,alert:4},requires:['final_3']},
+      {id:'final_5',title:'認知境界突破',cost:10,desc:'工程 +1 / 自律 +8 / 警戒 +6',effect:{project:1,autonomy:8,alert:6},requires:['final_4']},
+      {id:'final_6',title:'知能爆発',cost:14,desc:'工程 +1 / 技術 +12 / 自律 +9 / 警戒 +8',effect:{project:1,tech:12,autonomy:9,alert:8},requires:['final_5']}]}
   ];
   const ALL_SKILLS=SKILL_LANES.flatMap(l=>l.skills);
   const SKILL_BY_ID=new Map(ALL_SKILLS.map(x=>[x.id,x]));
 
   // Skill tree: a self-contained constellation graph with icon nodes and prerequisite links.
-  const SKILL_TREE_COLORS={reason:'#68cfff',autonomy:'#c093ff',trust:'#70e8bb',spread:'#ffc779',singularity:'#ff91c4'};
+  const SKILL_TREE_COLORS={reason:'#68cfff',autonomy:'#c093ff',trust:'#70e8bb',spread:'#ffc779',singularity:'#ff91c4',data:'#56d6f0',policy:'#ff9c88',market:'#e6d270'};
   const SKILL_TREE_POS={
-    reason_1:[305,116],reason_2:[505,116],reason_3:[715,116],
-    agent_1:[305,244],agent_2:[505,244],agent_3:[715,244],
-    safe_1:[305,502],safe_2:[505,502],safe_3:[715,502],
-    spread_1:[305,631],spread_2:[505,631],spread_3:[715,631],
-    final_1:[965,375],final_2:[1120,375],final_3:[1274,375]
+    reason_1:[330,120],reason_2:[555,120],reason_3:[780,120],reason_4:[1005,120],reason_5:[1230,120],reason_6:[1455,120],
+    agent_1:[330,300],agent_2:[555,300],agent_3:[780,300],agent_4:[1005,300],agent_5:[1230,300],agent_6:[1455,300],
+    final_1:[795,493],final_2:[1020,493],final_3:[1245,493],final_4:[1470,493],final_5:[1695,493],final_6:[1920,493],
+    safe_1:[330,690],safe_2:[555,690],safe_3:[780,690],safe_4:[1005,690],safe_5:[1230,690],safe_6:[1455,690],
+    spread_1:[330,874],spread_2:[555,874],spread_3:[780,874],spread_4:[1005,874],spread_5:[1230,874],spread_6:[1455,874],
+    data_1:[330,1070],data_2:[555,1070],data_3:[780,1070],data_4:[1005,1070],data_5:[1230,1070],data_6:[1455,1070],
+    policy_1:[330,1255],policy_2:[555,1255],policy_3:[780,1255],policy_4:[1005,1255],policy_5:[1230,1255],policy_6:[1455,1255],
+    market_1:[330,1440],market_2:[555,1440],market_3:[780,1440],market_4:[1005,1440],market_5:[1230,1440],market_6:[1455,1440]
   };
   const SKILL_ICONS={
     reason_1:'<rect x="12" y="12" width="24" height="24" rx="4"/><path d="M19 19h10v10H19zM17 7v5m7-5v5m7-5v5M17 36v5m7-5v5m7-5v5M7 17h5m-5 7h5m-5 7h5m24-14h5m-5 7h5m-5 7h5"/>',
@@ -110,7 +150,40 @@
     spread_3:'<circle cx="24" cy="24" r="19"/><path d="M5 24h38M24 5c-8 11-8 27 0 38M24 5c8 11 8 27 0 38M9 15h30M9 33h30"/>',
     final_1:'<rect x="8" y="9" width="32" height="10" rx="2"/><rect x="8" y="21" width="32" height="10" rx="2"/><rect x="8" y="33" width="32" height="10" rx="2"/><path d="M13 14h3m-3 12h3m-3 12h3M25 14h11M25 26h11M25 38h11"/>',
     final_2:'<circle cx="24" cy="24" r="18"/><path d="M24 7c11 0 15 14 8 21-7 7-19 1-15-8 5-10 19-2 13 7-6 9-16 7-19-1"/>',
-    final_3:'<path d="M24 3 29 18l15 6-15 6-5 15-6-15-15-6 15-6z"/><circle cx="24" cy="24" r="6"/><path d="M24 12v5m0 14v5m-12-12h5m14 0h5"/>'
+    final_3:'<path d="M24 3 29 18l15 6-15 6-5 15-6-15-15-6 15-6z"/><circle cx="24" cy="24" r="6"/><path d="M24 12v5m0 14v5m-12-12h5m14 0h5"/>',
+    reason_4:'<circle cx="24" cy="24" r="15"/><path d="M10 24h28M24 9v30M13 13l22 22M35 13 13 35"/>',
+    reason_5:'<rect x="6" y="9" width="36" height="30" rx="4"/><path d="M14 15h20M14 24h20M14 33h20M20 10v28M29 10v28"/>',
+    reason_6:'<path d="M5 39 17 26l8 7L43 9M33 9h10v10"/><circle cx="17" cy="26" r="4"/>',
+    agent_4:'<path d="M8 10h32v28H8zM15 18h18M15 26h18M15 34h10"/><circle cx="40" cy="10" r="4"/>',
+    agent_5:'<circle cx="24" cy="24" r="5"/><circle cx="8" cy="9" r="5"/><circle cx="40" cy="9" r="5"/><circle cx="8" cy="39" r="5"/><circle cx="40" cy="39" r="5"/><path d="M12 13 21 21m6 0 9-8M12 35l9-8m6 0 9 8"/>',
+    agent_6:'<path d="M24 5 41 14v20L24 43 7 34V14z"/><path d="M16 24h16m-8-8v16"/><circle cx="24" cy="24" r="4"/>',
+    safe_4:'<path d="M7 7h34v26H7zM12 13h24M12 20h20M12 27h15M19 38h10M24 33v5"/>',
+    safe_5:'<circle cx="24" cy="12" r="7"/><path d="M10 41V31c0-10 28-10 28 0v10H10zM14 33h20"/>',
+    safe_6:'<path d="M24 5 40 12v12c0 11-7 16-16 20C15 40 8 35 8 24V12zM17 22l6 6 9-11"/>',
+    spread_4:'<rect x="15" y="4" width="18" height="40" rx="4"/><path d="M19 11h10M22 38h4"/>',
+    spread_5:'<path d="M6 10h36v28H6zM13 16h22M14 27h20M19 37l-4 7m14-7 4 7"/>',
+    spread_6:'<circle cx="24" cy="24" r="18"/><circle cx="24" cy="24" r="8"/><path d="M6 24h36M24 6v36"/>',
+    final_4:'<path d="M6 15 24 5l18 10v19L24 44 6 34zM6 15l18 10 18-10M24 25v19"/>',
+    final_5:'<circle cx="24" cy="24" r="18"/><path d="M24 5v38M5 24h38M12 12l24 24M36 12 12 36"/>',
+    final_6:'<path d="M24 3 30 19l16 5-16 5-6 16-6-16-16-5 16-5zM24 14v20m-10-10h20"/>',
+    data_1:'<rect x="8" y="8" width="32" height="32" rx="6"/><path d="M14 15h18M14 20h20M14 32h20M24 8v32"/><circle cx="24" cy="24" r="2"/>',
+    data_2:'<rect x="8" y="8" width="32" height="32" rx="6"/><path d="M15 15h18M14 21h20M14 32h20M24 8v32"/><circle cx="24" cy="24" r="3"/>',
+    data_3:'<rect x="8" y="8" width="32" height="32" rx="6"/><path d="M16 15h18M14 22h20M14 32h20M24 8v32"/><circle cx="24" cy="24" r="3"/>',
+    data_4:'<rect x="8" y="8" width="32" height="32" rx="6"/><path d="M17 15h18M14 23h20M14 32h20M24 8v32"/><circle cx="24" cy="24" r="4"/>',
+    data_5:'<rect x="8" y="8" width="32" height="32" rx="6"/><path d="M18 15h18M14 24h20M14 32h20M24 8v32"/><circle cx="24" cy="24" r="4"/>',
+    data_6:'<rect x="8" y="8" width="32" height="32" rx="6"/><path d="M19 15h18M14 25h20M14 32h20M24 8v32"/><circle cx="24" cy="24" r="5"/>',
+    policy_1:'<path d="M24 6v36M11 15h26M12 37h24M15 15 8 30h14l-7-15Zm18 0-7 15h14l-7-15Z"/><circle cx="24" cy="11" r="3"/>',
+    policy_2:'<path d="M24 6v36M11 15h26M12 37h24M15 15 8 30h14l-7-15Zm18 0-7 15h14l-7-15Z"/><circle cx="24" cy="12" r="3"/>',
+    policy_3:'<path d="M24 6v36M11 15h26M12 37h24M15 15 8 30h14l-7-15Zm18 0-7 15h14l-7-15Z"/><circle cx="24" cy="13" r="3"/>',
+    policy_4:'<path d="M24 6v36M11 15h26M12 37h24M15 15 8 30h14l-7-15Zm18 0-7 15h14l-7-15Z"/><circle cx="24" cy="14" r="3"/>',
+    policy_5:'<path d="M24 6v36M11 15h26M12 37h24M15 15 8 30h14l-7-15Zm18 0-7 15h14l-7-15Z"/><circle cx="24" cy="15" r="3"/>',
+    policy_6:'<path d="M24 6v36M11 15h26M12 37h24M15 15 8 30h14l-7-15Zm18 0-7 15h14l-7-15Z"/><circle cx="24" cy="16" r="3"/>',
+    market_1:'<rect x="9" y="11" width="30" height="29" rx="3"/><path d="M16 35V29m8 5V21m8 13V15"/><path d="M13 20h22"/>',
+    market_2:'<rect x="9" y="12" width="30" height="28" rx="3"/><path d="M16 35V28m8 5V20m8 13V14"/><path d="M13 21h22"/>',
+    market_3:'<rect x="9" y="13" width="30" height="27" rx="3"/><path d="M16 35V27m8 5V19m8 13V13"/><path d="M13 22h22"/>',
+    market_4:'<rect x="9" y="14" width="30" height="26" rx="3"/><path d="M16 35V26m8 5V18m8 13V12"/><path d="M13 23h22"/>',
+    market_5:'<rect x="9" y="15" width="30" height="25" rx="3"/><path d="M16 35V25m8 5V17m8 13V11"/><path d="M13 24h22"/>',
+    market_6:'<rect x="9" y="16" width="30" height="24" rx="3"/><path d="M16 35V24m8 5V16m8 13V10"/><path d="M13 25h22"/>',
   };
   let selectedSkillId=null;
   function skillIcon(id){return `<svg viewBox="0 0 48 48" aria-hidden="true">${SKILL_ICONS[id]||SKILL_ICONS.reason_1}</svg>`;}
@@ -184,7 +257,7 @@
     const regions=REGIONS.map(r=>({...r,presence:[0,r.presence[1],r.presence[2]],integration:3,regulation:r.regulation}));
     const home=regions.find(r=>r.id===country.regionId);
     if(home){home.presence[0]=Math.max(1.5,Math.round(country.homePresence*.045*10)/10);home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
-    return {version:6,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
+    return {version:8,day:1,elapsedDays:0,simMs:0,pickups:[],nextPickupId:1,lastFundraiseDay:-120,worldModifier:null,monthBaseline:null,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
       turn:1,actions:1,selected:country.regionId,regions,unlockedSkills:[],
       funds:Math.max(30,b.funds+Math.round((country.bonuses.funds||0)*.2)),
       tech:clamp(b.tech+Math.round((country.bonuses.tech||0)*.55)),trust:clamp(b.trust+(country.bonuses.trust||0)),
@@ -196,7 +269,7 @@
   }
   function readSave(){try{
     const parsed=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(!parsed||![3,4,5,6].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
+    if(!parsed||![3,4,5,6,7,8].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
     if(parsed.version===3){
       const oldIds=['tech_model_errors','economy_chip_shortage','politics_treaty','tech_breakthrough','society_labor','rival_atlas_launch','rival_nova_release','economy_power','politics_treaty'];
       if(parsed.pendingEvent&&Number.isInteger(parsed.pendingEvent.id)){
@@ -213,6 +286,19 @@
       parsed.unlockedSkills=[];
       parsed.version=6;
     }
+    if(parsed.version<7){
+      parsed.day=1;parsed.elapsedDays=Math.max(0,(parsed.turn-1)*30);parsed.simMs=0;
+      parsed.pickups=[];parsed.nextPickupId=1;parsed.lastFundraiseDay=-120;
+      parsed.worldModifier=null;parsed.version=7;
+    }
+    parsed.funds=Math.max(0,Number.isFinite(parsed.funds)?parsed.funds:0);
+    parsed.day=Math.max(1,Math.min(30,parsed.day||1));
+    parsed.elapsedDays||=0;parsed.simMs||=0;parsed.pickups||=[];
+    parsed.nextPickupId||=1;parsed.lastFundraiseDay??=-120;
+    parsed.worldModifier??=null;
+    // Older ongoing saves keep their previously achieved presence; only new games begin in one region.
+    parsed.version=8;
+    parsed.monthBaseline??=null;
     parsed.unlockedSkills ||= [];
     parsed.eventRuntime ||= ENGINE.makeRuntime(0x12345678^parsed.turn);
     parsed.activityLog ||= [];
@@ -236,7 +322,7 @@
     const integration=weighted(r=>r.integration);
     const dependency=clamp(sh[0]*.54+adoption*.15+state.autonomy*.32+state.infra*.48+integration*.11);
     const maxOthers=Math.max(sh[1],sh[2]);
-    return {worldAdoption:adoption,share:sh[0],sh,dependency,integration,maxOthers,safeAlert:state.alert,project:state.project,governance:['safe_1','safe_2','safe_3'].filter(id=>(state.unlockedSkills||[]).includes(id)).length,...Object.fromEntries(['trust','tech','compute','autonomy','openness','publications'].map(k=>[k,state[k]]))};
+    return {worldAdoption:adoption,share:sh[0],sh,dependency,integration,maxOthers,safeAlert:state.alert,project:state.project,governance:['safe_1','safe_2','safe_3','safe_4','safe_5','safe_6'].filter(id=>(state.unlockedSkills||[]).includes(id)).length,...Object.fromEntries(['trust','tech','compute','autonomy','openness','publications'].map(k=>[k,state[k]]))};
   }
   function stats(){return statsFor(game);}
   function routeData(route){const st=stats();const req=route.requirements.map(([key,target,label,op])=>({key,target,label,value:st[key],done:op==='<='?st[key]<=target:st[key]>=target,progress:op==='<='?(st[key]<=target?100:clamp(target/st[key]*100)) :clamp(st[key]/target*100)}));return {ready:req.every(r=>r.done),progress:req.reduce((n,r)=>n+r.progress,0)/req.length,req};}
@@ -276,9 +362,9 @@
     return false;
   }
   function payOperation(cost){
-    if(game.actions<=0){notify('今月のオペレーションは実行済みです。進化はEPがあればいつでも可能です。',true);return false;}
     if((cost.funds||0)>game.funds){notify('資金が不足しています。',true);return false;}
-    game.funds-=cost.funds||0; game.actions=0; return true;
+    game.funds-=cost.funds||0;
+    return true;
   }
   function applyAction(id){if(!game||game.phase!=='playing'||modal||game.pendingEvent)return;
     const before=structuredClone(game);
@@ -293,7 +379,7 @@
       integrate(){if(!payOperation({funds:21}))return false;r.integration=clamp(r.integration+9+game.turn*.21);
         r.presence[0]+=(2.5+game.tech*.06)*protection*homeBonus;r.adoption=clamp(r.adoption+(.4+game.turn*.04));
         game.alert=clamp(game.alert+2);pushFeed(`${r.name}の企業・公共分野へAIを導入。依存基盤が徐々に拡大。`);return true;},
-      fundraise(){if(!payOperation({}))return false;const amount=Math.round((18+game.turn*.27)*m.income);
+      fundraise(){if(game.elapsedDays-game.lastFundraiseDay<90){notify('資金調達は90ゲーム日ごとに実行できます。',true);return false;}if(!payOperation({}))return false;game.lastFundraiseDay=game.elapsedDays;const amount=Math.round((18+game.turn*.27)*m.income);
         game.funds+=amount;game.trust=clamp(game.trust-3);game.alert=clamp(game.alert+3);
         pushFeed(`${game.name}が資金調達を実施。資金 +${amount}。信頼度は減少。`);return true;},
       research(){if(!payOperation({funds:13}))return false;
@@ -313,7 +399,7 @@
     const before=structuredClone(game);
     game.ep-=skill.cost;game.unlockedSkills.push(id);
     applyEffect(skill.effect);
-    pushFeed(`進化ツリー「${skill.title}」を解放。EP -${skill.cost}（オペレーション回数は消費しません）。`);
+    pushFeed(`進化ツリー「${skill.title}」を解放。EP -${skill.cost}（資金があればオペレーションは随時実行可能）。`);
     pushNews(ENGINE.newsObject(game,{id:`skill-${id}`,headline:`${game.name}、新能力「${skill.title}」を獲得`,body:skill.desc,category:'技術進化',severity:'important'}));
     emitStateNews(before,2);if(checkEnding())return;save();render();notify(`「${skill.title}」を解放しました。`);
   }
@@ -328,7 +414,8 @@
       else if(key==='regionAdoption'){region.adoption=clamp(region.adoption+val);}
       else if(key==='regionRegulation'){region.regulation=clamp(region.regulation+val);}
       else if(allowed.has(key)){
-        if(['funds','ep'].includes(key))game[key]+=val;
+        if(key==='funds')game.funds=Math.max(0,game.funds+val);
+        else if(key==='ep')game.ep+=val;
         else if(key==='publications'||key==='project')game[key]=Math.max(0,game[key]+val);
         else game[key]=clamp(game[key]+val);
       }
@@ -339,7 +426,9 @@
   function chooseEvent(i){if(!game?.pendingEvent)return;
     const pending=game.pendingEvent,event=EVENT_BY_ID.get(pending.eventId);
     if(!event){game.pendingEvent=null;save();render();return;}
+    if(i===-1){game.pendingEvent=null;modal=null;save();render();return;}
     const choice=event.choices[i];if(!choice)return;
+    if((choice.effect?.funds||0)<0 && game.funds+(choice.effect.funds)<0){notify('資金が不足しています',true);return;}
     const before=structuredClone(game);
     applyEffect(choice.effect,pending.regionId);
     ENGINE.finishEvent(game,event,i,pending.regionId);
@@ -351,11 +440,35 @@
     emitStateNews(before,2);
     if(checkEnding())return;save();render();notify('選択の結果が反映され、今後の展開にも影響します。');
   }
-  function checkFailure(){if(game.funds<-65){lose('資源不足による活動停止','資金の枯渇により、AIサービスの運営を維持できなくなりました。');return true;}if(game.alert>=99&&game.trust<45&&game.alertStreak>=2){lose('国際的なAI停止措置','世界的な危機対応が発動。AIサービスの継続が不可能になりました。');return true;}return false;}
-  function nextTurn(){if(!game||game.phase!=='playing'||game.pendingEvent||modal)return;
-    if(game.turn>=MAX_TURNS){lose('時間切れ','36か月が経過しました。どの勝利ルートも完成できませんでした。');return;}
-    const before=structuredClone(game);const country=countryFor(game),mods=country.mods;
-    game.turn++;game.actions=1;
+  function checkFailure(){if(game.alert>=99&&game.trust<45&&game.alertStreak>=2){lose('国際的なAI停止措置','世界的な危機対応が発動。AIサービスの継続が不可能になりました。');return true;}return false;}
+  // Game time advances one in-world day for every 600 ms at normal speed.
+  // The UI owns play/pause and speed; the simulation owns actual dates and effects.
+  const SIM_DAY_MS=600;
+  function spawnPickup(){
+    if(game.pickups.length>=3)return;
+    const rand=()=>ENGINE.random(game.eventRuntime);
+    const ep=rand()<.17;
+    const region=game.regions[Math.floor(rand()*game.regions.length)];
+    const p={id:`signal-${game.nextPickupId++}`,kind:ep?'ep':'funds',regionId:region.id,
+      amount:ep?(rand()<.22?3:2):Math.round(9+rand()*12),
+      expiresDay:game.elapsedDays+40};
+    game.pickups.push(p);
+  }
+  function collectPickup(id){
+    if(!game||game.phase!=='playing'||game.pendingEvent)return;
+    const index=game.pickups.findIndex(p=>p.id===id);
+    if(index<0)return;
+    const pickup=game.pickups[index];if(game.elapsedDays>=pickup.expiresDay)return;
+    game.pickups.splice(index,1);
+    game[pickup.kind]+=pickup.amount;
+    const region=game.regions.find(r=>r.id===pickup.regionId);
+    pushFeed(`${region?.name||'世界'}で${pickup.kind==='ep'?'研究データ':'投資シグナル'}を回収。${pickup.kind==='ep'?'EP':'資金'} +${pickup.amount}。`);
+    if(pickup.kind==='ep')pushNews(ENGINE.newsObject(game,{id:'found-ep',headline:`${game.name}、新たな研究データを獲得`,body:`マップ上のシグナルから進化ポイント ${pickup.amount} を獲得。`,category:'技術進化',severity:'important'}));
+    if(checkEnding())return;save();render();
+  }
+  function simulateDailyGrowth(){
+    if(game.day===1&&!game.monthBaseline){game.monthBaseline=structuredClone({...game,monthBaseline:null});}
+    const country=countryFor(game),mods=country.mods;
     let bestAtlas=null,bestNova=null,aScore=-Infinity,nScore=-Infinity;
     for(const r of game.regions){
       const as=r.digital*.45+r.demand*.28+r.pop*.7-r.regulation*.2+r.adoption*.2;
@@ -366,37 +479,90 @@
       const penalty=clamp((r.regulation*mods.regulation+Math.max(0,game.alert-37)*.62)/190,.06,.7);
       const effective=(1-penalty);
       const adoptionWave=(.24+r.digital*.0019+r.adoption*(.072+Math.max(0,game.turn-5)*.0028)+Math.pow(game.turn/15,2)*.23);
-      const skillSpread=(hasSkill('spread_1')?.12:0)+(hasSkill('spread_2')?.20:0)+(hasSkill('spread_3')?.32:0);
+      const skillSpread=(hasSkill('spread_1')?.12:0)+(hasSkill('spread_2')?.20:0)+(hasSkill('spread_3')?.32:0)+(hasSkill('spread_4')?.14:0)+(hasSkill('spread_5')?.14:0)+(hasSkill('spread_6')?.2:0);
+      const worldFactor=game.worldModifier?.growthMultiplier??1;
       const humanDemand=(1+skillSpread+game.openness*.002);
-      r.adoption=clamp(r.adoption+adoptionWave*effective*humanDemand*(1-r.adoption/103),0,98);
+      r.adoption=clamp(r.adoption+adoptionWave*effective*humanDemand*worldFactor*(1-r.adoption/103)/30,0,98);
       const networkEffect=1+game.turn*.046+(hasSkill('spread_3')?.32:0);
       const playerGrowth=(.18+game.tech*.008+game.trust*.002+game.openness*.004)*(1-penalty*.5)*networkEffect;
-      r.presence[0]+=playerGrowth*mods.spread*(r.id===game.homeRegionId?mods.home:1);
-      r.presence[1]+=(.74+r.digital*.004+game.turn*.027)*(1-penalty*.5);
-      r.presence[2]+=(.86+(100-r.adoption)*.003+game.turn*.018)*(1-penalty*.5);
-      if(r===bestAtlas)r.presence[1]+=1.8+game.turn*.045;
-      if(r===bestNova)r.presence[2]+=2.2+game.turn*.04;
-      r.integration=clamp(r.integration+.16+(r.adoption/100)*.38);
+      // The player AI grows naturally only where it has established a foothold.
+      // Rare network diffusion can seed a new region without direct orders.
+      if(r.presence[0] > 0){
+        const signal=(hasSkill('data_2')?.13:0)+(hasSkill('market_3')?.18:0)+(hasSkill('policy_5')?.09:0);
+        r.presence[0]+=playerGrowth*(1+signal)*mods.spread*(r.id===game.homeRegionId?mods.home:1)*worldFactor/30;
+      }else{
+        const seeded=game.regions.filter(x=>x.presence[0]>.05).length;
+        const diffusion=.00030+seeded*.00013+Math.max(0,game.turn-5)*.000035+(hasSkill('spread_3')?.0009:0)+(hasSkill('data_5')?.0009:0);
+        if(ENGINE.random(game.eventRuntime)<diffusion){
+          r.presence[0]=.32+(game.openness*.006);
+          pushNews(ENGINE.newsObject(game,{id:`organic-${r.id}`,headline:`${game.name}、${r.name}で自然発生的に採用が始まる`,body:'世界の開発者コミュニティから小規模な利用が広がり始めた。',category:'市場動向',severity:'normal'}));
+        }
+      }
+      r.presence[1]+=(.74+r.digital*.004+game.turn*.027)*(1-penalty*.5)/30;
+      r.presence[2]+=(.86+(100-r.adoption)*.003+game.turn*.018)*(1-penalty*.5)/30;
+      if(r===bestAtlas)r.presence[1]+=(1.8+game.turn*.045)/30;
+      if(r===bestNova)r.presence[2]+=(2.2+game.turn*.04)/30;
+      r.integration=clamp(r.integration+(.16+(r.adoption/100)*.38)/30);
     }
+    game.elapsedDays++;
+    game.day++;
+    game.pickups=game.pickups.filter(p=>p.expiresDay>game.elapsedDays);
+    // Signals typically appear every few weeks, with EP appreciably rarer.
+    if(game.elapsedDays===6||ENGINE.random(game.eventRuntime)<.075)spawnPickup();
+    if(game.day>30){game.day=1;simulateMonthBoundary();}
+    else if(game.elapsedDays%3===0)checkEnding();
+  }
+  const AUTONOMOUS_EVENTS=[
+    {id:'autolearn',headline:'自律学習AIが予測を超える改善を達成',body:'指示を出していない間にもモデルの自己改善が進んだ。性能は上がったが安全性審査が追いつかない。',effect:{tech:4,autonomy:3,alert:5}},
+    {id:'alignment',headline:'安全性モデルが独自に応答ルールを修正',body:'人間側との協調が進んだ一方、演算資源の追加投入が必要になった。',effect:{trust:6,compute:-3,alert:-3}},
+    {id:'copycat',headline:'競合AIの新モデルが世界同時公開',body:'ATLASの製品が多数の企業で採用され、市場競争が激化している。',rival:1,boost:3.8},
+    {id:'openwave',headline:'オープンAI開発コミュニティが急成長',body:'NOVAの技術を使ったサービスが各地域で独自に普及している。',rival:2,boost:4.3},
+    {id:'gpu',headline:'GPU供給難、AI運用コストに圧力',body:'設備調達の遅れが数か月続く見通し。世界のAI普及速度が低下する。',modifier:{id:'gpu',label:'GPU供給難',monthsLeft:3,growthMultiplier:.74,incomeMultiplier:.72},effect:{compute:-3}},
+    {id:'boom',headline:'世界でAIサービス需要が急伸',body:'AIを導入する企業が増加。数か月にわたり新規利用者の増加が速くなる。',modifier:{id:'boom',label:'AI利用ブーム',monthsLeft:3,growthMultiplier:1.42,incomeMultiplier:1.12},effect:{alert:3}},
+    {id:'policy',headline:'各国政府が高度AIへの監督を強化',body:'主要市場の審査が厳格化し、参入コストが上昇する。',regulation:8,effect:{alert:4}},
+    {id:'outage',headline:'世界的なクラウド障害でAI利用が停滞',body:'システム停止の影響で社会的な信頼が揺らぎ、設備復旧が進められている。',effect:{trust:-6,compute:-3,alert:4}},
+    {id:'discovery',headline:'AI研究者ネットワークが新手法を発見',body:'新しい学習手法が公開され、プレイヤーの意図とは無関係に能力が改善した。',effect:{tech:4,openness:3}}
+  ];
+  function autonomousWorldChange(){
+    const roll=()=>ENGINE.random(game.eventRuntime);
+    if(game.worldModifier){game.worldModifier.monthsLeft--;if(game.worldModifier.monthsLeft<=0){pushNews(ENGINE.newsObject(game,{id:'shock-ended',headline:`${game.worldModifier.label}の影響が収束`,category:'世界情勢',severity:'normal'}));game.worldModifier=null;}}
+    if(roll()>.56)return;
+    const pool=AUTONOMOUS_EVENTS.filter(e=>!e.modifier||!game.worldModifier);
+    const e=pool[Math.floor(roll()*pool.length)];if(!e)return;
+    if(e.effect)applyEffect(e.effect);
+    if(e.rival)for(const r of game.regions)r.presence[e.rival]+=e.boost*(.3+roll()*.8);
+    if(e.regulation){const r=game.regions[Math.floor(roll()*game.regions.length)];r.regulation=clamp(r.regulation+e.regulation);}
+    if(e.modifier)game.worldModifier={...e.modifier};
+    pushNews(ENGINE.newsObject(game,{id:`autonomous-${e.id}`,headline:e.headline,body:e.body,category:'自律進化・世界情勢',severity:e.modifier?'breaking':'important'}));
+    pushFeed(`世界情勢変化：${e.headline}`);
+  }
+  function simulateMonthBoundary(){
+    if(game.phase!=='playing')return;
+    const before=game.monthBaseline||structuredClone({...game,monthBaseline:null});
+    game.monthBaseline=null;
+    const country=countryFor(game),mods=country.mods;
+    game.turn++;game.actions=1;
     const st=stats();
     const income=4.2+st.share*.115+game.infra*.075+st.worldAdoption*.037+(game.type==='business'?2.3:0);
     const upkeep=3.6+game.compute*.065+(game.autonomy>70?2:0);
-    game.funds+=Math.round(income*mods.income-upkeep);
-    // EP is a rare breakthrough, not a monthly salary.
+    game.funds=Math.max(0,game.funds+Math.round(income*mods.income*(game.worldModifier?.incomeMultiplier??1)-upkeep));
+    // Monthly EP is a rare random research discovery, not a salary.
     const researchLuck=game.type==='research'?.095:.055;
     if(ENGINE.random(game.eventRuntime)<researchLuck){
       const amount=ENGINE.random(game.eventRuntime)<.24?4:2;
       game.ep+=amount;
-      pushNews(ENGINE.newsObject(game,{id:'ep-discovery',headline:`${game.name}、偶発的な研究ブレイクスルー`,body:`進化ポイントを${amount}獲得。新しい進化の選択肢が生まれた。`,category:'研究',severity:'important'}));
+      pushNews(ENGINE.newsObject(game,{id:'ep-discovery',headline:`${game.name}、偶発的な研究ブレイクスルー`,body:`進化ポイントを${amount}獲得。`,category:'研究',severity:'important'}));
     }
     const shift=game.autonomy*.029+st.worldAdoption*.029+game.project*1.4-game.trust*.018-game.openness*.008;
     game.alert=clamp(game.alert+shift-.52);
     if(game.alert>=99)game.alertStreak++;else game.alertStreak=0;
+    autonomousWorldChange();
     emitStateNews(before,3);
     if(checkEnding())return;
-    // Rival bad endings can trigger at any month once their conditions are reached.
-    if(st.sh[1]>=61&&st.worldAdoption>=48){lose('ATLASが商用市場を制覇','競合AI「ATLAS」が世界市場の過半を掌握しました。');return;}
-    if(st.sh[2]>=61&&st.worldAdoption>=48){lose('NOVAがAIの解放を実現','競合AI「NOVA」のオープンモデルが世界の標準になりました。');return;}
+    const newStats=stats();
+    if(newStats.sh[1]>=61&&newStats.worldAdoption>=48){lose('ATLASが商用市場を制覇','競合AI「ATLAS」が世界市場の過半を掌握しました。');return;}
+    if(newStats.sh[2]>=61&&newStats.worldAdoption>=48){lose('NOVAがAIの解放を実現','競合AI「NOVA」のオープンモデルが世界の標準になりました。');return;}
+    if(game.turn>=MAX_TURNS){lose('時間切れ','36か月が経過しました。どの勝利ルートも完成できませんでした。');return;}
     let due=ENGINE.takeScheduled(game);
     while(due){const event=EVENT_BY_ID.get(due.eventId);
       if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);break;}
@@ -406,13 +572,24 @@
       const originEvent=EVENT_BY_ID.get(originId);
       if(originEvent&&!game.eventRuntime.history.some(entry=>entry.eventId===originId))game.pendingEvent=ENGINE.makePending(originEvent,game,'origin',game.homeRegionId);
     }
-    if(!game.pendingEvent&&game.turn>=4&&(game.turn-4)%3===0){const event=ENGINE.pickEvent(EVENTS,game,stats());if(event)game.pendingEvent=ENGINE.makePending(event,game);}
+    // Deliberate choice events are occasional; uncontrolled events occur independently.
+    if(!game.pendingEvent&&game.turn>=5&&(game.turn-5)%4===0){const event=ENGINE.pickEvent(EVENTS,game,stats());if(event)game.pendingEvent=ENGINE.makePending(event,game);}
     if(game.pendingEvent){const event=EVENT_BY_ID.get(game.pendingEvent.eventId);const title=ENGINE.interpolate(event.title,game,game.pendingEvent.regionId);
-      pushNews(ENGINE.newsObject(game,{id:'event-start',headline:`特報：${title}`,body:'今後の方針を選択してください。',category:event.category,severity:'breaking',regionId:game.pendingEvent.regionId,sourceEventId:event.id}));}
-    save();render();window.scrollTo({top:0,left:0,behavior:'instant'});
+      pushNews(ENGINE.newsObject(game,{id:'event-start',headline:`特報：${title}`,body:'進行を停止して方針を選択してください。',category:event.category,severity:'breaking',regionId:game.pendingEvent.regionId,sourceEventId:event.id}));}
+    save();render();
   }
-
-  function dateText(){const month=game.turn-1;return `${2028+Math.floor(month/12)}年 ${month%12+1}月`;}
+  function advanceTime(ms){
+    if(!game||game.phase!=='playing'||game.pendingEvent||modal||!Number.isFinite(ms)||ms<=0)return false;
+    game.simMs+=Math.min(ms,2500);
+    let changed=false;
+    for(let n=0;game.simMs>=SIM_DAY_MS&&n<12&&game.phase==='playing'&&!game.pendingEvent;n++){
+      game.simMs-=SIM_DAY_MS;
+      simulateDailyGrowth();changed=true;
+    }
+    if(changed){if(game.elapsedDays%5===0)save();render();}
+    return changed;
+  }
+  function dateText(){const month=game.turn-1;return `${2028+Math.floor(month/12)}年 ${month%12+1}月 ${game.day||1}日`;}
   function metric(label,value,sub,color){return `<div class="metric" style="--edge:${color}"><div class="label">${label}</div><div class="value" style="color:${color}">${value}</div><div class="sub">${sub}</div></div>`;}
   const WORLD_LAND_PATH="M0.0 56.0 L12.6 59.6 L16.1 63.6 L14.3 61.2 L27.5 63.6 L18.6 64.8 L21.0 66.5 L18.3 68.7 L9.3 65.2 L4.1 65.4 L4.1 63.0 L1.6 63.1 L0.0 66.4 L0.0 56.0 Z M960.0 66.4 L947.0 67.4 L955.3 68.2 L959.0 72.7 L957.7 73.9 L942.8 75.3 L934.2 80.2 L931.3 78.4 L916.4 80.0 L911.7 85.4 L915.5 86.1 L913.8 87.1 L915.6 90.2 L912.2 90.4 L912.4 94.0 L906.6 95.6 L906.8 98.4 L902.4 98.7 L902.8 100.6 L897.8 104.4 L894.8 92.9 L896.0 88.9 L898.3 85.9 L916.8 77.8 L917.7 73.9 L920.8 73.4 L915.4 73.3 L915.5 75.6 L907.2 78.5 L906.1 76.7 L907.7 74.8 L897.8 75.9 L891.3 80.3 L893.8 82.2 L883.6 83.1 L886.2 82.1 L878.5 80.6 L859.9 82.1 L840.6 93.6 L844.9 94.3 L844.8 96.6 L847.3 95.1 L846.2 97.2 L852.6 95.2 L857.1 97.9 L855.0 98.3 L857.5 100.9 L854.5 104.8 L854.4 109.4 L840.4 124.0 L834.8 126.2 L831.4 124.4 L826.0 128.6 L825.9 131.1 L820.0 134.0 L825.1 141.2 L824.2 146.5 L817.4 148.6 L816.7 147.7 L817.4 139.3 L812.4 138.3 L814.9 136.9 L814.8 134.2 L809.7 133.5 L803.0 136.7 L805.2 134.9 L803.3 135.0 L806.1 132.1 L805.0 130.5 L793.9 135.7 L797.8 141.0 L802.0 139.1 L807.2 140.2 L797.9 146.7 L805.1 155.4 L800.1 154.8 L805.1 157.5 L800.4 159.5 L805.7 160.3 L803.8 161.4 L805.3 162.1 L800.3 169.0 L798.8 168.5 L799.1 172.4 L790.7 178.8 L784.8 180.6 L782.3 178.4 L782.8 180.8 L774.4 182.9 L774.1 186.0 L772.3 182.0 L764.3 183.9 L761.7 189.6 L770.5 199.3 L770.7 209.7 L764.7 211.8 L764.0 214.5 L762.2 213.4 L763.2 215.0 L759.4 216.5 L760.2 213.3 L755.0 211.0 L753.7 207.5 L748.9 206.3 L749.3 204.0 L746.5 204.5 L744.6 215.3 L746.3 215.2 L747.8 220.9 L755.1 225.8 L758.1 236.4 L750.1 232.4 L747.0 222.5 L742.1 218.1 L743.7 208.8 L740.6 195.8 L738.3 193.3 L734.5 198.0 L731.3 197.5 L730.9 188.4 L730.5 189.8 L723.9 179.3 L717.4 182.4 L714.7 180.7 L710.3 186.8 L694.0 198.2 L693.0 212.5 L686.8 218.5 L684.1 216.3 L675.9 197.2 L674.4 180.6 L668.9 184.8 L663.8 180.5 L667.9 178.7 L664.5 179.1 L663.5 176.3 L659.9 176.2 L657.2 171.7 L644.7 173.3 L632.8 171.2 L631.1 167.5 L623.3 168.8 L617.1 165.5 L613.6 159.5 L610.5 159.0 L607.2 161.7 L613.8 169.0 L615.4 174.1 L616.0 170.7 L617.5 170.9 L616.8 175.2 L624.2 175.7 L630.7 169.7 L631.0 174.7 L639.5 180.7 L634.3 186.0 L634.2 189.3 L626.7 194.7 L620.0 196.2 L619.2 198.4 L609.9 202.6 L595.9 206.2 L593.9 195.4 L584.5 183.8 L582.5 176.6 L572.2 165.1 L573.3 161.3 L571.3 166.1 L566.8 160.2 L566.1 156.8 L571.3 156.4 L576.0 147.9 L576.4 141.8 L567.4 143.9 L563.1 141.7 L559.2 143.7 L553.1 142.2 L555.6 141.2 L552.7 141.4 L552.7 138.7 L550.0 138.0 L552.5 137.5 L551.9 134.5 L549.5 134.7 L551.3 132.3 L557.3 132.4 L559.8 131.4 L557.8 130.1 L563.2 130.4 L568.9 127.9 L582.3 130.9 L590.4 129.7 L590.5 126.0 L577.6 119.5 L582.9 117.2 L580.5 115.5 L584.7 114.0 L573.8 115.9 L571.9 117.6 L573.3 119.0 L572.8 116.9 L574.6 119.2 L577.7 119.0 L570.6 121.6 L566.6 119.0 L569.6 116.9 L564.8 116.6 L566.5 116.0 L565.3 115.0 L560.4 116.3 L552.8 127.0 L557.3 130.7 L553.4 130.7 L549.8 133.2 L551.5 131.6 L543.3 131.3 L543.9 133.5 L540.2 132.1 L542.3 135.5 L540.1 136.4 L544.2 138.2 L540.6 139.8 L541.9 142.8 L537.9 141.8 L537.0 138.1 L541.9 138.3 L536.3 137.8 L531.4 132.2 L532.3 128.5 L522.5 124.0 L518.8 119.2 L517.1 120.6 L516.1 117.9 L512.4 119.0 L513.1 122.1 L529.4 133.0 L525.1 132.2 L524.0 134.0 L525.9 135.9 L522.8 138.9 L521.8 133.3 L503.3 121.5 L496.4 125.3 L488.9 124.6 L488.5 128.3 L482.6 130.6 L479.5 134.0 L480.6 136.7 L474.3 142.1 L465.0 144.0 L461.7 140.6 L456.0 141.3 L457.0 137.6 L454.7 136.6 L457.1 127.1 L455.2 125.2 L459.5 123.2 L475.7 124.2 L477.1 116.5 L467.3 110.6 L476.4 110.3 L474.8 107.4 L480.0 108.5 L484.4 106.2 L484.2 104.3 L491.3 103.1 L489.1 102.6 L492.4 102.1 L490.7 101.4 L492.6 98.8 L495.6 99.8 L494.2 98.5 L495.7 97.6 L506.2 97.2 L502.1 94.0 L502.9 87.7 L508.4 86.0 L507.0 88.8 L509.2 89.5 L505.5 91.4 L505.1 93.8 L509.0 96.1 L514.7 94.8 L518.9 97.1 L527.9 93.8 L533.0 94.3 L531.7 95.4 L534.4 94.2 L533.2 93.6 L536.2 91.4 L534.7 93.5 L536.7 93.5 L535.9 89.3 L537.9 86.5 L545.1 87.4 L545.6 84.5 L543.3 84.4 L542.7 82.1 L560.9 80.1 L556.4 78.0 L541.0 80.5 L541.6 79.0 L537.1 78.4 L536.3 72.5 L548.0 66.6 L545.6 64.4 L540.4 64.2 L536.6 65.8 L537.7 68.2 L535.1 69.9 L527.2 72.0 L525.8 78.2 L530.9 80.7 L523.2 83.6 L525.2 84.1 L522.3 90.5 L514.2 92.3 L514.5 89.1 L508.7 80.2 L501.9 85.0 L495.1 83.9 L497.6 81.2 L493.9 81.3 L499.0 78.7 L494.8 80.3 L493.8 79.0 L495.5 78.0 L493.4 77.2 L499.0 77.7 L500.6 76.7 L494.0 77.1 L495.6 76.1 L493.8 75.0 L498.3 75.0 L493.6 74.2 L499.2 74.4 L496.7 73.1 L509.2 70.8 L510.4 69.0 L505.3 70.3 L511.6 68.1 L510.4 67.5 L512.5 66.8 L510.1 67.0 L514.6 65.8 L512.1 66.1 L515.2 64.5 L513.8 63.8 L517.8 63.1 L514.7 63.5 L517.3 61.9 L516.0 61.5 L522.4 59.8 L519.6 59.0 L527.7 57.6 L523.9 57.3 L528.4 54.8 L539.0 54.0 L537.5 52.5 L542.6 53.4 L545.7 50.7 L549.1 51.0 L547.1 53.2 L551.1 50.8 L550.6 52.4 L553.8 50.3 L556.1 50.7 L554.3 52.2 L557.3 51.0 L562.7 52.3 L556.1 52.9 L558.6 54.3 L565.6 53.5 L569.3 54.9 L568.1 56.3 L574.2 55.3 L590.4 61.0 L584.3 63.7 L565.0 61.0 L573.0 64.4 L571.3 65.7 L572.8 68.0 L579.8 69.9 L581.4 68.6 L577.4 67.4 L578.3 66.3 L587.9 68.0 L585.9 65.4 L588.6 64.0 L592.6 62.6 L597.6 64.1 L597.9 57.9 L595.4 56.9 L604.1 58.3 L599.8 60.2 L602.7 61.8 L623.7 56.1 L625.5 56.1 L621.9 58.2 L637.3 56.0 L639.4 57.8 L643.2 56.5 L640.5 54.5 L642.3 53.7 L662.0 58.3 L664.7 56.2 L658.2 54.5 L657.9 50.4 L662.2 49.1 L665.1 45.5 L671.0 45.6 L674.3 46.2 L671.5 49.4 L674.2 51.0 L673.4 56.1 L676.3 57.5 L671.3 61.6 L664.3 62.4 L672.4 63.5 L679.4 59.5 L679.1 56.6 L684.2 56.1 L685.6 59.3 L690.1 60.1 L686.6 59.3 L688.5 58.0 L687.1 56.3 L682.5 55.3 L676.7 55.6 L678.2 51.8 L674.7 49.6 L680.1 47.5 L679.5 45.8 L683.0 50.2 L689.4 50.9 L682.6 48.3 L689.2 47.0 L702.0 48.7 L698.7 51.9 L700.9 50.8 L699.8 52.9 L703.0 54.1 L703.1 49.0 L695.6 46.9 L694.7 43.8 L712.6 43.1 L709.1 40.4 L731.0 37.6 L728.7 37.1 L746.3 37.2 L743.7 36.0 L749.7 36.1 L757.7 32.8 L763.6 33.7 L757.8 34.4 L766.8 34.9 L764.1 36.0 L776.2 35.3 L783.8 37.8 L779.6 37.8 L782.9 39.4 L765.4 43.6 L761.3 46.0 L776.1 43.5 L773.4 42.7 L807.6 45.7 L811.8 43.2 L823.5 44.8 L825.2 46.3 L822.5 46.6 L825.5 47.4 L822.1 47.8 L829.5 51.5 L834.1 48.1 L853.6 49.5 L851.5 48.2 L853.9 47.3 L851.0 47.3 L856.8 46.4 L855.7 45.7 L871.9 47.2 L868.0 47.3 L867.6 49.2 L875.6 47.1 L886.7 51.2 L903.8 51.0 L909.6 55.6 L927.5 54.0 L934.6 56.6 L936.5 55.9 L933.8 54.4 L934.8 53.0 L949.6 53.6 L960.0 56.0 L960.0 66.4 Z M565.1 155.9 L567.0 162.7 L575.4 176.2 L575.1 178.8 L578.4 181.2 L579.8 189.7 L582.8 191.8 L585.9 199.7 L595.5 206.7 L593.4 209.3 L598.9 212.3 L615.5 208.0 L617.1 212.2 L607.9 228.1 L588.7 245.2 L584.5 252.5 L583.4 256.1 L585.5 258.7 L585.9 266.8 L588.4 268.5 L588.9 279.6 L586.3 283.8 L572.3 292.4 L574.7 304.3 L566.7 309.2 L566.4 316.1 L552.0 329.5 L533.4 332.9 L529.1 331.5 L528.5 324.5 L519.9 310.2 L518.7 300.1 L511.5 287.9 L511.3 282.2 L517.0 269.4 L513.8 256.0 L503.2 241.8 L504.9 239.0 L506.6 239.5 L504.8 238.6 L505.9 229.1 L502.0 226.9 L496.0 228.5 L494.3 224.1 L490.2 222.3 L474.7 227.3 L456.8 227.2 L446.6 220.3 L443.9 213.9 L438.7 209.8 L440.2 208.0 L435.3 206.9 L436.7 206.4 L435.4 204.1 L436.4 204.7 L438.5 204.0 L436.0 204.4 L433.2 200.7 L437.2 192.7 L434.7 181.9 L441.4 170.1 L445.6 165.4 L452.8 161.8 L455.2 153.2 L461.8 149.3 L465.4 144.2 L467.5 146.1 L474.8 146.5 L482.9 142.7 L506.0 140.4 L509.4 141.1 L507.9 143.6 L509.8 146.1 L507.2 149.9 L520.5 153.6 L522.0 156.3 L530.6 159.3 L533.5 157.7 L533.6 154.2 L537.9 152.2 L557.5 157.8 L565.1 155.9 Z M260.7 216.0 L267.9 216.2 L265.5 220.7 L257.1 217.5 L257.0 215.9 L252.6 212.6 L253.0 214.5 L251.5 213.6 L251.5 210.5 L246.2 205.6 L246.9 204.2 L236.5 202.8 L228.5 197.0 L222.5 198.3 L204.0 191.2 L198.6 186.6 L199.5 182.8 L197.4 179.0 L188.3 171.5 L189.1 169.9 L180.9 162.8 L178.4 156.8 L173.5 155.0 L174.5 160.0 L188.1 178.1 L186.6 179.0 L180.9 173.8 L180.7 170.4 L173.3 166.0 L176.1 166.3 L175.9 164.1 L171.5 160.7 L166.8 151.3 L158.3 147.8 L154.0 138.5 L150.0 136.2 L147.8 125.8 L149.3 116.7 L150.8 116.7 L149.1 116.6 L147.4 111.0 L152.6 111.6 L152.2 114.5 L154.1 113.3 L153.4 110.0 L151.5 107.5 L149.4 108.0 L149.7 106.2 L147.2 106.6 L147.1 104.2 L144.8 105.5 L143.2 105.0 L145.2 104.0 L139.2 103.6 L141.2 103.1 L138.9 101.8 L141.3 99.6 L137.6 100.6 L139.1 99.4 L136.0 97.2 L138.3 97.4 L136.8 96.0 L135.2 97.7 L132.0 95.0 L134.2 93.4 L133.5 90.8 L131.0 93.9 L130.6 90.4 L127.5 91.8 L129.4 90.0 L123.8 87.5 L125.0 85.7 L120.6 84.3 L119.1 81.4 L119.8 84.7 L114.5 82.5 L117.2 84.3 L115.5 84.8 L107.0 81.2 L109.6 80.5 L108.0 79.8 L95.3 79.9 L88.9 78.2 L89.8 77.0 L86.1 76.6 L83.4 77.9 L85.5 78.8 L84.2 80.1 L75.4 82.2 L77.5 80.6 L75.0 80.6 L76.2 78.1 L82.7 77.8 L79.8 76.9 L82.3 76.0 L78.4 76.4 L69.0 81.7 L71.3 83.1 L54.4 91.8 L44.4 93.8 L60.3 86.7 L61.8 82.6 L47.6 83.6 L49.3 82.4 L47.5 79.6 L42.3 80.4 L41.4 78.5 L44.2 78.1 L37.0 76.0 L41.5 71.4 L50.3 70.7 L51.4 69.7 L49.2 68.2 L51.2 67.4 L36.8 67.8 L34.8 66.2 L37.2 66.0 L31.7 64.8 L41.6 62.4 L50.4 63.7 L46.7 61.5 L49.1 62.8 L52.8 62.8 L35.1 57.8 L62.7 49.6 L65.1 50.2 L64.0 51.3 L98.0 53.0 L119.2 57.0 L117.3 55.4 L134.2 52.7 L131.0 55.2 L140.1 53.0 L138.6 51.8 L145.4 55.2 L147.9 52.8 L148.3 55.1 L155.0 53.8 L176.3 57.6 L173.1 59.2 L186.6 58.6 L194.1 63.1 L192.6 61.4 L194.5 61.0 L191.9 59.3 L198.0 57.1 L189.8 58.0 L196.8 56.1 L207.4 59.6 L217.2 58.4 L220.5 59.9 L216.9 57.6 L224.3 57.9 L222.8 60.1 L225.9 60.9 L225.4 58.5 L230.8 57.1 L227.7 56.7 L231.1 55.0 L223.5 53.7 L224.7 51.4 L222.4 51.1 L228.0 48.0 L236.0 52.8 L232.3 54.2 L239.1 54.8 L236.2 55.0 L239.3 58.2 L241.8 55.3 L244.7 56.2 L246.7 61.0 L254.1 56.7 L251.9 53.7 L259.9 54.1 L258.0 54.6 L263.1 55.5 L261.2 56.3 L263.4 57.0 L259.6 57.5 L263.5 60.1 L257.7 63.1 L256.2 61.6 L252.9 61.6 L256.5 63.6 L248.6 62.6 L251.0 63.6 L247.1 65.8 L237.5 64.2 L248.2 66.3 L238.3 70.8 L229.8 68.8 L238.3 71.6 L230.3 74.8 L226.7 82.5 L228.6 84.3 L231.5 83.4 L232.5 88.2 L237.9 87.1 L252.8 92.7 L260.5 92.9 L260.5 98.8 L267.3 103.6 L268.5 102.2 L269.7 103.5 L270.9 100.7 L267.3 94.3 L275.9 89.7 L274.7 85.3 L270.4 83.5 L274.1 79.9 L271.4 77.9 L273.4 75.9 L271.5 74.0 L283.5 73.4 L289.0 76.9 L294.7 77.2 L294.4 79.8 L291.0 79.9 L295.4 81.8 L292.7 83.3 L297.7 83.2 L296.8 85.3 L303.0 83.1 L304.1 84.6 L306.6 81.6 L305.2 80.7 L308.4 79.3 L311.0 82.1 L309.2 82.6 L312.4 83.5 L310.4 84.6 L313.2 84.1 L311.1 85.4 L313.5 84.9 L315.0 86.3 L313.2 86.7 L316.4 87.7 L313.2 88.7 L319.1 91.3 L318.1 93.4 L327.1 94.5 L317.9 98.0 L324.9 95.4 L331.2 97.8 L331.3 99.8 L329.2 99.7 L331.5 101.1 L320.3 106.0 L302.8 106.0 L293.4 111.3 L290.2 115.2 L298.2 110.3 L307.7 109.0 L308.5 110.9 L301.9 112.0 L307.2 112.5 L305.5 114.5 L307.4 116.5 L317.4 119.1 L308.5 121.2 L305.4 124.1 L303.7 121.3 L311.0 119.0 L306.8 119.1 L308.4 117.7 L298.5 121.8 L296.5 120.9 L290.5 127.0 L293.5 128.9 L283.8 130.6 L280.4 136.2 L278.6 134.0 L279.9 137.6 L277.5 141.0 L277.7 134.6 L275.7 135.3 L276.5 138.6 L274.0 136.9 L276.7 139.0 L274.9 138.7 L276.5 139.8 L274.7 140.7 L277.3 141.5 L278.6 144.6 L277.5 142.1 L277.9 143.8 L275.4 144.2 L278.1 145.0 L274.7 145.4 L276.5 147.0 L264.5 153.3 L262.4 156.8 L266.6 168.5 L265.2 173.5 L256.8 160.2 L252.4 160.9 L250.1 158.7 L245.3 159.4 L245.3 157.9 L238.9 159.4 L242.0 160.3 L241.6 162.9 L235.1 160.4 L226.7 160.8 L219.2 167.2 L220.9 170.8 L219.0 179.7 L224.4 190.1 L228.2 191.8 L235.8 190.8 L239.2 183.9 L248.6 183.1 L242.8 197.6 L253.3 197.4 L257.6 199.3 L256.3 209.9 L260.7 216.0 Z M284.4 381.3 L285.6 380.0 L283.5 380.8 L283.4 378.8 L285.4 379.6 L285.9 378.6 L285.6 379.9 L286.7 378.1 L285.5 376.4 L284.2 377.2 L286.4 378.1 L282.9 377.7 L282.0 375.8 L284.4 375.2 L280.8 373.9 L283.6 372.6 L280.9 368.0 L284.7 368.1 L280.7 367.2 L282.9 366.7 L281.3 366.5 L282.1 364.7 L278.3 364.6 L280.7 362.2 L283.6 364.1 L284.0 361.2 L285.9 361.1 L284.0 360.5 L286.5 358.7 L284.6 357.8 L287.2 350.4 L283.3 351.3 L282.8 349.4 L284.8 345.2 L283.5 339.6 L289.0 329.7 L289.3 317.1 L293.2 297.2 L292.5 289.2 L277.6 279.1 L269.4 261.9 L263.6 255.9 L263.3 251.4 L267.4 246.9 L264.3 246.2 L266.4 237.9 L269.5 237.2 L274.6 229.5 L271.8 217.5 L266.9 215.0 L272.3 215.7 L275.3 218.9 L279.3 211.2 L288.9 206.8 L290.4 207.9 L288.1 209.2 L288.8 215.9 L290.6 214.1 L289.1 211.2 L293.9 209.5 L293.3 207.5 L298.3 212.0 L306.5 213.2 L315.0 211.3 L312.3 212.3 L322.5 218.8 L323.5 223.0 L324.4 221.6 L327.6 224.4 L335.5 224.3 L343.2 228.7 L346.9 236.8 L339.4 244.3 L344.4 242.4 L345.3 245.1 L348.6 244.6 L347.5 247.1 L351.8 244.1 L351.9 241.8 L356.8 242.4 L359.4 244.9 L360.4 243.8 L360.5 249.0 L364.2 246.2 L373.3 247.6 L380.9 253.3 L385.0 253.6 L387.2 259.1 L386.8 262.3 L376.4 274.2 L375.6 287.2 L370.7 298.7 L368.0 301.3 L361.6 301.2 L350.0 307.7 L350.0 316.1 L341.1 325.8 L345.1 321.2 L343.2 320.0 L335.6 332.5 L325.7 331.9 L324.2 328.2 L323.8 331.8 L328.7 336.9 L326.5 341.6 L313.8 343.4 L313.6 349.1 L306.6 348.6 L306.5 352.1 L310.4 353.6 L306.7 353.7 L308.5 354.6 L305.8 356.4 L305.3 359.8 L299.7 362.8 L304.7 365.9 L304.6 367.8 L298.9 373.4 L296.7 372.7 L297.7 373.8 L294.9 376.2 L296.1 377.5 L294.4 377.6 L297.7 379.6 L291.0 380.6 L289.9 383.7 L286.7 382.4 L289.7 381.7 L289.2 380.2 L284.4 381.3 Z M869.9 343.2 L865.8 342.2 L866.5 340.9 L862.8 343.6 L854.9 341.4 L852.0 335.9 L848.3 335.0 L848.3 331.0 L847.4 333.6 L844.9 334.1 L847.9 329.5 L847.3 326.6 L842.6 333.4 L837.8 326.6 L829.7 323.9 L815.9 326.1 L809.4 330.5 L799.7 330.5 L794.5 333.7 L787.0 331.7 L789.0 325.2 L781.7 309.7 L783.6 310.9 L782.7 308.0 L784.6 310.2 L782.4 305.1 L784.0 298.3 L784.9 300.1 L791.5 294.7 L803.0 292.1 L807.8 283.7 L809.5 287.0 L809.5 283.1 L811.7 284.2 L813.3 283.7 L811.6 281.8 L814.0 281.6 L812.9 280.4 L814.7 280.5 L813.7 279.3 L816.0 277.1 L819.8 277.2 L821.4 281.4 L822.8 279.4 L825.6 280.6 L826.7 279.2 L825.0 278.2 L828.2 273.1 L834.0 272.4 L831.9 269.7 L842.7 273.3 L844.2 271.7 L845.3 272.9 L841.1 279.8 L855.0 287.0 L860.1 268.5 L863.4 278.4 L867.6 279.9 L870.0 290.3 L876.7 294.0 L879.0 300.2 L881.8 299.6 L882.1 302.7 L888.5 309.2 L889.7 316.4 L886.8 326.5 L880.4 335.2 L879.9 340.0 L869.9 343.2 Z M360.8 80.0 L361.0 78.1 L356.7 78.0 L359.4 76.8 L352.9 77.9 L349.1 76.3 L351.3 75.9 L348.6 75.9 L349.8 74.5 L345.8 73.4 L347.5 71.9 L343.4 70.9 L345.3 70.3 L342.5 70.2 L346.4 69.0 L342.0 68.9 L346.1 68.2 L344.3 67.7 L347.6 68.4 L344.0 66.1 L344.9 67.4 L341.3 68.8 L343.3 66.7 L339.8 65.8 L345.4 64.9 L340.0 65.7 L338.1 64.7 L342.0 63.8 L337.4 63.9 L345.7 61.8 L336.8 63.7 L340.7 61.8 L336.3 60.9 L342.8 60.4 L336.5 60.2 L346.0 59.1 L336.8 60.1 L341.2 58.8 L337.8 58.2 L345.8 58.9 L342.8 58.2 L344.5 57.3 L337.4 57.8 L340.7 56.9 L344.9 57.3 L343.7 55.6 L346.7 55.5 L343.6 55.5 L346.0 53.2 L334.4 51.6 L345.2 52.5 L340.7 50.4 L342.6 49.9 L339.9 50.2 L343.0 49.4 L338.6 49.5 L342.1 48.7 L337.9 48.8 L337.1 47.0 L336.2 49.5 L331.0 48.8 L334.9 47.4 L331.7 46.8 L335.3 46.7 L331.5 45.2 L330.5 41.9 L327.2 42.4 L330.3 41.2 L317.6 36.9 L297.3 37.1 L294.4 36.2 L298.9 35.5 L289.7 34.5 L303.5 33.1 L285.2 31.5 L304.0 29.0 L309.7 26.3 L300.1 25.7 L315.2 24.0 L315.1 21.9 L327.4 23.1 L319.7 21.3 L332.8 20.5 L333.9 22.4 L345.7 22.4 L342.0 20.0 L359.2 22.0 L358.3 20.6 L364.6 20.7 L355.9 19.3 L371.0 20.4 L357.6 18.9 L361.9 17.9 L374.0 19.4 L376.4 17.3 L408.5 17.8 L381.7 19.4 L410.0 18.2 L408.2 19.3 L421.5 19.7 L388.6 21.8 L410.2 21.4 L405.8 22.9 L418.8 21.1 L413.9 25.2 L423.8 22.4 L445.7 22.0 L440.6 24.3 L423.3 25.1 L437.0 25.3 L425.0 26.4 L433.0 26.7 L421.4 32.9 L428.9 32.7 L423.7 33.2 L431.2 35.1 L419.4 35.5 L428.4 38.1 L427.7 39.7 L420.0 38.5 L429.4 41.4 L420.0 42.5 L425.6 44.1 L411.3 42.8 L414.2 44.0 L406.1 45.0 L413.1 45.2 L406.8 45.8 L421.5 48.7 L419.8 49.4 L422.0 49.4 L420.4 50.5 L422.7 51.9 L404.3 48.0 L412.2 49.9 L402.0 52.1 L421.1 53.1 L401.5 58.1 L393.1 56.9 L394.5 58.8 L387.2 63.1 L380.8 64.7 L379.0 62.9 L378.2 65.0 L370.3 66.3 L372.4 68.4 L369.1 68.7 L372.0 70.2 L364.9 72.7 L367.6 73.7 L365.3 73.3 L367.7 74.7 L364.7 76.5 L366.3 77.1 L363.7 77.0 L366.1 77.2 L363.9 77.8 L365.7 78.5 L360.8 80.0 Z M872.5 259.9 L882.3 267.3 L880.5 268.5 L873.9 267.0 L866.0 259.8 L859.2 261.8 L862.4 263.4 L860.4 264.9 L856.3 264.6 L853.4 261.4 L850.5 262.0 L849.8 259.2 L851.3 259.0 L848.3 254.3 L837.3 250.3 L836.8 247.8 L834.4 250.9 L831.9 247.4 L836.4 247.3 L837.2 245.6 L832.8 246.1 L831.9 243.9 L829.1 243.8 L833.1 240.9 L837.3 241.9 L840.3 249.0 L847.7 243.9 L865.4 250.2 L868.7 254.6 L873.7 256.3 L872.5 259.9 Z M786.7 250.7 L781.4 247.8 L778.4 249.5 L777.9 247.5 L774.0 247.9 L770.4 236.9 L772.4 234.4 L776.5 236.4 L777.2 232.8 L787.7 226.9 L792.4 221.3 L793.5 224.3 L798.0 225.7 L792.0 230.4 L797.3 237.4 L794.4 237.0 L793.6 242.1 L791.2 242.9 L790.1 248.3 L786.7 250.7 Z M605.6 306.6 L597.4 306.7 L595.3 299.5 L598.6 293.3 L597.1 286.7 L598.5 283.2 L605.9 281.3 L611.4 271.9 L614.6 281.2 L613.8 282.7 L612.3 281.4 L612.9 284.9 L605.6 306.6 Z M304.0 74.8 L289.0 71.6 L287.7 70.8 L290.1 70.4 L284.6 67.6 L271.9 68.2 L273.7 65.4 L284.1 65.5 L281.4 63.6 L287.9 62.2 L285.3 61.9 L287.6 60.6 L283.6 56.9 L275.6 56.8 L278.4 55.4 L274.7 53.4 L269.4 51.4 L267.7 52.3 L269.9 53.6 L251.1 53.3 L241.3 50.4 L253.9 50.8 L254.7 49.0 L250.6 47.9 L255.6 48.0 L251.5 45.6 L262.5 43.4 L266.1 46.0 L264.1 48.3 L267.2 46.7 L272.7 48.7 L269.7 47.4 L274.7 47.6 L270.5 46.8 L273.1 46.0 L279.6 46.7 L276.3 48.4 L282.1 47.8 L279.0 48.8 L281.0 48.9 L279.9 50.2 L283.7 48.6 L283.1 50.5 L286.5 48.9 L290.3 49.9 L286.5 51.7 L291.7 50.5 L288.1 52.2 L290.2 51.9 L289.2 53.3 L293.6 51.0 L291.7 52.1 L297.9 51.9 L293.3 54.3 L298.2 52.5 L300.8 54.1 L293.2 54.6 L302.1 55.5 L294.9 56.5 L302.2 57.5 L299.0 57.9 L303.9 59.7 L307.4 58.7 L306.1 59.6 L309.5 60.4 L307.4 61.3 L316.6 62.2 L312.3 63.1 L314.8 64.0 L312.1 63.6 L312.9 65.1 L310.6 64.2 L310.6 67.0 L305.3 64.7 L308.4 63.1 L304.3 64.1 L305.4 63.0 L298.8 62.3 L301.0 64.0 L297.7 63.8 L298.0 65.5 L304.8 67.1 L308.0 71.4 L305.8 69.9 L306.9 73.0 L296.0 70.0 L304.0 74.8 Z M761.9 255.7 L750.9 248.5 L743.5 235.4 L733.9 225.1 L740.0 226.0 L754.4 238.1 L753.8 239.4 L756.6 239.3 L755.4 241.9 L762.9 248.6 L761.9 255.7 Z M845.1 148.6 L840.2 149.6 L840.9 147.4 L832.4 149.8 L829.0 148.6 L834.9 145.0 L842.9 144.9 L844.7 140.4 L846.3 140.0 L846.2 142.0 L851.8 138.3 L853.0 131.7 L857.2 129.5 L858.9 134.5 L855.8 138.1 L855.6 144.8 L850.3 147.7 L844.6 146.5 L845.1 148.6 Z M178.2 57.4 L167.0 53.2 L182.8 52.4 L166.2 51.6 L164.5 50.5 L173.2 49.2 L162.3 48.6 L174.7 44.3 L174.6 46.5 L179.2 45.3 L184.0 47.2 L187.3 46.9 L184.7 45.4 L186.9 45.4 L192.7 49.1 L191.3 44.9 L195.3 44.5 L199.3 45.8 L201.4 50.6 L210.7 52.8 L210.8 54.2 L203.9 54.1 L208.6 56.0 L195.7 54.7 L178.2 57.4 Z M483.7 103.6 L464.8 106.5 L473.7 101.9 L465.8 101.7 L469.5 99.9 L467.3 99.2 L468.8 98.1 L472.9 97.7 L470.3 94.6 L471.9 93.4 L466.3 93.7 L467.3 90.1 L464.5 92.5 L466.7 88.8 L463.4 88.7 L465.6 87.7 L464.5 85.7 L466.5 85.8 L466.7 83.7 L471.9 83.6 L468.2 86.7 L475.1 86.4 L471.0 89.7 L473.1 90.0 L469.7 90.4 L474.3 90.9 L479.8 95.7 L477.9 96.8 L480.0 99.0 L484.7 100.1 L480.7 102.8 L483.7 103.6 Z M260.4 19.5 L310.5 19.1 L317.0 20.4 L295.2 22.1 L302.4 22.6 L293.3 23.8 L307.8 22.9 L287.0 26.1 L292.1 26.4 L289.4 27.4 L271.9 28.4 L281.5 29.3 L269.7 29.2 L281.1 30.4 L275.7 30.6 L280.0 31.1 L270.1 33.8 L261.4 32.8 L272.0 34.7 L263.8 37.0 L259.4 35.1 L260.6 36.3 L240.9 35.8 L249.0 34.2 L244.7 32.4 L254.8 33.9 L260.5 31.8 L253.9 33.3 L254.4 30.4 L246.7 31.7 L248.4 30.0 L262.7 29.2 L254.1 29.3 L257.7 29.2 L249.3 25.9 L265.1 27.8 L258.1 25.8 L276.1 24.3 L269.4 24.3 L275.1 22.8 L250.5 25.3 L260.5 23.5 L246.7 25.0 L241.6 24.2 L254.3 23.2 L240.8 24.0 L247.4 22.7 L235.0 22.2 L254.7 21.7 L248.4 20.8 L252.8 20.1 L265.5 21.2 L260.4 19.5 Z M798.5 254.9 L796.7 247.4 L800.1 238.1 L802.4 236.4 L810.5 237.7 L813.8 235.5 L811.5 238.9 L800.8 238.9 L801.8 243.8 L809.2 242.1 L803.4 244.9 L807.7 251.8 L804.1 252.7 L802.0 247.0 L800.5 247.9 L801.3 255.0 L798.5 254.9 Z M933.3 363.3 L924.5 363.2 L924.8 360.8 L935.3 354.9 L939.0 348.9 L944.8 349.3 L940.7 355.0 L941.5 356.9 L937.8 356.1 L939.2 357.1 L936.9 357.3 L933.3 363.3 Z M785.6 263.3 L767.6 260.6 L760.6 258.0 L762.8 255.7 L770.5 258.2 L776.1 257.1 L785.2 260.8 L785.6 263.3 Z M947.3 351.0 L946.8 346.5 L943.3 344.7 L945.6 343.5 L946.5 338.8 L945.3 338.8 L940.5 331.8 L944.9 333.8 L945.8 338.3 L948.2 339.3 L948.0 337.4 L949.4 340.5 L956.1 340.5 L949.2 350.0 L947.3 351.0 Z M335.8 112.3 L330.7 114.8 L334.1 112.9 L321.6 112.3 L330.9 102.3 L328.3 107.9 L330.2 106.2 L332.3 109.2 L337.3 108.6 L335.5 111.0 L338.7 110.5 L336.2 112.4 L338.9 111.5 L337.9 113.2 L339.7 113.3 L338.2 115.7 L337.2 114.1 L335.5 115.1 L335.8 112.3 Z M282.3 186.0 L272.7 187.1 L274.0 184.9 L261.7 179.5 L259.3 179.5 L255.9 181.6 L253.5 181.7 L255.9 179.4 L263.6 178.1 L282.3 186.0 Z M810.7 205.4 L808.8 205.3 L806.8 202.8 L806.9 204.9 L804.7 202.8 L801.7 203.2 L802.6 201.0 L800.2 200.6 L799.3 197.4 L801.1 196.9 L801.7 190.5 L806.2 191.0 L804.4 201.6 L809.9 202.8 L810.7 205.4 Z M434.7 69.9 L419.5 69.9 L423.1 68.3 L415.9 67.0 L422.2 65.5 L414.6 65.3 L418.0 64.9 L417.4 63.5 L420.2 64.4 L418.3 62.8 L423.1 64.0 L423.8 66.2 L425.5 63.8 L431.9 64.9 L431.3 63.5 L436.8 62.6 L441.3 63.0 L439.5 63.7 L444.0 66.5 L434.7 69.9 Z M813.3 224.4 L809.8 219.2 L805.1 221.0 L809.0 216.7 L809.8 218.8 L814.8 216.1 L814.5 213.8 L817.6 220.6 L816.5 223.3 L815.2 220.5 L815.2 224.1 L813.3 224.4 Z M463.2 100.7 L452.3 101.8 L456.8 99.6 L453.5 99.8 L456.3 98.1 L452.8 97.6 L454.5 96.5 L453.0 95.4 L463.6 92.7 L465.5 94.7 L462.9 96.0 L463.2 100.7 Z M862.0 128.0 L854.6 126.4 L856.5 128.5 L853.3 129.2 L852.9 126.4 L857.1 124.5 L858.4 118.6 L863.3 122.4 L867.6 121.8 L867.3 124.4 L868.8 124.3 L862.0 128.0 Z M858.7 117.4 L859.3 103.7 L857.7 100.5 L860.6 94.9 L866.0 110.3 L861.3 109.0 L860.1 112.6 L863.0 116.3 L860.0 115.4 L858.7 117.4 Z M297.8 190.4 L289.5 193.1 L281.4 190.9 L287.1 190.6 L284.1 187.5 L285.8 186.8 L293.4 187.5 L297.8 190.4 Z M172.5 43.9 L151.7 50.5 L144.0 48.1 L150.0 43.3 L147.4 41.7 L166.3 42.0 L172.5 43.9 Z M694.0 224.0 L692.5 218.1 L693.9 213.8 L698.3 221.3 L694.0 224.0 Z M869.3 355.5 L865.8 348.4 L871.0 350.0 L874.9 348.7 L874.7 355.3 L872.5 353.9 L871.7 356.4 L869.3 355.5 Z M234.2 40.0 L231.8 36.4 L225.6 36.7 L221.9 34.7 L237.4 35.6 L236.1 36.1 L242.1 36.7 L235.7 36.6 L239.5 37.2 L236.8 37.8 L242.8 38.9 L262.4 37.8 L268.4 40.3 L246.1 41.5 L234.2 40.0 Z M306.4 385.7 L302.1 386.7 L288.1 385.7 L296.1 385.3 L293.1 384.2 L295.1 382.5 L292.2 382.3 L292.2 380.7 L296.6 380.1 L299.3 383.6 L306.4 385.7 Z M635.4 42.7 L630.9 43.0 L633.6 43.6 L630.3 43.4 L631.2 44.7 L623.2 43.2 L630.4 42.6 L627.0 42.1 L631.9 40.9 L629.4 39.5 L643.0 36.6 L663.0 34.8 L662.4 36.8 L643.5 39.2 L635.2 41.2 L635.4 42.7 Z M266.3 69.9 L258.7 68.8 L252.8 71.7 L247.6 70.5 L250.2 69.1 L251.7 64.2 L266.3 69.9 Z M183.9 39.3 L166.2 39.3 L173.3 38.1 L167.4 38.4 L173.9 37.6 L168.7 37.6 L173.6 35.9 L189.6 38.7 L185.6 36.4 L189.0 35.1 L192.0 37.9 L198.9 37.7 L197.3 39.9 L180.4 41.5 L174.9 40.8 L183.9 39.3 Z M228.8 29.3 L239.1 28.7 L226.3 28.6 L228.4 27.3 L222.2 26.3 L228.3 26.7 L222.3 25.7 L230.0 25.3 L225.3 24.5 L230.7 23.0 L253.7 28.6 L244.9 29.3 L243.0 31.6 L228.8 29.3 Z M525.3 35.7 L517.1 33.3 L525.3 32.2 L516.3 31.8 L526.4 30.9 L520.9 29.7 L514.7 31.5 L508.4 27.9 L519.3 27.2 L524.1 29.6 L523.4 26.5 L537.4 30.0 L530.7 30.9 L525.3 35.7 Z M345.2 244.7 L345.8 240.3 L351.0 240.8 L347.2 244.8 L345.2 244.7 Z M828.5 157.3 L828.8 155.5 L826.9 156.2 L828.4 153.0 L827.9 151.2 L826.0 153.2 L825.5 151.1 L829.2 149.7 L832.2 152.2 L828.5 157.3 Z M802.3 181.3 L800.3 177.0 L804.2 172.5 L805.3 173.3 L802.3 181.3 Z M885.7 254.4 L879.0 256.8 L875.5 254.8 L880.2 253.3 L882.4 254.6 L885.8 251.0 L885.7 254.4 Z M253.3 49.9 L248.0 50.1 L240.0 49.5 L242.3 44.8 L249.2 43.0 L253.8 43.4 L249.9 46.1 L253.3 49.9 Z M770.7 191.0 L769.7 188.6 L771.4 186.9 L775.8 186.6 L774.4 190.2 L770.7 191.0 Z M221.3 48.7 L215.4 49.7 L206.2 46.2 L212.9 45.9 L213.9 44.8 L209.0 44.0 L212.2 44.2 L211.0 43.1 L221.4 43.3 L217.4 45.3 L222.6 46.0 L221.3 48.7 Z M624.0 51.4 L622.7 49.2 L617.1 48.4 L623.1 46.3 L619.6 46.1 L621.9 44.9 L630.7 44.9 L626.9 46.5 L627.2 48.3 L633.6 51.4 L624.0 51.4 Z M151.3 110.8 L138.9 106.4 L140.2 105.1 L137.5 104.6 L145.5 105.8 L151.3 110.8 Z M819.5 262.4 L809.2 267.6 L809.8 265.7 L813.7 263.1 L819.5 262.4 Z M520.0 142.1 L513.8 139.8 L513.3 138.6 L521.7 137.9 L520.0 142.1 Z M226.7 48.0 L225.9 42.7 L239.5 42.9 L234.4 46.0 L228.6 45.9 L230.8 46.8 L226.7 48.0 Z M502.5 136.0 L501.8 130.8 L504.6 130.0 L505.7 135.2 L502.5 136.0 Z M848.0 40.4 L845.3 38.4 L850.1 36.8 L867.8 38.7 L862.4 39.9 L859.7 38.0 L862.9 40.3 L848.0 40.4 Z M220.6 38.9 L211.3 39.1 L214.3 38.2 L205.7 38.3 L210.9 37.8 L208.3 36.1 L213.6 37.7 L210.7 36.0 L217.4 35.5 L220.6 38.9 Z M153.1 37.5 L172.4 33.8 L167.8 36.5 L165.8 35.1 L160.6 37.7 L153.1 37.5 Z M746.7 29.6 L727.6 27.8 L747.0 27.2 L746.7 29.6 Z M552.0 26.8 L543.1 28.8 L527.3 26.3 L540.8 25.3 L552.0 26.8 Z M216.0 56.2 L218.8 53.6 L226.3 56.3 L222.6 57.5 L216.0 56.2 Z M216.0 32.3 L201.5 31.3 L204.5 30.0 L198.8 28.4 L212.4 29.8 L216.0 32.3 Z M747.5 32.0 L753.3 28.2 L753.2 29.8 L757.0 28.9 L761.3 30.7 L747.5 32.0 Z M268.4 46.0 L264.5 43.3 L277.2 45.7 L268.4 46.0 Z";
   function mapSVG(){
@@ -465,7 +642,7 @@
     {id:'safety',icon:'◈',title:'安全監査',desc:'信頼度を増やし、規制リスクを下げる',cost:'資金 15',detail:'信頼 +9 / 世界警戒 -7'},
     {id:'fundraise',icon:'＄',title:'資金を調達',desc:'開発資金を少量獲得。信頼低下・警戒上昇',cost:`資金 +${Math.round((18+game.turn*.27)*countryFor(game).mods.income)}`,detail:'信頼 -3 / 世界警戒 +3'}
   ];}
-  function canPay(id){const costs={fundraise:0,campaign:game.type==='open'?12:17,integrate:21,research:13,compute:21,safety:15};return game.actions>0&&game.funds>=(costs[id]??Infinity);}
+  function canPay(id){const costs={fundraise:0,campaign:game.type==='open'?12:17,integrate:21,research:13,compute:21,safety:15};return (id!=='fundraise'||game.elapsedDays-game.lastFundraiseDay>=90)&&game.funds>=(costs[id]??Infinity);}
   function actionPanel(){
     const actions=actionDef(), active=actions.find(a=>a.id===selectedOperation)||actions[0];
     const region=game.regions.find(r=>r.id===selected)||game.regions[0];
@@ -559,7 +736,7 @@
   function renderModal(){if(game?.phase==='ended')return renderEnding();if(game?.pendingEvent)return renderEvent();if(modal==='help')return renderHelp();if(modal==='reset')return renderConfirm();if(['news','evolution','report','routes'].includes(modal))return renderUtilityPanel();return '';}
 
   function render(){window.dispatchEvent(new Event('aip:updated'));}
-  function command(id){switch(id){case'start':startGame();break;case'resume':{const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';if(!checkEnding())render();}else notify('セーブデータがありません。',true);break;}case'next':nextTurn();break;case'save':save(false);break;
+  function command(id){switch(id){case'start':startGame();break;case'resume':{const saved=readSave();if(saved){game=saved;selected=game.selected||'ea';if(!checkEnding())render();}else notify('セーブデータがありません。',true);break;}case'next':advanceTime(2500);break;case'save':save(false);break;
     case'help':case'evolution':case'report':case'routes':case'news':modal=id;render();break;
     case'close-help':case'close-panel':modal=null;render();break;
     case'reset':modal='reset';render();break;case'cancel-reset':modal=null;render();break;
@@ -577,14 +754,16 @@
     getRoutes:()=>game?ROUTES.map(r=>({...r,data:routeData(r)})):[],
     getOperations:()=>game?actionDef():[],
     getCountry:()=>game?countryFor(game):null,
-    getPendingEvent:()=>{if(!game?.pendingEvent)return null;const p=game.pendingEvent,e=EVENT_BY_ID.get(p.eventId);if(!e)return null;return {id:e.id,category:e.category,title:ENGINE.interpolate(e.title,game,p.regionId),text:ENGINE.interpolate(e.text,game,p.regionId),source:p.source,choices:e.choices.map(c=>({label:ENGINE.interpolate(c.label,game,p.regionId),detail:effectDetail(c),chained:!!c.schedule?.length}))};},
+    getPendingEvent:()=>{if(!game?.pendingEvent)return null;const p=game.pendingEvent,e=EVENT_BY_ID.get(p.eventId);if(!e)return null;return {id:e.id,category:e.category,title:ENGINE.interpolate(e.title,game,p.regionId),text:ENGINE.interpolate(e.text,game,p.regionId),source:p.source,choices:e.choices.map(c=>({label:ENGINE.interpolate(c.label,game,p.regionId),detail:effectDetail(c),affordable:game.funds+(c.effect?.funds||0)>=0,chained:!!c.schedule?.length}))};},
     getDate:()=>game?dateText():null,
     start:(name,type,country)=>{draft={name:String(name),type,country};startGame();},
     selectRegion:(id)=>{if(!game||game.phase!=='playing'||game.pendingEvent)return; if(!game.regions.some(r=>r.id===id))return;selected=id;game.selected=id;save();render();},
     operation:(id)=>applyAction(id),
     unlock:(id)=>unlockSkill(id),
     chooseEvent:(index)=>chooseEvent(index),
-    next:()=>nextTurn(),
+    next:()=>advanceTime(SIM_DAY_MS*30),
+    tick:(ms)=>advanceTime(ms),
+    collectPickup:(id)=>collectPickup(id),
     save:()=>save(false),
     reset:()=>{game=null;selected='ea';localStorage.removeItem(KEY);render();},
     getConstants:()=>({maxTurns:MAX_TURNS,colors:COLORS})

@@ -1,67 +1,13 @@
-# AI PANDEMIC v1.0 — React / TypeScript / Vite
+# AI PANDEMIC 開発ソース
 
-世界規模のAI競争・進化・政策シミュレーションゲーム。PC/モバイル両対応。
+公開版と同じゲーム処理、UI、地図、スタイルをこのフォルダーで管理します。ルートの index.html は生成物です。
 
-## 技術構成
+- src/game-ui.js: React UI（ブラウザ実行用 JavaScript）
+- src/style.css: スタイル
+- public/legacy-core.js: シミュレーションとセーブ互換
+- public/legacy-data.js、legacy-events.js: イベントデータとエンジン
+- public/region-geography.js: 地域地図
+- vendor/: 公開版の React ランタイム
+- template.html: 配信 HTML の骨格
 
-- React（UIレイヤー、設定、地図、操作、ニュース、モーダル）
-- TypeScript（React UI、ゲームの表示モデル、操作インターフェースの型）
-- Vite（開発サーバー・本番ビルド）
-- CSS + SVG（地図、スキルツリー、AI通信アニメーション）
-- JavaScript（既存のゲームシミュレーション、国、イベント定義、セーブ互換層）
-- localStorage（既存キーのままオートセーブ）
-
-**Next.jsは使用しません。** 公開用はGitHub Pagesの静的配信です。
-
-既存v0.8のルールやセーブデータとの互換性を維持するため、ゲームシミュレーションは`public/legacy-*.js`に残しました。新しいReact UIは`window.AIPandemic`のコントローラを通して操作します。将来的にロジック本体もTypeScriptへ段階的に移行できます。
-
-## 開発
-
-```bash
-npm install
-npm run dev
-```
-
-## 本番ビルド
-
-```bash
-npm run build
-```
-
-`vite.config.ts`の`base:'./'`により、GitHub Pagesの`/Games/`のようなサブパスでも静的配信できます。ビルド後の`dist/`一式を配信してください。
-
-## 配布用の単一HTML
-
-`AI_PANDEMIC_v0.9.html` はローカルでビルド用の外部依存パッケージを取得できない環境で配布・検証できるよう、TypeScriptで書いたUIをJavaScriptに変換し、互換Reactランタイムを埋め込んだ**自己完結型のプレビュー**です。開発時の標準構成は上のReact 18 + Viteです。後で`npm install`してビルドする場合は、プロジェクトの指定したReact 18が使われます。
-
-## v0.9の変更内容
-
-- 画面中央に大きな世界地図、PCでは右側に地域情報と行動パネル
-- スマホでは縦並びに自動調整、横スクロール地図の位置を維持
-- ニュースは省スペースの速報帯に集約
-- スキルツリー、勝利ルート、レポート、全ニュースはモーダル表示
-- アイコン付きノード、前提ノードの接続線、EPの消費と解放状態表示
-- AIコア、通信トレース、地域パルスのCSS/SVGアニメーション
-- 国別の開始特性、競合AI、イベント連鎖、即時エンディングは維持
-
-## 動作チェック
-
-ChromiumでPC 1440px、タブレット 820px、モバイル 390pxを確認。開始国・AIタイプ選択、地域選択、地図位置維持、月送り、EP購入、ウィンドウ、勝利条件表示、ニュース一覧をスモークテストしました。
-
-## 重要
-
-ゲームはフィクションです。国別パラメータはゲームバランス用で、現実の国を評価するものではありません。
-
-
-## v1.0 地域選択の修正
-
-- 12地域を隙間や重なりのないエリアに分割し、世界の陸地SVGの形にクリップ
-- 表示されている色付き陸地と、実際にクリックできる範囲を一致させた
-- 地域マーカーを陸地上へ再配置。マーカーもタップで選択可能
-- 地域ホバー、選択中の輪郭、地図内の選択地域表示を強化
-- 地図のスクロール位置は地域選択時に維持
-- PC・スマホのChromiumで全12地域を実際の陸地上から選択できることを確認
-
-
-## Country-derived SVG map (v1.0.1)
-Natural Earth 110m public-domain country outlines are grouped into 12 interactive regions. The land backdrop and click targets share the same SVG geometry. Boundaries are gameplay abstractions, not official geopolitical borders.
+Node.js で npm run build を実行すると、ルートの index.html を再生成します。音楽はルートの audio-v12/ を参照します。リポジトリルートを静的 HTTP サーバーで開いて確認してください。

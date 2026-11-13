@@ -26,8 +26,8 @@
 @media(max-width:480px){.countries-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.setup-hero h1{overflow-wrap:anywhere}.setup-hero p{overflow-wrap:anywhere}.country-choice strong{font-size:10px}.type-choice b{font-size:11px}.type-choice small{font-size:8px}}
 .skill-node{scroll-margin:155px 80px}
 
-/* v1.0: clickable territories are the visible land itself. */
-.region-territory{fill-opacity:.25;stroke-opacity:.38;vector-effect:non-scaling-stroke;transition:fill-opacity .18s ease,stroke-opacity .18s ease;pointer-events:visiblePainted}
+/* v1.0: regional land overlay and hit target share identical SVG geometry. */
+.region-territory{fill-opacity:.25;stroke-opacity:.28;vector-effect:non-scaling-stroke;transition:fill-opacity .18s ease,stroke-opacity .18s ease;pointer-events:visiblePainted}
 .map-region:hover .region-territory,.map-region:focus-visible .region-territory{fill-opacity:.47;stroke-opacity:.92}
 .map-region.is-selected .region-territory{fill-opacity:.58;stroke:#a9ffec;stroke-opacity:1;filter:drop-shadow(0 0 6px #60f7db55)}
 .map-region:focus-visible{outline:none}
@@ -41,7 +41,167 @@
 .map-selection-readout text{fill:#d4fbf1;font-size:11px;font-weight:750;letter-spacing:.02em}
 @media(max-width:750px){.map-region-label{font-size:13px}.map-selection-readout text{font-size:11.5px}}
 
-/* v1.0.1 — country-based interactive SVG map */
-.region-territory{fill-opacity:.24;stroke-opacity:.48;stroke-linejoin:round;stroke-linecap:round;transition:fill-opacity .2s ease,stroke-opacity .2s ease}
+/* v1.0.1 — Region paths are country-derived geography, not overlay cells. */
+.region-territory{fill-opacity:.24;stroke-opacity:.48;stroke-linejoin:round;stroke-linecap:round;transition:fill-opacity .2s ease,stroke-opacity .2s ease,filter .2s ease}
 .map-region:hover .region-territory,.map-region:focus-visible .region-territory{fill-opacity:.48;stroke-opacity:.97;filter:drop-shadow(0 0 3px #7ee8fb66)}
 .map-region.is-selected .region-territory{fill-opacity:.6;stroke:#a4ffe9;stroke-opacity:1;filter:drop-shadow(0 0 4px #51e9d666)}
+.map-region .map-marker{transition:stroke-width .18s ease,fill .18s ease}
+
+/* v1.1 — real-time controls, adoption heatmap and collectable map signals */
+.time-dock{display:grid;grid-template-columns:auto minmax(145px,1fr);gap:13px;align-items:center;padding:12px 20px 14px;border-top:1px solid #203d54;border-bottom:1px solid #274962;background:linear-gradient(90deg,#102b3fca,#0e2135d9)}
+.time-playback{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.time-toggle{display:flex;align-items:center;justify-content:center;gap:8px;min-height:39px;min-width:114px;border-radius:9px;border:1px solid #4cbdba;color:#d8fff5;font-weight:800;background:linear-gradient(135deg,#164d50,#12304c);cursor:pointer;font-size:12px;box-shadow:inset 0 1px 0 #b4fff526}
+.time-toggle.is-paused{border-color:#b68cc9;color:#f1e5ff;background:#372d51}
+.speed-buttons{display:flex;gap:4px;background:#09182b;padding:4px;border-radius:9px;border:1px solid #253c54}
+.speed-buttons button{border:0;background:transparent;min-width:39px;height:31px;border-radius:6px;color:#7b9aaf;cursor:pointer;font-weight:800;font-size:11px}
+.speed-buttons button:hover{color:#c9f5f1;background:#213d54}
+.speed-buttons button.active{background:#29635f;color:#e6fff7;box-shadow:0 0 10px #49e2ba21}
+.time-progress{display:grid;gap:8px;min-width:0}
+.time-progress-label{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:11px;color:#adc6d5}
+.time-progress-label span{display:flex;align-items:center;gap:6px;font-weight:750;color:#e0edf8}
+.time-progress-label b{font-size:10px;color:#76e9d0;white-space:nowrap}
+.world-condition{grid-column:1/-1;display:flex;align-items:center;gap:7px;color:#ffd09b;font-size:10px;background:rgba(174,109,43,.11);border:1px solid #80634766;border-radius:7px;padding:7px 10px}
+.map-region .region-territory{transition:fill-opacity .45s ease,stroke-opacity .2s ease}
+.map-adoption-label{font-size:11px;font-weight:900;fill:#a4ffec;paint-order:stroke;stroke:#062236;stroke-width:3px;letter-spacing:.03em}
+.adoption-ring{stroke-linecap:round;filter:drop-shadow(0 0 3px #60ffe588)}
+.map-pickup{cursor:pointer;outline:none;touch-action:manipulation}
+.map-pickup .pickup-beacon{fill:none;stroke:#ffd989;stroke-width:1.5;stroke-dasharray:3 5;animation:pickup-pulse 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.map-pickup.ep-pickup .pickup-beacon{stroke:#d6a4ff}
+.map-pickup .pickup-disc{fill:#382e1d;stroke:#ffd26e;stroke-width:2.8;filter:drop-shadow(0 0 7px #ffca4990)}
+.map-pickup.ep-pickup .pickup-disc{fill:#302b51;stroke:#d5a6ff;filter:drop-shadow(0 0 8px #c38cffc9)}
+.map-pickup .pickup-symbol{fill:#fff2c9;font-size:20px;font-weight:900;pointer-events:none;dominant-baseline:middle;paint-order:stroke;stroke:#3d2e16;stroke-width:1}
+.map-pickup.ep-pickup .pickup-symbol{fill:#f7d5ff}
+.map-pickup:hover .pickup-disc,.map-pickup:focus-visible .pickup-disc{stroke:#fff;stroke-width:4;filter:drop-shadow(0 0 14px #fff4)}
+.map-pickup:focus-visible .pickup-beacon{stroke:#fff}
+@keyframes pickup-pulse{0%,100%{opacity:.58;transform:scale(.9)}50%{opacity:1;transform:scale(1.15)}}
+.tree-surface{width:2090px;height:1040px}
+.skill-lines{width:2090px;height:1040px}
+.tree-origin{top:493px}
+.skill-node.available .node-rim{animation:available-node-glow 4s ease-in-out infinite}
+@keyframes available-node-glow{50%{box-shadow:0 0 0 5px #1b4350,0 0 33px color-mix(in srgb,var(--node-color) 38%,transparent)}}
+@media(min-width:1100px){.time-dock{grid-template-columns:auto minmax(170px,1fr)}.world-panel .map-frame{min-height:360px}}
+@media(max-width:750px){.time-dock{grid-template-columns:minmax(0,1fr);padding:11px 13px 12px;gap:11px}.time-playback{justify-content:space-between}.time-toggle{min-width:118px}.time-progress-label{font-size:11px}.time-progress-label b{font-size:10px}.world-condition{grid-column:1}.map-adoption-label{font-size:12px}}
+@media(max-width:390px){.speed-buttons button{min-width:34px}.time-toggle{min-width:107px}.time-playback{gap:7px}}
+@media(prefers-reduced-motion:reduce){.map-pickup .pickup-beacon,.skill-node.available .node-rim{animation:none}}
+
+/* v1.2 — persistent intelligence ticker. Only key information follows scrolling. */
+.intelligence-dock{position:sticky;top:0;z-index:45;padding:8px 9px 10px;margin:-8px -9px 15px;background:linear-gradient(180deg,rgba(7,17,30,.97),rgba(7,17,30,.94));border:1px solid #25495b;border-top:0;border-radius:0 0 14px 14px;backdrop-filter:blur(22px);box-shadow:0 11px 26px #0008,0 1px 0 #3dddc331}
+.intelligence-dock .status-strip{margin-bottom:7px;gap:8px}
+.intelligence-dock .stat-cell{min-height:66px;padding:9px 12px;border-radius:9px}
+.intelligence-dock .stat-cell>span{font-size:10px}
+.intelligence-dock .stat-cell strong{font-size:clamp(19px,1.65vw,24px);margin-top:4px}
+.intelligence-dock .stat-undershine{height:2px}
+.news-ticker{min-height:42px;display:flex;align-items:center;gap:11px;padding:5px 9px;border:1px solid #244559;border-radius:8px;background:linear-gradient(90deg,#0e2536,#0a1a2a);overflow:hidden}
+.news-ticker-label{flex:none;display:flex;align-items:center;gap:7px;color:#e2f5ff;font-size:10px;letter-spacing:.13em;white-space:nowrap}
+.news-ticker .news-red{width:25px;height:25px;border-radius:7px}
+.news-ticker-window{overflow:hidden;min-width:0;flex:1;mask-image:linear-gradient(to right,transparent,#000 2%,#000 98%,transparent)}
+.news-ticker-track{width:max-content;min-width:100%;display:flex;align-items:center;gap:80px;white-space:nowrap;color:#bfdcec;font-size:11px;font-weight:700}
+.news-ticker-track.is-rolling{animation:news-crawl 26s linear infinite}
+.news-ticker-track>span{min-width:max-content;display:inline-block}
+.news-ticker-all{flex:none;color:#8de6e3;border:1px solid #27576d;border-radius:7px;background:#0b2b3d;padding:6px 10px;display:flex;align-items:center;gap:4px;font-size:10px;font-weight:800}
+.news-ticker-all:hover{background:#154157;color:#fff}
+@keyframes news-crawl{0%,6%{transform:translateX(0)}95%,100%{transform:translateX(calc(-50% - 40px))}}
+.intelligence-dock .stat-cell.stat-just-collected{border-color:var(--stat-color);box-shadow:inset 0 0 0 1px var(--stat-color),0 0 16px color-mix(in srgb,var(--stat-color) 40%,transparent);animation:stat-collected .95s ease-out infinite alternate}
+@keyframes stat-collected{from{filter:brightness(1.05)}to{filter:brightness(1.35)}}
+/* Reward bursts are fixed to the clicked map pickup, regardless of horizontal map scroll. */
+.reward-burst{--reward:#f6d37c;position:fixed;z-index:95;pointer-events:none;transform:translate(-50%,-50%);width:2px;height:2px;color:var(--reward)}
+.reward-burst.ep{--reward:#dfaeff}
+.reward-value{position:absolute;left:0;top:-22px;white-space:nowrap;font-weight:1000;font-size:22px;color:var(--reward);text-shadow:0 1px 7px #000,0 0 17px var(--reward);animation:reward-rise 1.35s cubic-bezier(.1,.9,.2,1) both}
+.reward-ring{position:absolute;left:-25px;top:-25px;width:50px;height:50px;border:2px solid var(--reward);border-radius:50%;animation:reward-expand .8s ease-out forwards}
+.reward-ring.second{animation-delay:.11s}
+.reward-burst i{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:3px;background:var(--reward);box-shadow:0 0 10px var(--reward);animation:reward-spark .95s ease-out forwards;transform:rotate(calc(var(--i) * 45deg))}
+@keyframes reward-expand{to{transform:scale(2.2);opacity:0}}
+@keyframes reward-spark{to{transform:rotate(calc(var(--i) * 45deg)) translateY(-64px) scale(.25);opacity:0}}
+@keyframes reward-rise{0%{opacity:0;transform:translate(-50%,12px) scale(.7)}20%{opacity:1;transform:translate(-50%,-5px) scale(1.1)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-80px) scale(1)}}
+/* Pointer panning for the complete, 8-branch constellation. */
+.tree-scroll{cursor:grab;user-select:none;-webkit-user-select:none;scrollbar-width:thin;scrollbar-color:#37738c #0a1c30}
+.tree-scroll.is-dragging{cursor:grabbing}
+.tree-scroll.is-dragging .skill-node{pointer-events:none}
+.tree-surface{width:2090px;height:1680px}
+.skill-lines{width:2090px;height:1680px}
+.tree-origin{top:493px}
+.tree-reset-view{font-weight:800;font-size:10px;background:#14354c;color:#9cefe0;border:1px solid #316981;border-radius:8px;padding:7px 10px}
+.tree-reset-view:hover{background:#1b5062}
+@media(max-width:750px){
+ .intelligence-dock{margin:-10px -5px 12px;padding:5px 5px 7px;border-radius:0 0 12px 12px}
+ .intelligence-dock .status-strip{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-bottom:5px}
+ .intelligence-dock .stat-cell,.intelligence-dock .status-strip .stat-cell:nth-child(4),.intelligence-dock .status-strip .stat-cell:nth-child(5){min-height:57px;padding:7px 4px}
+ .intelligence-dock .stat-cell>span{font-size:8px;line-height:1.2;white-space:normal;min-height:18px}
+ .intelligence-dock .stat-cell>span svg{display:none}
+ .intelligence-dock .stat-cell strong{font-size:clamp(14px,3.7vw,20px);margin-top:2px}
+ .news-ticker{min-height:39px;padding:4px 5px;gap:6px}
+ .news-ticker-label{font-size:9px;letter-spacing:0;gap:4px}
+ .news-ticker .news-red{width:20px;height:20px}
+ .news-ticker-window{font-size:10px}
+ .news-ticker-track{font-size:10px;gap:44px}
+ .news-ticker-all{padding:5px 6px;font-size:9px}
+ .reward-value{font-size:18px}
+}
+@media(max-width:380px){.news-ticker-label b{display:none}.intelligence-dock .stat-cell>span{font-size:7.5px}}
+@media(prefers-reduced-motion:reduce){.reward-burst,.reward-ring,.reward-value,.reward-burst i{animation:none!important}.news-ticker-track.is-rolling{animation:none;overflow:hidden}.stat-just-collected{animation:none!important}}
+
+/* sticky must not be trapped by the app shell overflow container */
+.site-root{overflow:clip}
+
+
+/* User-supplied BGM player: compact in the header, expandable volume settings. */
+.app-header{position:relative;z-index:65}
+.setup-top{position:relative;z-index:65}
+.setup-top-right{display:flex;align-items:center;gap:12px}
+.bgm-control{position:relative;display:inline-flex;align-items:stretch;border:1px solid #2e586c;border-radius:9px;background:linear-gradient(135deg,#103245,#0c2234);height:36px;z-index:70;flex:none}
+.bgm-control.is-open{border-color:#6dd4d2;box-shadow:0 0 0 1px #7af6d333}
+.bgm-main,.bgm-settings-btn{color:#c7fff3;background:none;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.bgm-main{gap:7px;min-width:72px;padding:0 10px;font-size:10px;font-weight:850;letter-spacing:.06em}
+.bgm-main.muted{color:#8ca7b8}
+.bgm-main>svg{filter:drop-shadow(0 0 5px #50f2c555)}
+.bgm-settings-btn{width:30px;border-left:1px solid #2e586c;color:#79b7c9}
+.bgm-settings-btn:hover,.bgm-main:hover{background:#1a4558}
+.bgm-main:focus-visible,.bgm-settings-btn:focus-visible,.bgm-popover input:focus-visible{outline:2px solid #8ff5db;outline-offset:2px}
+.bgm-popover{position:absolute;right:0;top:calc(100% + 9px);width:273px;max-width:calc(100vw - 16px);padding:15px;display:grid;gap:13px;background:#0b2439;box-shadow:0 12px 35px #000b;border:1px solid #427989;border-radius:12px;color:#d5f7f1;z-index:200}
+.bgm-popover-head{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:11px}
+.bgm-popover-head span{font-size:11px;font-weight:800;color:#80e8da}
+.bgm-volume-row{display:flex;align-items:center;gap:12px}
+.bgm-volume-row input{flex:1;min-width:0;accent-color:#64d7c9;height:24px;cursor:pointer;touch-action:manipulation}
+.bgm-popover-toggle{background:#143b51;border:1px solid #366d83;border-radius:7px;color:#c3e8ee;padding:8px;font-size:11px;cursor:pointer}
+.bgm-popover small,.bgm-popover p{color:#80aabd;font-size:10px;line-height:1.5}
+.bgm-popover p{color:#ffd0a5}
+@media(max-width:750px){.bgm-control{height:35px}.bgm-main{padding:0 7px;min-width:36px}.bgm-main-text{display:none}.bgm-settings-btn{width:28px}.setup-top-right{gap:6px}.bgm-popover{right:-4px}}
+@media(max-width:480px){.app-header{gap:6px}.header-right{gap:4px}.origin-chip{display:none}.bgm-control{height:31px}.bgm-main{min-width:31px}.bgm-settings-btn{width:27px}.bgm-popover{right:-47px}}
+
+/* The map is the game surface. Panels scroll independently over it. */
+.game-shell{height:100dvh;overflow:hidden;background:#07101c}
+.game-shell .app-header{height:52px;min-height:0;padding:5px 14px;background:#071525ed;border-bottom:1px solid #24485a}
+.game-shell .game-body{position:absolute;inset:52px 0 0;max-width:none;margin:0;padding:0;overflow:hidden}
+.game-shell .intelligence-dock{position:absolute;top:8px;left:10px;right:10px;z-index:40;margin:0;padding:5px;border:1px solid #25495b;border-radius:10px;background:#071b2de8}
+.game-shell .intelligence-dock .status-strip{margin:0 0 4px;gap:4px}
+.game-shell .intelligence-dock .stat-cell{min-height:48px;padding:5px 9px}
+.game-shell .intelligence-dock .stat-cell strong{font-size:18px;margin-top:1px}
+.game-shell .news-ticker{min-height:32px}
+.game-shell .content-grid,.game-shell .map-column,.game-shell .world-panel{position:absolute;inset:0;display:block;margin:0;padding:0;border:0;border-radius:0;max-width:none;background:transparent;box-shadow:none}
+.game-shell .world-panel>.section-heading,.game-shell .quick-launch,.game-shell .turn-footer,.game-shell .app-footer{display:none}
+.game-shell .map-frame{position:absolute;inset:0;margin:0;border:0;border-radius:0;background:#071c30}
+.game-shell .map-scroller{width:100%;height:100%;display:flex;align-items:center;overflow:auto;touch-action:pan-x pan-y}
+.game-shell .world-svg{width:100%;min-width:850px;max-height:100%;height:auto;flex:none}
+.game-shell .map-legend{position:absolute;left:12px;bottom:105px;margin:0;padding:5px 8px;background:#081c2edb;border-radius:8px;font-size:10px;z-index:2;pointer-events:none}
+.game-shell .map-legend .legend-hint{display:none}
+.game-shell .time-dock{position:absolute;z-index:10;bottom:54px;left:10px;right:10px;padding:6px 10px;border:1px solid #315669;border-radius:10px;background:#0b2438eF;gap:8px}
+.game-shell .time-toggle{min-height:34px}
+.game-shell .time-progress{gap:3px}
+.game-shell .action-column{display:none;position:absolute;z-index:25;right:10px;top:112px;bottom:110px;width:min(370px,42vw);overflow:auto;overscroll-behavior:contain;padding:7px;background:#071625eE;border:1px solid #315c70;border-radius:12px;box-shadow:0 10px 30px #0008}
+.game-shell .action-column.is-open{display:block}
+.game-shell .action-column>section{margin-bottom:8px}
+.map-controls{position:absolute;z-index:45;bottom:5px;left:10px;right:10px;display:flex;justify-content:center;gap:7px}
+.map-controls button{min-height:42px;flex:1;max-width:210px;border:1px solid #387080;border-radius:9px;background:#0d3044ed;color:#dafaf6;font-weight:800;font-size:12px;padding:7px}
+.map-controls button:hover,.map-controls button[aria-expanded=true]{background:#245d68;border-color:#79e0cf}
+@media(max-width:750px){
+ .game-shell .app-header{height:43px;padding:4px 7px}.game-shell .game-body{inset:43px 0 0}
+ .game-shell .intelligence-dock{top:4px;left:5px;right:5px;padding:4px}.game-shell .intelligence-dock .stat-cell,.game-shell .intelligence-dock .status-strip .stat-cell:nth-child(4),.game-shell .intelligence-dock .status-strip .stat-cell:nth-child(5){min-height:46px;padding:4px 3px}.game-shell .intelligence-dock .stat-cell>span{min-height:17px;font-size:8px}.game-shell .intelligence-dock .stat-cell strong{font-size:15px}
+ .game-shell .news-ticker{min-height:30px}.game-shell .map-scroller{align-items:center}.game-shell .world-svg{min-width:740px;max-height:none}
+ .game-shell .map-legend{bottom:102px;left:5px;font-size:9px;gap:6px}
+ .game-shell .time-dock{bottom:49px;left:5px;right:5px;display:flex;gap:5px;padding:4px 6px}.game-shell .time-playback{flex:1}.game-shell .time-toggle{min-width:70px;min-height:32px;font-size:10px;gap:3px}.game-shell .speed-buttons{gap:0;padding:2px}.game-shell .speed-buttons button{min-width:32px;height:30px}.game-shell .time-progress{display:none}.game-shell .world-condition{display:none}
+ .game-shell .action-column{left:5px;right:5px;top:auto;bottom:97px;width:auto;height:min(45dvh,400px);padding:6px}.game-shell .action-column .region-panel,.game-shell .action-column .operation-panel{margin:0 0 6px}
+ .map-controls{left:5px;right:5px;bottom:3px;gap:3px}.map-controls button{min-height:41px;font-size:10px;padding:4px 2px}
+}
+@media(max-height:500px){.game-shell .intelligence-dock .news-ticker{display:none}.game-shell .action-column{top:58px;bottom:100px;height:auto}.game-shell .map-legend{display:none}}
+
+.drawer-reset{display:block;margin:4px 4px 8px auto;padding:8px 12px;border:1px solid #496578;border-radius:8px;background:#173044;color:#d5eaf5;font-size:11px}

@@ -167,6 +167,44 @@
 .bgm-popover p{color:#ffd0a5}
 @media(max-width:750px){.bgm-control{height:35px}.bgm-main{padding:0 7px;min-width:36px}.bgm-main-text{display:none}.bgm-settings-btn{width:28px}.setup-top-right{gap:6px}.bgm-popover{right:-4px}}
 @media(max-width:480px){.app-header{gap:6px}.header-right{gap:4px}.origin-chip{display:none}.bgm-control{height:31px}.bgm-main{min-width:31px}.bgm-settings-btn{width:27px}.bgm-popover{right:-47px}}
+
+/* The map is the game surface. Panels scroll independently over it. */
+.game-shell{height:100dvh;overflow:hidden;background:#07101c}
+.game-shell .app-header{height:52px;min-height:0;padding:5px 14px;background:#071525ed;border-bottom:1px solid #24485a}
+.game-shell .game-body{position:absolute;inset:52px 0 0;max-width:none;margin:0;padding:0;overflow:hidden}
+.game-shell .intelligence-dock{position:absolute;top:8px;left:10px;right:10px;z-index:40;margin:0;padding:5px;border:1px solid #25495b;border-radius:10px;background:#071b2de8}
+.game-shell .intelligence-dock .status-strip{margin:0 0 4px;gap:4px}
+.game-shell .intelligence-dock .stat-cell{min-height:48px;padding:5px 9px}
+.game-shell .intelligence-dock .stat-cell strong{font-size:18px;margin-top:1px}
+.game-shell .news-ticker{min-height:32px}
+.game-shell .content-grid,.game-shell .map-column,.game-shell .world-panel{position:absolute;inset:0;display:block;margin:0;padding:0;border:0;border-radius:0;max-width:none;background:transparent;box-shadow:none}
+.game-shell .world-panel>.section-heading,.game-shell .quick-launch,.game-shell .turn-footer,.game-shell .app-footer{display:none}
+.game-shell .map-frame{position:absolute;inset:0;margin:0;border:0;border-radius:0;background:#071c30}
+.game-shell .map-scroller{width:100%;height:100%;display:flex;align-items:center;overflow:auto;touch-action:pan-x pan-y}
+.game-shell .world-svg{width:100%;min-width:850px;max-height:100%;height:auto;flex:none}
+.game-shell .map-legend{position:absolute;left:12px;bottom:105px;margin:0;padding:5px 8px;background:#081c2edb;border-radius:8px;font-size:10px;z-index:2;pointer-events:none}
+.game-shell .map-legend .legend-hint{display:none}
+.game-shell .time-dock{position:absolute;z-index:10;bottom:54px;left:10px;right:10px;padding:6px 10px;border:1px solid #315669;border-radius:10px;background:#0b2438eF;gap:8px}
+.game-shell .time-toggle{min-height:34px}
+.game-shell .time-progress{gap:3px}
+.game-shell .action-column{display:none;position:absolute;z-index:25;right:10px;top:112px;bottom:110px;width:min(370px,42vw);overflow:auto;overscroll-behavior:contain;padding:7px;background:#071625eE;border:1px solid #315c70;border-radius:12px;box-shadow:0 10px 30px #0008}
+.game-shell .action-column.is-open{display:block}
+.game-shell .action-column>section{margin-bottom:8px}
+.map-controls{position:absolute;z-index:45;bottom:5px;left:10px;right:10px;display:flex;justify-content:center;gap:7px}
+.map-controls button{min-height:42px;flex:1;max-width:210px;border:1px solid #387080;border-radius:9px;background:#0d3044ed;color:#dafaf6;font-weight:800;font-size:12px;padding:7px}
+.map-controls button:hover,.map-controls button[aria-expanded=true]{background:#245d68;border-color:#79e0cf}
+@media(max-width:750px){
+ .game-shell .app-header{height:43px;padding:4px 7px}.game-shell .game-body{inset:43px 0 0}
+ .game-shell .intelligence-dock{top:4px;left:5px;right:5px;padding:4px}.game-shell .intelligence-dock .stat-cell,.game-shell .intelligence-dock .status-strip .stat-cell:nth-child(4),.game-shell .intelligence-dock .status-strip .stat-cell:nth-child(5){min-height:46px;padding:4px 3px}.game-shell .intelligence-dock .stat-cell>span{min-height:17px;font-size:8px}.game-shell .intelligence-dock .stat-cell strong{font-size:15px}
+ .game-shell .news-ticker{min-height:30px}.game-shell .map-scroller{align-items:center}.game-shell .world-svg{min-width:740px;max-height:none}
+ .game-shell .map-legend{bottom:102px;left:5px;font-size:9px;gap:6px}
+ .game-shell .time-dock{bottom:49px;left:5px;right:5px;display:flex;gap:5px;padding:4px 6px}.game-shell .time-playback{flex:1}.game-shell .time-toggle{min-width:70px;min-height:32px;font-size:10px;gap:3px}.game-shell .speed-buttons{gap:0;padding:2px}.game-shell .speed-buttons button{min-width:32px;height:30px}.game-shell .time-progress{display:none}.game-shell .world-condition{display:none}
+ .game-shell .action-column{left:5px;right:5px;top:auto;bottom:97px;width:auto;height:min(45dvh,400px);padding:6px}.game-shell .action-column .region-panel,.game-shell .action-column .operation-panel{margin:0 0 6px}
+ .map-controls{left:5px;right:5px;bottom:3px;gap:3px}.map-controls button{min-height:41px;font-size:10px;padding:4px 2px}
+}
+@media(max-height:500px){.game-shell .intelligence-dock .news-ticker{display:none}.game-shell .action-column{top:58px;bottom:100px;height:auto}.game-shell .map-legend{display:none}}
+
+.drawer-reset{display:block;margin:4px 4px 8px auto;padding:8px 12px;border:1px solid #496578;border-radius:8px;background:#173044;color:#d5eaf5;font-size:11px}
 </style></head><body><div id="legacy-root" hidden></div><div id="root"></div><script>/*
  React v16.0.0
  react.production.min.js
@@ -571,6 +609,7 @@ window.AIP_EVENT_ENGINE = (() => {
       parsed.pickups=[];parsed.nextPickupId=1;parsed.lastFundraiseDay=-120;
       parsed.worldModifier=null;parsed.version=7;
     }
+    parsed.funds=Math.max(0,Number.isFinite(parsed.funds)?parsed.funds:0);
     parsed.day=Math.max(1,Math.min(30,parsed.day||1));
     parsed.elapsedDays||=0;parsed.simMs||=0;parsed.pickups||=[];
     parsed.nextPickupId||=1;parsed.lastFundraiseDay??=-120;
@@ -693,7 +732,8 @@ window.AIP_EVENT_ENGINE = (() => {
       else if(key==='regionAdoption'){region.adoption=clamp(region.adoption+val);}
       else if(key==='regionRegulation'){region.regulation=clamp(region.regulation+val);}
       else if(allowed.has(key)){
-        if(['funds','ep'].includes(key))game[key]+=val;
+        if(key==='funds')game.funds=Math.max(0,game.funds+val);
+        else if(key==='ep')game.ep+=val;
         else if(key==='publications'||key==='project')game[key]=Math.max(0,game[key]+val);
         else game[key]=clamp(game[key]+val);
       }
@@ -718,7 +758,7 @@ window.AIP_EVENT_ENGINE = (() => {
     emitStateNews(before,2);
     if(checkEnding())return;save();render();notify('選択の結果が反映され、今後の展開にも影響します。');
   }
-  function checkFailure(){if(game.funds<-65){lose('資源不足による活動停止','資金の枯渇により、AIサービスの運営を維持できなくなりました。');return true;}if(game.alert>=99&&game.trust<45&&game.alertStreak>=2){lose('国際的なAI停止措置','世界的な危機対応が発動。AIサービスの継続が不可能になりました。');return true;}return false;}
+  function checkFailure(){if(game.alert>=99&&game.trust<45&&game.alertStreak>=2){lose('国際的なAI停止措置','世界的な危機対応が発動。AIサービスの継続が不可能になりました。');return true;}return false;}
   // Game time advances one in-world day for every 600 ms at normal speed.
   // The UI owns play/pause and speed; the simulation owns actual dates and effects.
   const SIM_DAY_MS=600;
@@ -823,7 +863,7 @@ window.AIP_EVENT_ENGINE = (() => {
     const st=stats();
     const income=4.2+st.share*.115+game.infra*.075+st.worldAdoption*.037+(game.type==='business'?2.3:0);
     const upkeep=3.6+game.compute*.065+(game.autonomy>70?2:0);
-    game.funds+=Math.round(income*mods.income*(game.worldModifier?.incomeMultiplier??1)-upkeep);
+    game.funds=Math.max(0,game.funds+Math.round(income*mods.income*(game.worldModifier?.incomeMultiplier??1)-upkeep));
     // Monthly EP is a rare random research discovery, not a salary.
     const researchLuck=game.type==='research'?.095:.055;
     if(ENGINE.random(game.eventRuntime)<researchLuck){
@@ -1239,7 +1279,7 @@ class App extends React.Component {
         };
         this.resumeBgmOnGesture = () => { if (engine.getSnapshot()?.phase === 'playing' && this.bgmRef.current?.paused)
             this.tryPlayBgm(); };
-        this.state = { revision: 0, modal: null, selectedOp: 'campaign', selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
+        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
     }
     componentDidMount() { window.addEventListener('aip:updated', this.listener); document.addEventListener('visibilitychange', this.onVisible); document.addEventListener('pointerdown', this.resumeBgmOnGesture, { passive: true }); this.lastClock = performance.now(); this.clockTimer = window.setInterval(this.advanceClock, 100); this.syncBgmSettings(); this.centerHome(); }
     componentWillUnmount() { window.removeEventListener('aip:updated', this.listener); document.removeEventListener('visibilitychange', this.onVisible); document.removeEventListener('pointerdown', this.resumeBgmOnGesture); window.clearInterval(this.clockTimer); window.clearTimeout(this.rewardTimer); this.bgmRef.current?.pause(); }
@@ -1506,9 +1546,15 @@ class App extends React.Component {
                                     React.createElement("b", null, "\u52DD\u5229\u30EB\u30FC\u30C8"),
                                     React.createElement("small", null, "4\u3064\u306E\u7D50\u672B\u306E\u9054\u6210\u72B6\u6CC1")),
                                 React.createElement(Icon, { name: "chevron-right", size: 17 })))),
-                    React.createElement("div", { className: "action-column" },
-                        this.renderRegion(g, selected),
-                        this.renderOperations(g, selected))),
+                    React.createElement("div", { className: `action-column ${this.state.showOperations ? "is-open" : ""}`, id: "operations-panel", "aria-hidden": !this.state.showOperations },
+                        this.state.showOperations ? React.createElement("button", { className: "drawer-reset", onClick: () => this.open("reset") }, "新しく始める") : null,
+                        this.state.showOperations ? this.renderRegion(g, selected) : null,
+                        this.state.showOperations ? this.renderOperations(g, selected) : null)),
+                React.createElement("nav", { className: "map-controls", "aria-label": "ゲームメニュー" },
+                    React.createElement("button", { type: "button", onClick: () => this.setState({ showOperations: !this.state.showOperations }), "aria-expanded": this.state.showOperations, "aria-controls": "operations-panel" }, this.state.showOperations ? "✕ 閉じる" : "◎ 地域・行動"),
+                    React.createElement("button", { type: "button", onClick: () => this.open("evolution") }, "✦ 進化ツリー"),
+                    React.createElement("button", { type: "button", onClick: () => this.open("routes") }, "◇ 勝利ルート"),
+                    React.createElement("button", { type: "button", onClick: () => this.open("report") }, "▤ 世界レポート")),
                 React.createElement("div", { className: "turn-footer panel-glass" },
                     React.createElement("div", null,
                         React.createElement("span", { className: "eyebrow" }, "AUTONOMOUS WORLD / REALTIME SIMULATION"),
@@ -1742,6 +1788,7 @@ class App extends React.Component {
                 React.createElement("span", null,
                     React.createElement("strong", null, choice.label),
                     React.createElement("small", null, choice.detail || '世界の状況に影響します'),
+                    !choice.affordable ? React.createElement("em", null, "資金が不足しています") : null,
                     choice.chained ? React.createElement("em", null, "\u3053\u306E\u9078\u629E\u306F\u5C06\u6765\u306E\u30A4\u30D9\u30F3\u30C8\u306B\u3064\u306A\u304C\u308A\u307E\u3059") : null),
                 React.createElement(Icon, { name: "arrow-right", size: 19 }))), React.createElement("button", { type: "button", onClick: () => engine.chooseEvent(-1) }, "スキップ")))); }
     renderEnding(g) { const stats = engine.getStats(); const win = g.ending?.id !== 'failure'; return React.createElement("div", { className: "modal-backdrop ending-backdrop" },
@@ -1943,7 +1990,7 @@ class App extends React.Component {
             React.createElement("div", null,
                 React.createElement(Icon, { name: "radio" }),
                 React.createElement("strong", null, "02 / \u6642\u9593\u3092\u64CD\u4F5C\u3059\u308B"),
-                React.createElement("p", null, "\u518D\u751F\u30FB\u505C\u6B62\u30FB2\u500D\u901F\u30FB4\u500D\u901F\u3092\u64CD\u4F5C\u3002\u7814\u7A76\u30FB\u666E\u53CA\u30FB\u7523\u696D\u5C0E\u5165\u306F\u8CC7\u91D1\u306E\u9650\u308A\u5B9F\u884C\u3067\u304D\u307E\u3059\u3002")),
+                React.createElement("p", null, "再生・停止と0.5倍・1倍・1.5倍・2倍の速度を操作。\u7814\u7A76\u30FB\u666E\u53CA\u30FB\u7523\u696D\u5C0E\u5165\u306F\u8CC7\u91D1\u306E\u9650\u308A\u5B9F\u884C\u3067\u304D\u307E\u3059\u3002")),
             React.createElement("div", null,
                 React.createElement(Icon, { name: "branch" }),
                 React.createElement("strong", null, "03 / \u5730\u56F3\u306E\u30B7\u30B0\u30CA\u30EB\u3092\u56DE\u53CE\u3059\u308B"),
