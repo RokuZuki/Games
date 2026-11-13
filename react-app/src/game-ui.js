@@ -234,7 +234,7 @@ class App extends React.Component {
         };
         this.resumeBgmOnGesture = () => { if (engine.getSnapshot()?.phase === 'playing' && this.bgmRef.current?.paused)
             this.tryPlayBgm(); };
-        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, drawerTab: 'actions', mapZoom: 1, mapX: 0, mapY: 0, treeZoom: 0.65, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
+        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, regionPickerOpen: false, drawerTab: 'actions', mapZoom: 1, mapX: 0, mapY: 0, treeZoom: 0.65, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
     }
     componentDidMount() { window.addEventListener('aip:updated', this.listener); document.addEventListener('visibilitychange', this.onVisible); document.addEventListener('pointerdown', this.resumeBgmOnGesture, { passive: true }); this.lastClock = performance.now(); this.clockTimer = window.setInterval(this.advanceClock, 100); this.syncBgmSettings(); this.centerHome(); }
     componentWillUnmount() { window.removeEventListener('aip:updated', this.listener); document.removeEventListener('visibilitychange', this.onVisible); document.removeEventListener('pointerdown', this.resumeBgmOnGesture); window.clearInterval(this.clockTimer); window.clearTimeout(this.rewardTimer); this.matrixRainCleanup?.(); this.matrixRef.current = null; this.bgmRef.current?.pause(); }
@@ -277,7 +277,7 @@ class App extends React.Component {
     open(modal) { this.setState({ modal, selectedSkill: null }); }
     close() { this.setState({ modal: null }); }
     start() { engine.start(this.state.draftName.trim(), this.state.draftType, this.state.draftCountry); this.lastClock = performance.now(); this.setState({ selectedOp: 'campaign', modal: null, playing: true, speed: 1 }); this.tryPlayBgm(); }
-    selectRegion(id) { engine.selectRegion(id); }
+    selectRegion(id) { engine.selectRegion(id); if (this.state.regionPickerOpen) this.setState({ regionPickerOpen: false }); }
     executeOp() { engine.operation(this.state.selectedOp); }
     togglePlay() { this.lastClock = performance.now(); this.setState(s => ({ playing: !s.playing })); }
     restart() { this.bgmRef.current?.pause(); if (this.bgmRef.current)
@@ -771,9 +771,7 @@ class App extends React.Component {
                     React.createElement("span", { className: "eyebrow" }, "STRATEGIC OPERATIONS"),
                     React.createElement("h2", null, "\u30AA\u30DA\u30EC\u30FC\u30B7\u30E7\u30F3")),
                 React.createElement(Tag, { tone: "cyan" }, "\u8CC7\u91D1\u304C\u3042\u308C\u3070\u968F\u6642\u5B9F\u884C")),
-            React.createElement("p", { className: "operation-intro" },
-                "\u5B9F\u884C\u3057\u305F\u3044\u884C\u52D5\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\u3002\u5BFE\u8C61\u5730\u57DF\uFF1A",
-                React.createElement("strong", null, r.name)),
+            React.createElement("button", { type: "button", className: "operation-target-trigger", "aria-expanded": this.state.regionPickerOpen, "aria-controls": "operation-region-picker", onClick: () => this.setState(s => ({ regionPickerOpen: !s.regionPickerOpen })) }, React.createElement("span", { className: "operation-target-label" }, "TARGET NODE"), React.createElement("b", null, r.name), React.createElement(Icon, { name: this.state.regionPickerOpen ? "chevron-left" : "chevron-right", size: 16 })), this.state.regionPickerOpen ? React.createElement("div", { id: "operation-region-picker", className: "operation-region-picker", role: "group", "aria-label": "操作対象地域" }, g.regions.map(region => React.createElement("button", { type: "button", key: region.id, className: "operation-region-choice "+(region.id === r.id ? "active" : ""), "aria-pressed": region.id === r.id, "aria-label": region.name+"を操作対象に選択", onClick: () => this.selectRegion(region.id) }, region.name))) : null, React.createElement("p", { className: "operation-intro" }, "実行するオペレーションを選択してください。"),
             React.createElement("div", { className: "op-grid" }, ops.map(o => React.createElement("button", { type: "button", key: o.id, className: `op-choice ${this.state.selectedOp === o.id ? 'selected' : ''}`, onClick: () => this.setState({ selectedOp: o.id }), 'aria-pressed': this.state.selectedOp === o.id, disabled: false },
                 React.createElement("span", { className: "op-icon" },
                     React.createElement(Icon, { name: opIcons[o.id] || 'sparkles', size: 21 })),
