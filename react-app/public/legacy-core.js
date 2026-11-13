@@ -263,7 +263,7 @@
       tech:clamp(b.tech+Math.round((country.bonuses.tech||0)*.55)),trust:clamp(b.trust+(country.bonuses.trust||0)),
       ep:Math.max(2,b.ep+Math.round((country.bonuses.ep||0)*.16)),compute:clamp(b.compute+Math.round((country.bonuses.compute||0)*.55)),
       autonomy:7,openness:clamp(b.openness+Math.round((country.bonuses.openness||0)*.45)),infra:4+Math.round((country.bonuses.infra||0)*.3),
-      publications:0,project:0,alert:clamp(14+(country.bonuses.alert||0)),alertStreak:0,pendingEvent:null,ending:null,activityLog:[],
+      publications:0,project:0,alert:0,alertStreak:0,pendingEvent:null,ending:null,activityLog:[],
       eventRuntime:ENGINE.makeRuntime((Date.now()^name.length*479001599)>>>0),
       feed:[{id:'intro-1',turn:1,message:`${name.trim()} が${country.name}で開発されました。AIがまだ普及していない世界で、小さな一歩が始まります。`,category:'発祥国',severity:'important',body:`${country.focus}を強みとして活動を開始しました。`},{id:'intro-2',turn:1,message:'競合AI「ATLAS」「NOVA」が活動しています。',category:'競合AI',severity:'normal'}]};
   }

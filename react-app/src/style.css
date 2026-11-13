@@ -205,3 +205,38 @@
 @media(max-height:500px){.game-shell .intelligence-dock .news-ticker{display:none}.game-shell .action-column{top:58px;bottom:100px;height:auto}.game-shell .map-legend{display:none}}
 
 .drawer-reset{display:block;margin:4px 4px 8px auto;padding:8px 12px;border:1px solid #496578;border-radius:8px;background:#173044;color:#d5eaf5;font-size:11px}
+
+/* Compact, independently scrollable action drawer. */
+.game-shell .action-column{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.drawer-tabs{display:flex;gap:6px;position:sticky;top:-7px;z-index:3;background:#0b2032;padding:5px 0 7px}
+.drawer-tabs button{flex:1;min-height:40px;border:1px solid #355d70;border-radius:8px;background:#102a3b;color:#b9d4e3;font-weight:800;font-size:12px;touch-action:manipulation}
+.drawer-tabs button[aria-pressed=true]{background:#215d60;border-color:#72e3d4;color:#fff}
+.game-shell .action-column .operation-panel{height:auto;overflow:visible}
+.game-shell .operation-panel .section-heading{padding:8px 10px 4px}
+.game-shell .operation-panel .section-heading h2{font-size:15px;margin:0}
+.game-shell .operation-panel .section-heading .eyebrow,.game-shell .operation-panel .section-heading .tag{display:none}
+.game-shell .operation-intro{padding:0 10px;margin:0 0 6px;font-size:11px}
+.game-shell .op-grid{padding:0 9px;gap:5px}
+.game-shell .op-choice{min-height:45px;padding:5px 7px;gap:6px;touch-action:manipulation}
+.game-shell .op-icon{width:27px;height:27px}
+.game-shell .op-choice span:last-child{gap:1px}
+.game-shell .op-inspector{margin:6px 9px;padding:6px 8px}
+.game-shell .op-inspector p{margin-top:2px;line-height:1.25}
+.game-shell .op-effect{display:none}
+.game-shell .operation-execute{position:sticky;bottom:0;z-index:2;width:calc(100% - 18px);margin:0 9px 8px;min-height:44px;padding:8px;font-size:12px}
+.help-restart{margin:0 0 14px}
+@media(max-width:750px){
+ .game-shell .action-column{height:min(56dvh,430px);max-height:calc(100% - 195px);padding:5px}
+ .drawer-tabs{top:-5px}
+ .game-shell .op-choice b{white-space:normal;line-height:1.15}
+ .game-shell .operation-panel .section-heading{padding-top:5px}
+}
+
+.tree-scroll{touch-action:none}
+.tree-zoom-frame{position:relative;flex:none}
+.tree-zoom-controls{display:flex;align-items:center;gap:4px;color:#c6e8eb;font-size:11px;font-weight:800}
+.tree-zoom-controls button{min-width:36px;min-height:34px;border:1px solid #397085;border-radius:7px;background:#15384c;color:#e4fffa;font-size:19px;touch-action:manipulation}
+.tree-zoom-controls span{min-width:38px;text-align:center}
+@media(max-width:750px){.tree-toolbar{flex-wrap:wrap;gap:5px}.tree-zoom-controls button{min-width:34px;min-height:32px}.tree-counters{margin-left:auto}}
+
+@media(max-width:750px) and (max-height:650px){.game-shell .operation-panel .section-heading{display:none}.game-shell .operation-intro{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.game-shell .op-inspector p{display:none}.game-shell .op-inspector{margin:4px 9px;padding:4px 7px}.game-shell .op-choice{min-height:43px}}

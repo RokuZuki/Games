@@ -176,6 +176,8 @@ class App extends React.Component {
         this.treeRef = { current: null };
         this.rewardSequence = 0;
         this.treeDrag = null;
+        this.treeScale = 0.65;
+        this.treeTouch = null;
         this.didTreeDrag = false;
         this.listener = () => this.setState(s => ({ revision: s.revision + 1 }));
         this.lastClock = 0;
@@ -190,7 +192,7 @@ class App extends React.Component {
         };
         this.resumeBgmOnGesture = () => { if (engine.getSnapshot()?.phase === 'playing' && this.bgmRef.current?.paused)
             this.tryPlayBgm(); };
-        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
+        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, drawerTab: 'actions', treeZoom: 0.65, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
     }
     componentDidMount() { window.addEventListener('aip:updated', this.listener); document.addEventListener('visibilitychange', this.onVisible); document.addEventListener('pointerdown', this.resumeBgmOnGesture, { passive: true }); this.lastClock = performance.now(); this.clockTimer = window.setInterval(this.advanceClock, 100); this.syncBgmSettings(); this.centerHome(); }
     componentWillUnmount() { window.removeEventListener('aip:updated', this.listener); document.removeEventListener('visibilitychange', this.onVisible); document.removeEventListener('pointerdown', this.resumeBgmOnGesture); window.clearInterval(this.clockTimer); window.clearTimeout(this.rewardTimer); this.bgmRef.current?.pause(); }
@@ -264,6 +266,41 @@ class App extends React.Component {
         this.setState({ reward: { id, kind: drop.kind, amount: drop.amount, x, y } });
         engine.collectPickup(drop.id);
         this.rewardTimer = window.setTimeout(() => this.setState(current => current.reward?.id === id ? { reward: null } : null), 1500);
+    }
+    bindTree(el) {
+        if (this.treeRef.current === el) return;
+        const old = this.treeRef.current;
+        if (old && this.treeTouchHandlers) { for (const [type, handler] of Object.entries(this.treeTouchHandlers)) old.removeEventListener(type, handler); }
+        this.treeRef.current = el;
+        if (!el) return;
+        const start = e => {
+            if (e.touches.length === 2) {
+                const a=e.touches[0], b=e.touches[1], rect=el.getBoundingClientRect();
+                const x=(a.clientX+b.clientX)/2-rect.left, y=(a.clientY+b.clientY)/2-rect.top;
+                this.treeTouch={pinch:true, distance:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY), scale:this.treeScale, anchorX:(el.scrollLeft+x)/this.treeScale, anchorY:(el.scrollTop+y)/this.treeScale};
+                this.didTreeDrag=true;
+            } else if(e.touches.length===1) { const t=e.touches[0]; this.treeTouch={pinch:false,x:t.clientX,y:t.clientY,left:el.scrollLeft,top:el.scrollTop,moved:false}; this.didTreeDrag=false; }
+        };
+        const move = e => {
+            const d=this.treeTouch; if(!d) return;
+            if(d.pinch && e.touches.length>=2) {
+                e.preventDefault(); const a=e.touches[0],b=e.touches[1],rect=el.getBoundingClientRect();
+                const x=(a.clientX+b.clientX)/2-rect.left,y=(a.clientY+b.clientY)/2-rect.top;
+                const zoom=Math.max(.35,Math.min(1.5,d.scale*Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/Math.max(d.distance,1)));
+                this.treeScale=zoom; this.setState({treeZoom:zoom},()=>{el.scrollLeft=d.anchorX*zoom-x;el.scrollTop=d.anchorY*zoom-y;});
+            } else if(!d.pinch && e.touches.length===1) {
+                const t=e.touches[0],dx=t.clientX-d.x,dy=t.clientY-d.y;
+                if(d.moved || Math.hypot(dx,dy)>6){d.moved=true;this.didTreeDrag=true;e.preventDefault();el.scrollLeft=d.left-dx;el.scrollTop=d.top-dy;}
+            }
+        };
+        const end = e => { if(e.touches.length===0){this.treeTouch=null;window.setTimeout(()=>{this.didTreeDrag=false;},100);} };
+        this.treeTouchHandlers={touchstart:start,touchmove:move,touchend:end,touchcancel:end};
+        for(const [type,handler] of Object.entries(this.treeTouchHandlers)) el.addEventListener(type,handler,{passive:false});
+    }
+    changeTreeZoom(factor) {
+        const el=this.treeRef.current;if(!el)return;const old=this.treeScale,zoom=Math.max(.35,Math.min(1.5,old*factor));
+        const x=(el.scrollLeft+el.clientWidth/2)/old,y=(el.scrollTop+el.clientHeight/2)/old;this.treeScale=zoom;
+        this.setState({treeZoom:zoom},()=>{el.scrollLeft=x*zoom-el.clientWidth/2;el.scrollTop=y*zoom-el.clientHeight/2;});
     }
     onTreePointerDown(e) { if (e.pointerType !== 'mouse' || e.button !== 0)
         return; const el = e.currentTarget; this.treeDrag = { pointer: e.pointerId, x: e.clientX, y: e.clientY, left: el.scrollLeft, top: el.scrollTop, dragged: false }; this.didTreeDrag = false; }
@@ -458,9 +495,11 @@ class App extends React.Component {
                                     React.createElement("small", null, "4\u3064\u306E\u7D50\u672B\u306E\u9054\u6210\u72B6\u6CC1")),
                                 React.createElement(Icon, { name: "chevron-right", size: 17 })))),
                     React.createElement("div", { className: `action-column ${this.state.showOperations ? "is-open" : ""}`, id: "operations-panel", "aria-hidden": !this.state.showOperations },
-                        this.state.showOperations ? React.createElement("button", { className: "drawer-reset", onClick: () => this.open("reset") }, "新しく始める") : null,
-                        this.state.showOperations ? this.renderRegion(g, selected) : null,
-                        this.state.showOperations ? this.renderOperations(g, selected) : null)),
+                        this.state.showOperations ? React.createElement("div", { className: "drawer-tabs", role: "group", "aria-label": "地域と操作" },
+                            React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "actions", onClick: () => this.setState({ drawerTab: "actions" }) }, "オペレーション"),
+                            React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "region", onClick: () => this.setState({ drawerTab: "region" }) }, "地域情報")) : null,
+                        this.state.showOperations && this.state.drawerTab === "region" ? this.renderRegion(g, selected) : null,
+                        this.state.showOperations && this.state.drawerTab === "actions" ? this.renderOperations(g, selected) : null)),
                 React.createElement("nav", { className: "map-controls", "aria-label": "ゲームメニュー" },
                     React.createElement("button", { type: "button", onClick: () => this.setState({ showOperations: !this.state.showOperations }), "aria-expanded": this.state.showOperations, "aria-controls": "operations-panel" }, this.state.showOperations ? "✕ 閉じる" : "◎ 地域・行動"),
                     React.createElement("button", { type: "button", onClick: () => this.open("evolution") }, "✦ 進化ツリー"),
@@ -660,7 +699,7 @@ class App extends React.Component {
             React.createElement("p", { className: "operation-intro" },
                 "\u5B9F\u884C\u3057\u305F\u3044\u884C\u52D5\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\u3002\u5BFE\u8C61\u5730\u57DF\uFF1A",
                 React.createElement("strong", null, r.name)),
-            React.createElement("div", { className: "op-grid" }, ops.map(o => React.createElement("button", { type: "button", key: o.id, className: `op-choice ${this.state.selectedOp === o.id ? 'selected' : ''}`, onClick: () => this.setState({ selectedOp: o.id }), disabled: false },
+            React.createElement("div", { className: "op-grid" }, ops.map(o => React.createElement("button", { type: "button", key: o.id, className: `op-choice ${this.state.selectedOp === o.id ? 'selected' : ''}`, onClick: () => this.setState({ selectedOp: o.id }), 'aria-pressed': this.state.selectedOp === o.id, disabled: false },
                 React.createElement("span", { className: "op-icon" },
                     React.createElement(Icon, { name: opIcons[o.id] || 'sparkles', size: 21 })),
                 React.createElement("span", null,
@@ -761,6 +800,10 @@ class App extends React.Component {
                         " NODES"),
                     React.createElement("button", { type: "button", className: "tree-reset-view", onClick: () => { const el = this.treeRef.current; if (el)
                             el.scrollTo({ left: 0, top: 0, behavior: 'smooth' }); } }, "\u539F\u70B9\u3078\u623B\u3059"),
+                    React.createElement("div", { className: "tree-zoom-controls", "aria-label": "ツリーの拡大縮小" },
+                        React.createElement("button", { type: "button", "aria-label": "縮小", onClick: () => this.changeTreeZoom(1 / 1.25) }, "−"),
+                        React.createElement("span", null, `${Math.round(this.state.treeZoom * 100)}%`),
+                        React.createElement("button", { type: "button", "aria-label": "拡大", onClick: () => this.changeTreeZoom(1.25) }, "+")),
                     React.createElement("div", { className: "tree-counters" },
                         React.createElement("span", { className: "ep-display" },
                             React.createElement(Icon, { name: "sparkles", size: 17 }),
@@ -771,8 +814,9 @@ class App extends React.Component {
                             " / ",
                             all.length,
                             " \u7FD2\u5F97"))),
-                React.createElement("div", { className: "tree-scroll", ref: el => { this.treeRef.current = el; }, onPointerDown: e => this.onTreePointerDown(e), onPointerMove: e => this.onTreePointerMove(e), onPointerUp: e => this.onTreePointerEnd(e), onPointerCancel: e => this.onTreePointerEnd(e) },
-                    React.createElement("div", { className: "tree-surface" },
+                React.createElement("div", { className: "tree-scroll", ref: el => this.bindTree(el), onPointerDown: e => this.onTreePointerDown(e), onPointerMove: e => this.onTreePointerMove(e), onPointerUp: e => this.onTreePointerEnd(e), onPointerCancel: e => this.onTreePointerEnd(e) },
+                    React.createElement("div", { className: "tree-zoom-frame", style: { width: 2090 * this.state.treeZoom, height: 1680 * this.state.treeZoom } },
+                    React.createElement("div", { className: "tree-surface", style: { transform: `scale(${this.state.treeZoom})`, transformOrigin: "top left" } },
                         React.createElement("div", { className: "tree-surface-grid" }),
                         React.createElement("svg", { className: "skill-lines", viewBox: "0 0 2090 1680", xmlns: "http://www.w3.org/2000/svg", "aria-hidden": "true" }, connections.map(([a, b]) => { const pa = a === 'core' ? [105, 493] : byId.get(a)?.position; const pb = byId.get(b)?.position; if (!pa || !pb)
                             return null; const d = `M ${pa[0]} ${pa[1]} C ${(pa[0] + pb[0]) / 2} ${pa[1]}, ${(pa[0] + pb[0]) / 2} ${pb[1]}, ${pb[0]} ${pb[1]}`; const lit = a === 'core' || g.unlockedSkills.includes(a); const done = g.unlockedSkills.includes(b); return React.createElement("g", { key: a + b },
@@ -789,10 +833,10 @@ class App extends React.Component {
                             React.createElement("span", { className: "node-rim" },
                                 React.createElement("svg", { viewBox: "0 0 48 48", className: "node-symbol", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", dangerouslySetInnerHTML: { __html: s.svg } })),
                             React.createElement("span", { className: "node-title" }, s.title),
-                            React.createElement("small", null, done ? '✓ 解放済み' : `EP ${s.cost}`)); }))),
+                            React.createElement("small", null, done ? '✓ 解放済み' : `EP ${s.cost}`)); })))),
                 React.createElement("div", { className: "tree-hint" },
                     React.createElement(Icon, { name: "info", size: 14 }),
-                    " \u30DE\u30A6\u30B9\u3092\u62BC\u3057\u305F\u307E\u307E\u30C9\u30E9\u30C3\u30B0\uFF0F\u30B9\u30EF\u30A4\u30D7\u3067\u79FB\u52D5 \u00B7 \u30CE\u30FC\u30C9\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u8A73\u7D30\u3092\u8868\u793A")),
+                    " ドラッグ／スワイプで移動 · ピンチまたは＋／−で拡大縮小 · ノードをタップ")),
             React.createElement("aside", { className: "skill-inspector" },
                 React.createElement("div", { className: "inspector-head" },
                     React.createElement("span", { className: "eyebrow" }, "NODE INSPECTOR"),
@@ -892,6 +936,7 @@ class App extends React.Component {
                 " \u00B7 ACTIVITY"),
             React.createElement("h3", null, l.message))))); }
     renderHelp() { return React.createElement("div", { className: "help-content" },
+        React.createElement("button", { type: "button", className: "secondary-button help-restart", onClick: () => this.open("reset") }, "新しく始める"),
         React.createElement("p", null, "\u3042\u306A\u305F\u306FAI\u958B\u767A\u52E2\u529B\u306E\u3072\u3068\u3064\u3002\u7AF6\u5408\u3059\u308BATLAS\u30FBNOVA\u306E\u6210\u9577\u3068\u3001\u4E16\u754C\u306E\u8B66\u6212\u30FB\u898F\u5236\u306E\u4E2D\u3067\u30014\u3064\u306E\u672A\u6765\u306E\u3044\u305A\u308C\u304B\u3092\u76EE\u6307\u3057\u307E\u3059\u3002"),
         React.createElement("div", { className: "help-steps" },
             React.createElement("div", null,
