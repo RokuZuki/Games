@@ -1428,7 +1428,7 @@ class App extends React.Component {
             }else if(!d.pinch&&e.touches.length===1&&this.mapView.zoom>1){const t=e.touches[0],dx=t.clientX-d.startX,dy=t.clientY-d.startY;if(d.moved||Math.hypot(dx,dy)>6){d.moved=true;this.didMapDrag=true;e.preventDefault();this.updateMapView(this.mapView.zoom,d.x+dx,d.y+dy);}}
         };
         const end=e=>{if(!e.touches.length){this.mapGesture=null;window.setTimeout(()=>{this.didMapDrag=false},120)}};
-        this.mapHandlers={touchstart:start,touchmove:move,touchend:end,touchcancel:end,pointerdown:e=>this.onMapPointerDown(e),pointermove:e=>this.onMapPointerMove(e),pointerup:e=>this.onMapPointerEnd(e),pointercancel:e=>this.onMapPointerEnd(e)};
+        this.mapHandlers={wheel:e=>{e.preventDefault();this.changeMapZoom(e.deltaY<0?1.12:1/1.12)},touchstart:start,touchmove:move,touchend:end,touchcancel:end,pointerdown:e=>this.onMapPointerDown(e),pointermove:e=>this.onMapPointerMove(e),pointerup:e=>this.onMapPointerEnd(e),pointercancel:e=>this.onMapPointerEnd(e)};
         for(const [type,fn] of Object.entries(this.mapHandlers))el.addEventListener(type,fn,{passive:false});
     }
     onMapPointerDown(e){if(e.pointerType!=='mouse'||e.button!==0||this.mapView.zoom<=1)return;this.mapMouse={id:e.pointerId,x:e.clientX,y:e.clientY,view:{...this.mapView},moved:false};this.didMapDrag=false;}
@@ -1461,7 +1461,7 @@ class App extends React.Component {
             }
         };
         const end = e => { if(e.touches.length===0){this.treeTouch=null;window.setTimeout(()=>{this.didTreeDrag=false;},100);} };
-        this.treeTouchHandlers={touchstart:start,touchmove:move,touchend:end,touchcancel:end,pointerdown:e=>this.onTreePointerDown(e),pointermove:e=>this.onTreePointerMove(e),pointerup:e=>this.onTreePointerEnd(e),pointercancel:e=>this.onTreePointerEnd(e)};
+        this.treeTouchHandlers={wheel:e=>{e.preventDefault();this.changeTreeZoom(e.deltaY<0?1.12:1/1.12)},touchstart:start,touchmove:move,touchend:end,touchcancel:end,pointerdown:e=>this.onTreePointerDown(e),pointermove:e=>this.onTreePointerMove(e),pointerup:e=>this.onTreePointerEnd(e),pointercancel:e=>this.onTreePointerEnd(e)};
         for(const [type,handler] of Object.entries(this.treeTouchHandlers)) el.addEventListener(type,handler,{passive:false});
     }
     changeTreeZoom(factor) {
