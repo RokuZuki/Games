@@ -704,7 +704,9 @@ window.AIP_EVENT_ENGINE = (() => {
   function chooseEvent(i){if(!game?.pendingEvent)return;
     const pending=game.pendingEvent,event=EVENT_BY_ID.get(pending.eventId);
     if(!event){game.pendingEvent=null;save();render();return;}
+    if(i===-1){game.pendingEvent=null;modal=null;save();render();return;}
     const choice=event.choices[i];if(!choice)return;
+    if((choice.effect?.funds||0)<0 && game.funds+(choice.effect.funds)<0){notify('資金が不足しています',true);return;}
     const before=structuredClone(game);
     applyEffect(choice.effect,pending.regionId);
     ENGINE.finishEvent(game,event,i,pending.regionId);
@@ -1030,7 +1032,7 @@ window.AIP_EVENT_ENGINE = (() => {
     getRoutes:()=>game?ROUTES.map(r=>({...r,data:routeData(r)})):[],
     getOperations:()=>game?actionDef():[],
     getCountry:()=>game?countryFor(game):null,
-    getPendingEvent:()=>{if(!game?.pendingEvent)return null;const p=game.pendingEvent,e=EVENT_BY_ID.get(p.eventId);if(!e)return null;return {id:e.id,category:e.category,title:ENGINE.interpolate(e.title,game,p.regionId),text:ENGINE.interpolate(e.text,game,p.regionId),source:p.source,choices:e.choices.map(c=>({label:ENGINE.interpolate(c.label,game,p.regionId),detail:effectDetail(c),chained:!!c.schedule?.length}))};},
+    getPendingEvent:()=>{if(!game?.pendingEvent)return null;const p=game.pendingEvent,e=EVENT_BY_ID.get(p.eventId);if(!e)return null;return {id:e.id,category:e.category,title:ENGINE.interpolate(e.title,game,p.regionId),text:ENGINE.interpolate(e.text,game,p.regionId),source:p.source,choices:e.choices.map(c=>({label:ENGINE.interpolate(c.label,game,p.regionId),detail:effectDetail(c),affordable:game.funds+(c.effect?.funds||0)>=0,chained:!!c.schedule?.length}))};},
     getDate:()=>game?dateText():null,
     start:(name,type,country)=>{draft={name:String(name),type,country};startGame();},
     selectRegion:(id)=>{if(!game||game.phase!=='playing'||game.pendingEvent)return; if(!game.regions.some(r=>r.id===id))return;selected=id;game.selected=id;save();render();},
@@ -1532,7 +1534,7 @@ class App extends React.Component {
                 React.createElement("button", { type: "button", className: `time-toggle ${paused ? 'is-paused' : 'is-playing'}`, onClick: () => this.togglePlay(), "aria-label": this.state.playing ? '一時停止' : '再生' },
                     React.createElement(Icon, { name: this.state.playing ? 'pause' : 'play', size: 19 }),
                     this.state.playing ? '一時停止' : '再生'),
-                React.createElement("div", { className: "speed-buttons", role: "group", "aria-label": "\u30B2\u30FC\u30E0\u901F\u5EA6" }, [1, 2, 4].map(n => React.createElement("button", { type: "button", key: n, "aria-pressed": this.state.speed === n, className: this.state.speed === n ? 'active' : '', onClick: () => this.setState({ speed: n }) },
+                React.createElement("div", { className: "speed-buttons", role: "group", "aria-label": "\u30B2\u30FC\u30E0\u901F\u5EA6" }, [0.5, 1, 1.5, 2].map(n => React.createElement("button", { type: "button", key: n, "aria-pressed": this.state.speed === n, className: this.state.speed === n ? 'active' : '', onClick: () => this.setState({ speed: n }) },
                     n,
                     "\u00D7")))),
             React.createElement("div", { className: "time-progress" },
@@ -1735,13 +1737,13 @@ class App extends React.Component {
                 " / CRITICAL DECISION"),
             React.createElement("h2", null, ev.title),
             React.createElement("p", null, ev.text),
-            React.createElement("div", { className: "event-choices" }, ev.choices.map((choice, i) => React.createElement("button", { key: i, type: "button", onClick: () => engine.chooseEvent(i) },
+            React.createElement("div", { className: "event-choices" }, ev.choices.map((choice, i) => React.createElement("button", { key: i, type: "button", disabled: !choice.affordable, onClick: () => engine.chooseEvent(i) },
                 React.createElement("span", { className: "choice-num" }, String(i + 1).padStart(2, '0')),
                 React.createElement("span", null,
                     React.createElement("strong", null, choice.label),
                     React.createElement("small", null, choice.detail || '世界の状況に影響します'),
                     choice.chained ? React.createElement("em", null, "\u3053\u306E\u9078\u629E\u306F\u5C06\u6765\u306E\u30A4\u30D9\u30F3\u30C8\u306B\u3064\u306A\u304C\u308A\u307E\u3059") : null),
-                React.createElement(Icon, { name: "arrow-right", size: 19 })))))); }
+                React.createElement(Icon, { name: "arrow-right", size: 19 }))), React.createElement("button", { type: "button", onClick: () => engine.chooseEvent(-1) }, "スキップ"))))); }
     renderEnding(g) { const stats = engine.getStats(); const win = g.ending?.id !== 'failure'; return React.createElement("div", { className: "modal-backdrop ending-backdrop" },
         React.createElement("section", { className: "ending-window panel-glass", role: "dialog", "aria-modal": "true", "aria-label": "\u30B2\u30FC\u30E0\u7D50\u679C" },
             React.createElement("div", { className: `ending-emblem ${win ? 'victory' : 'defeat'}` },
