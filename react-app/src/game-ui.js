@@ -433,7 +433,7 @@ class App extends React.Component {
                 React.createElement("section", { className: "setup-form panel-glass" },
                     React.createElement("div", { className: "setup-form-head" },
                         React.createElement("div", null,
-                            React.createElement("span", { className: "eyebrow" }, "CREATE YOUR INTELLIGENCE"),
+                            React.createElement("span", { className: "eyebrow" }, "SYS:// CREATE_NODE"),
                             React.createElement("h2", null, "AI\u306E\u8D77\u52D5\u8A2D\u5B9A")),
                         React.createElement("span", { className: "setup-index" }, "01 / 03")),
                     React.createElement("label", { className: "form-label", htmlFor: "ai-name" }, "01 \u2014 AI\u306E\u540D\u79F0"),
