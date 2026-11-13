@@ -48,7 +48,7 @@ const client_1 = require("react-dom/client");
 require("./style.css");
 const engine = window.AIPandemic;
 const NUM = (x) => Math.round(x).toLocaleString('ja-JP');
-const MATRIX_GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン012345789<>/{}[]=+';
+const MATRIX_GLYPHS = '0101010101010101101100101010101010011010101010アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワンABCDEF<>/{}[]=+';
 function startMatrixRain(canvas) {
     if (!canvas || !canvas.getContext || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return () => {};
     const ctx = canvas.getContext('2d'); if (!ctx) return () => {};
@@ -71,7 +71,7 @@ function startMatrixRain(canvas) {
             for (let i = 0; i < column.length; i++) {
                 const y = column.y - i * 14; if (y < -14 || y > height + 14) continue;
                 ctx.globalAlpha = i === 0 ? .86 : .07 + .29 * (1 - i / column.length);
-                ctx.fillStyle = i === 0 ? '#d4ffd2' : (i % 3 === 0 ? '#83ff4d' : '#25e76c');
+                ctx.fillStyle = i === 0 ? '#efffc7' : (i % 4 === 0 ? '#b18cff' : '#a8d95b');
                 if (Math.random() < .012) column.symbols[i] = randomGlyph();
                 if (i === 0) { ctx.shadowColor = '#8dff63'; ctx.shadowBlur = 9; } else ctx.shadowBlur = 0;
                 ctx.fillText(column.symbols[i], column.x, y);
@@ -531,6 +531,7 @@ class App extends React.Component {
                             this.renderTimeDock(g),
                             React.createElement("div", { className: "map-frame" },
                                 React.createElement("div", { className: "map-noise", "aria-hidden": "true" }),
+                                React.createElement("div", { className: "matrix-readout", "aria-hidden": "true" }, React.createElement("span", null, "N-LINK // NODE.07"), React.createElement("b", null, "0101 1100")),
                                 React.createElement("div", { className: "map-scroller", ref: el => this.bindMap(el), onClickCapture: e => { if (this.didMapDrag) { e.preventDefault(); e.stopPropagation(); } } }, this.renderMap(g)),
                                 React.createElement("div", { className: "map-scanline", "aria-hidden": "true" }),
                                 React.createElement("canvas", { className: "matrix-rain", ref: this.bindMatrix, "aria-hidden": "true" })),
