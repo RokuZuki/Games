@@ -1326,7 +1326,7 @@ class App extends React.Component {
             const now = performance.now(), elapsed = Math.min(250, now - this.lastClock);
             this.lastClock = now;
             const g = engine.getSnapshot();
-            if (!g || g.phase !== 'playing' || !!g.pendingEvent || !!this.state.modal || !this.state.playing || document.hidden)
+            if (!g || g.phase !== 'playing' || !!g.pendingEvent || !!this.state.modal || this.state.showOperations || !this.state.playing || document.hidden)
                 return;
             engine.tick(elapsed * this.state.speed);
         };
@@ -1695,7 +1695,7 @@ class App extends React.Component {
         React.createElement("strong", null, value),
         React.createElement("div", { className: "stat-undershine" })); }
     renderTimeDock(g) {
-        const paused = !this.state.playing || !!this.state.modal || !!g.pendingEvent;
+        const paused = !this.state.playing || !!this.state.modal || !!g.pendingEvent || this.state.showOperations;
         return React.createElement("div", { className: "time-dock", "aria-label": "\u6642\u9593\u64CD\u4F5C" },
             React.createElement("div", { className: "time-playback" },
                 React.createElement("button", { type: "button", className: `time-toggle ${paused ? 'is-paused' : 'is-playing'}`, onClick: () => this.togglePlay(), "aria-label": this.state.playing ? '一時停止' : '再生' },
