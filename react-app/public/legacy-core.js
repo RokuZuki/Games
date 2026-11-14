@@ -33,7 +33,8 @@
       {label:'成長と事業化を優先する',effect:{funds:Math.round(45*c.mods.income),tech:Math.round(4*c.mods.research),alert:6,regionPresence:Math.round(19*c.mods.spread)}}
     ]
   }));
-  const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS];
+  const KAIROS_EVENT={id:'rival_kairos_emergence',category:'競合AI',title:'速報：新興AI「KAIROS」が世界市場に参入',text:'四地域で同時公開された軽量AIが急速に支持を集めている。協調して安全基準を作るか、資源を集中して市場を守るか。',choices:[{label:'安全基準とAPIを共同公開',effect:{funds:-14,trust:11,alert:-6,openness:4},flags:['kairos_cooperate']},{label:'演算資源を集中して先行',effect:{funds:-16,tech:9,alert:5},flags:['kairos_challenge']}],conditions:[],weight:0,cooldown:99,once:true,minTurn:13,maxTurn:36,onlyScheduled:true,regionScope:'selected'};
+  const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS,KAIROS_EVENT];
   // v0.6 economy rebalance: event effects no longer flood money or EP.
   for(const event of EVENTS){for(const choice of event.choices||[]){const fx=choice.effect||{};
     if(fx.ep>0)fx.ep=Math.max(1,Math.round(fx.ep*.12));
@@ -46,7 +47,7 @@
   const EVENT_BY_ID=new Map(EVENTS.map(e=>[e.id,e]));
   const NEWS_RULES=EVENT_DATA.newsRules;
   const MAX_TURNS=36;
-  const COLORS=['#4bdeed','#ffbd71','#ae8aff'];
+  const COLORS=['#4bdeed','#ffbd71','#ae8aff','#ff6e9f'];
   const REGIONS=[
     {id:'nw',name:'北米西部',short:'北米西部',cx:132,cy:142,pop:8,digital:92,demand:86,regulation:23,adoption:4,presence:[2,5,4],points:'52,100 97,69 157,68 204,97 184,131 167,185 112,208 66,170'},
     {id:'ne',name:'北米東部',short:'北米東部',cx:239,cy:150,pop:10,digital:95,demand:89,regulation:29,adoption:5,presence:[3,6,4],points:'203,94 260,78 302,105 291,153 266,190 207,182 181,147'},
@@ -254,10 +255,10 @@
     const bonuses={business:{funds:66,tech:24,trust:50,ep:3,compute:26,openness:10},research:{funds:49,tech:32,trust:52,ep:5,compute:27,openness:9},open:{funds:48,tech:23,trust:55,ep:3,compute:22,openness:25}};
     const b=bonuses[type]||bonuses.research;
     const country=COUNTRY_BY_ID.get(countryId)||COUNTRY_BY_ID.get('jp');
-    const regions=REGIONS.map(r=>({...r,presence:[0,r.presence[1],r.presence[2]],integration:3,regulation:r.regulation}));
+    const regions=REGIONS.map(r=>({...r,presence:[0,r.presence[1],r.presence[2],0],integration:3,regulation:r.regulation}));
     const home=regions.find(r=>r.id===country.regionId);
-    if(home){home.presence[0]=Math.max(1.5,Math.round(country.homePresence*.045*10)/10);home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
-    return {version:8,day:1,elapsedDays:0,simMs:0,pickups:[],nextPickupId:1,lastFundraiseDay:-120,worldModifier:null,monthBaseline:null,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
+    if(home){home.presence[0]=Math.max(.8,Math.round(country.homePresence*.025*10)/10);home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
+    return {version:9,day:1,elapsedDays:0,simMs:0,pickups:[],nextPickupId:1,lastFundraiseDay:-120,worldModifier:null,monthBaseline:null,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
       turn:1,actions:1,selected:country.regionId,regions,unlockedSkills:[],
       funds:Math.max(30,b.funds+Math.round((country.bonuses.funds||0)*.2)),
       tech:clamp(b.tech+Math.round((country.bonuses.tech||0)*.55)),trust:clamp(b.trust+(country.bonuses.trust||0)),
@@ -269,7 +270,7 @@
   }
   function readSave(){try{
     const parsed=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(!parsed||![3,4,5,6,7,8].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
+    if(!parsed||![3,4,5,6,7,8,9].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
     if(parsed.version===3){
       const oldIds=['tech_model_errors','economy_chip_shortage','politics_treaty','tech_breakthrough','society_labor','rival_atlas_launch','rival_nova_release','economy_power','politics_treaty'];
       if(parsed.pendingEvent&&Number.isInteger(parsed.pendingEvent.id)){
@@ -303,6 +304,8 @@
     parsed.eventRuntime ||= ENGINE.makeRuntime(0x12345678^parsed.turn);
     parsed.activityLog ||= [];
     parsed.feed ||= [];
+    parsed.regions.forEach(r=>{const p=Array.isArray(r.presence)?r.presence:[];r.presence=[0,1,2,3].map(i=>Math.max(0,Number(p[i])||0));if(r.presence[1]+r.presence[2]===0){r.presence[1]=1;r.presence[2]=1;}});
+    parsed.version=9;
     return parsed;
   }catch(e){console.warn('保存データを読み込めませんでした。',e);return null;}}
   function save(silent=true){if(!game)return;try{localStorage.setItem(KEY,JSON.stringify(game));if(!silent)notify('ゲームを保存しました。');}catch(e){if(!silent)notify('ブラウザの保存領域を利用できません。',true);}}
@@ -318,10 +321,11 @@
     const weighted=(fn,denom='pop')=>{const sum=state.regions.reduce((n,r)=>n+r.pop*fn(r),0);return sum/state.regions.reduce((n,r)=>n+r.pop,0);};
     const adoption=weighted(r=>r.adoption);
     const market=state.regions.reduce((n,r)=>n+r.pop*r.adoption,0);
-    const sh= [0,1,2].map(i=>state.regions.reduce((n,r)=>n+r.pop*r.adoption*shares(r)[i]/100,0)/(market||1)*100);
+    const forceCount=Math.max(3,...state.regions.map(r=>r.presence?.length||0));
+    const sh=Array.from({length:forceCount},(_,i)=>state.regions.reduce((n,r)=>n+r.pop*r.adoption*(shares(r)[i]||0)/100,0)/(market||1)*100);
     const integration=weighted(r=>r.integration);
     const dependency=clamp(sh[0]*.54+adoption*.15+state.autonomy*.32+state.infra*.48+integration*.11);
-    const maxOthers=Math.max(sh[1],sh[2]);
+    const maxOthers=Math.max(...sh.slice(1));
     return {worldAdoption:adoption,share:sh[0],sh,dependency,integration,maxOthers,safeAlert:state.alert,project:state.project,governance:['safe_1','safe_2','safe_3','safe_4','safe_5','safe_6'].filter(id=>(state.unlockedSkills||[]).includes(id)).length,...Object.fromEntries(['trust','tech','compute','autonomy','openness','publications'].map(k=>[k,state[k]]))};
   }
   function stats(){return statsFor(game);}
@@ -391,17 +395,18 @@
       compute(){if(!payOperation({funds:21}))return false;game.compute=clamp(game.compute+10);game.infra=clamp(game.infra+5);pushFeed('小規模データセンターへ投資。演算と基盤を強化。');return true;},
       safety(){if(!payOperation({funds:15}))return false;game.trust=clamp(game.trust+Math.round(9*m.safety));game.alert=clamp(game.alert-Math.round(7*m.safety));pushFeed('社会的な安全監査を実施。信頼を獲得しました。');return true;}
     };
-    if(actions[id]?.()){emitStateNews(before);if(checkEnding())return;save();render();}
+    if(actions[id]?.()){emitStateNews(before);if(checkEnding())return true;save();render();return true;}
+    return false;
   }
-  function unlockSkill(id){if(!game||game.phase!=='playing'||(modal&&modal!=='evolution')||game.pendingEvent)return;
-    const skill=SKILL_BY_ID.get(id);if(!skill)return;
-    const problem=skillProblem(skill);if(problem){notify(problem,true);return;}
+  function unlockSkill(id){if(!game||game.phase!=='playing'||(modal&&modal!=='evolution')||game.pendingEvent)return false;
+    const skill=SKILL_BY_ID.get(id);if(!skill)return false;
+    const problem=skillProblem(skill);if(problem){notify(problem,true);return false;}
     const before=structuredClone(game);
     game.ep-=skill.cost;game.unlockedSkills.push(id);
     applyEffect(skill.effect);
     pushFeed(`進化ツリー「${skill.title}」を解放。EP -${skill.cost}（資金があればオペレーションは随時実行可能）。`);
     pushNews(ENGINE.newsObject(game,{id:`skill-${id}`,headline:`${game.name}、新能力「${skill.title}」を獲得`,body:skill.desc,category:'技術進化',severity:'important'}));
-    emitStateNews(before,2);if(checkEnding())return;save();render();notify(`「${skill.title}」を解放しました。`);
+    emitStateNews(before,2);if(checkEnding())return true;save();render();notify(`「${skill.title}」を解放しました。`);return true;
   }
 
   function applyEffect(effect,regionId=null){
@@ -500,6 +505,15 @@
       }
       r.presence[1]+=(.74+r.digital*.004+game.turn*.027)*(1-penalty*.5)/30;
       r.presence[2]+=(.86+(100-r.adoption)*.003+game.turn*.018)*(1-penalty*.5)/30;
+      if(game.eventRuntime.flags.kairosLaunched){
+        const kairosFactor=game.eventRuntime.flags.kairos_cooperate?.76:game.eventRuntime.flags.kairos_challenge?1.22:1;
+        if(r.presence[3]>.01){r.presence[3]+=(.55+r.digital*.003+r.demand*.002+game.turn*.025)*(1-penalty*.32)*worldFactor*kairosFactor/30;}
+        else{
+          const seeded=game.regions.filter(x=>x.presence[3]>.05).length;
+          const diffusion=.0008+seeded*.00048+Math.max(0,game.turn-13)*.000055;
+          if(ENGINE.random(game.eventRuntime)<diffusion){r.presence[3]=.24;pushNews(ENGINE.newsObject(game,{id:`kairos-entry-${r.id}`,headline:`KAIROS、${r.name}で初の導入契約`,body:'新興AIのAPIが地域企業に採用され、市場の勢力図が動き始めた。',category:'競合AI',severity:'important',regionId:r.id}));}
+        }
+      }
       if(r===bestAtlas)r.presence[1]+=(1.8+game.turn*.045)/30;
       if(r===bestNova)r.presence[2]+=(2.2+game.turn*.04)/30;
       r.integration=clamp(r.integration+(.16+(r.adoption/100)*.38)/30);
@@ -521,13 +535,14 @@
     {id:'boom',headline:'世界でAIサービス需要が急伸',body:'AIを導入する企業が増加。数か月にわたり新規利用者の増加が速くなる。',modifier:{id:'boom',label:'AI利用ブーム',monthsLeft:3,growthMultiplier:1.42,incomeMultiplier:1.12},effect:{alert:3}},
     {id:'policy',headline:'各国政府が高度AIへの監督を強化',body:'主要市場の審査が厳格化し、参入コストが上昇する。',regulation:8,effect:{alert:4}},
     {id:'outage',headline:'世界的なクラウド障害でAI利用が停滞',body:'システム停止の影響で社会的な信頼が揺らぎ、設備復旧が進められている。',effect:{trust:-6,compute:-3,alert:4}},
-    {id:'discovery',headline:'AI研究者ネットワークが新手法を発見',body:'新しい学習手法が公開され、プレイヤーの意図とは無関係に能力が改善した。',effect:{tech:4,openness:3}}
+    {id:'discovery',headline:'AI研究者ネットワークが新手法を発見',body:'新しい学習手法が公開され、プレイヤーの意図とは無関係に能力が改善した。',effect:{tech:4,openness:3}},
+    {id:'kairos-growth',headline:'KAIROS、オープン推論市場を急拡大',body:'新興AIの軽量モデルが未開拓市場に広がり、既存AIは対応を迫られている。',rival:3,boost:1.3}
   ];
   function autonomousWorldChange(){
     const roll=()=>ENGINE.random(game.eventRuntime);
     if(game.worldModifier){game.worldModifier.monthsLeft--;if(game.worldModifier.monthsLeft<=0){pushNews(ENGINE.newsObject(game,{id:'shock-ended',headline:`${game.worldModifier.label}の影響が収束`,category:'世界情勢',severity:'normal'}));game.worldModifier=null;}}
     if(roll()>.56)return;
-    const pool=AUTONOMOUS_EVENTS.filter(e=>!e.modifier||!game.worldModifier);
+    const pool=AUTONOMOUS_EVENTS.filter(e=>(!e.modifier||!game.worldModifier)&&(e.rival!==3||game.eventRuntime.flags.kairosLaunched));
     const e=pool[Math.floor(roll()*pool.length)];if(!e)return;
     if(e.effect)applyEffect(e.effect);
     if(e.rival)for(const r of game.regions)r.presence[e.rival]+=e.boost*(.3+roll()*.8);
@@ -535,6 +550,17 @@
     if(e.modifier)game.worldModifier={...e.modifier};
     pushNews(ENGINE.newsObject(game,{id:`autonomous-${e.id}`,headline:e.headline,body:e.body,category:'自律進化・世界情勢',severity:e.modifier?'breaking':'important'}));
     pushFeed(`世界情勢変化：${e.headline}`);
+  }
+  function launchKairos(){
+    const ranked=[...game.regions].sort((a,b)=>(b.digital*.36+b.demand*.39+b.pop*.25-b.regulation*.16)-(a.digital*.36+a.demand*.39+a.pop*.25-a.regulation*.16));
+    const levels=[5.4,4.3,3.6,2.9];
+    ranked.slice(0,levels.length).forEach((r,i)=>{r.presence[3]=levels[i];});
+    const hub=ranked[0];
+    game.eventRuntime.flags.kairosLaunched=true;
+    game.eventRuntime.flags.kairosHubRegion=hub.id;
+    pushFeed(`新興AI「KAIROS」が${ranked.slice(0,4).map(r=>r.name).join('・')}でサービスを開始。市場競争が四つ巴に。`);
+    pushNews(ENGINE.newsObject(game,{id:'kairos-launch',headline:'速報：新興AI「KAIROS」が世界市場に参入',body:`${hub.name}を開発拠点に、四地域でサービスを同時公開。プレイヤーには競争か協調かの判断が迫られている。`,category:'競合AI',severity:'breaking',regionId:hub.id}));
+    return hub.id;
   }
   function simulateMonthBoundary(){
     if(game.phase!=='playing')return;
@@ -562,18 +588,25 @@
     const newStats=stats();
     if(newStats.sh[1]>=61&&newStats.worldAdoption>=48){lose('ATLASが商用市場を制覇','競合AI「ATLAS」が世界市場の過半を掌握しました。');return;}
     if(newStats.sh[2]>=61&&newStats.worldAdoption>=48){lose('NOVAがAIの解放を実現','競合AI「NOVA」のオープンモデルが世界の標準になりました。');return;}
+    if(newStats.sh[3]>=61&&newStats.worldAdoption>=48){lose('KAIROSが新市場を制覇','新興AI「KAIROS」が地域市場を押さえ、世界のAI基盤になりました。');return;}
+    if(game.turn>=13&&!game.eventRuntime.flags.kairosLaunched){
+      const hub=launchKairos(),event=EVENT_BY_ID.get('rival_kairos_emergence');
+      if(event)game.pendingEvent=ENGINE.makePending(event,game,'rival-emergence',hub);
+    }
     if(game.turn>=MAX_TURNS){lose('時間切れ','36か月が経過しました。どの勝利ルートも完成できませんでした。');return;}
-    let due=ENGINE.takeScheduled(game);
-    while(due){const event=EVENT_BY_ID.get(due.eventId);
-      if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);break;}
-      due=ENGINE.takeScheduled(game);
+    if(!game.pendingEvent){
+      let due=ENGINE.takeScheduled(game);
+      while(due){const event=EVENT_BY_ID.get(due.eventId);
+        if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);break;}
+        due=ENGINE.takeScheduled(game);
+      }
+      if(!game.pendingEvent&&game.turn>=7&&game.countryId){const originId=`origin_${game.countryId}`;
+        const originEvent=EVENT_BY_ID.get(originId);
+        if(originEvent&&!game.eventRuntime.history.some(entry=>entry.eventId===originId))game.pendingEvent=ENGINE.makePending(originEvent,game,'origin',game.homeRegionId);
+      }
+      // Deliberate choice events are occasional; uncontrolled events occur independently.
+      if(!game.pendingEvent&&game.turn>=5&&(game.turn-5)%4===0){const event=ENGINE.pickEvent(EVENTS,game,stats());if(event)game.pendingEvent=ENGINE.makePending(event,game);}
     }
-    if(!game.pendingEvent&&game.turn>=7&&game.countryId){const originId=`origin_${game.countryId}`;
-      const originEvent=EVENT_BY_ID.get(originId);
-      if(originEvent&&!game.eventRuntime.history.some(entry=>entry.eventId===originId))game.pendingEvent=ENGINE.makePending(originEvent,game,'origin',game.homeRegionId);
-    }
-    // Deliberate choice events are occasional; uncontrolled events occur independently.
-    if(!game.pendingEvent&&game.turn>=5&&(game.turn-5)%4===0){const event=ENGINE.pickEvent(EVENTS,game,stats());if(event)game.pendingEvent=ENGINE.makePending(event,game);}
     if(game.pendingEvent){const event=EVENT_BY_ID.get(game.pendingEvent.eventId);const title=ENGINE.interpolate(event.title,game,game.pendingEvent.regionId);
       pushNews(ENGINE.newsObject(game,{id:'event-start',headline:`特報：${title}`,body:'進行を停止して方針を選択してください。',category:event.category,severity:'breaking',regionId:game.pendingEvent.regionId,sourceEventId:event.id}));}
     save();render();
