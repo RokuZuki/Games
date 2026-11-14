@@ -342,6 +342,67 @@
 @keyframes share-trace{0%{opacity:0;stroke-dashoffset:80}20%{opacity:.8}100%{opacity:0;stroke-dashoffset:0}}
 @media(max-width:750px){.site-root .action-feedback{top:21%;padding:10px 12px}.site-root .map-share-label{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.site-root .action-feedback,.site-root .feedback-pulse,.site-root .map-share-burst,.site-root .map-share-label,.site-root .map-share-trace{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* Regional priorities, optional objectives, and rival behavior. */
+.site-root .drawer-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.site-root .drawer-tabs button{min-width:0;padding:5px 3px;font-size:clamp(9px,1.15vw,11px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.site-root .regional-challenge{margin:0 14px 10px;padding:10px 11px;border:1px solid #526347;border-left:2px solid var(--matrix-lime);background-image:linear-gradient(90deg,#c7ff7208 1px,transparent 1px),linear-gradient(140deg,#111a17,#0b1116);background-size:18px 100%,auto}
+.site-root .regional-challenge.is-resolved{border-left-color:#76e9c4;border-color:#557265}
+.regional-challenge-head,.regional-challenge-title,.regional-rival-signal,.rival-target-strip,.objective-current-head,.objective-progress-label,.objective-offer-top,.rival-strategy-head,.rival-current-target{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.regional-challenge-head .eyebrow,.regional-rival-signal .eyebrow{font:700 8px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em;color:#98b37a}
+.regional-challenge-head>b{color:#c8ef8d;font:700 10px ui-monospace,SFMono-Regular,Consolas,monospace}
+.regional-challenge-title{justify-content:flex-start;margin-top:5px;color:#e8f3df}
+.regional-challenge-title>span{color:var(--matrix-lime);font-size:15px}
+.regional-challenge-title strong{font-size:12px}
+.regional-challenge p{margin:5px 0 7px;color:#aab7a5;font-size:10px;line-height:1.5}
+.regional-challenge>small{display:block;margin-top:5px;color:#9dad94;font-size:9px;line-height:1.45}
+.regional-rival-signal{justify-content:flex-start;flex-wrap:wrap;margin:0 14px 10px;padding:0 2px}
+.regional-rival-signal>span:not(.eyebrow){padding:4px 6px;border:1px solid color-mix(in srgb,var(--rival-color) 55%,#374439);border-left:2px solid var(--rival-color);color:#d9e4d4;font:700 9px ui-monospace,SFMono-Regular,Consolas,monospace}
+.regional-rival-signal>small{color:#89988b;font-size:9px}
+.site-root .map-selection-readout .map-issue-readout{fill:#c7ff72;font:700 8px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}
+.site-root .operation-briefing small{overflow-wrap:anywhere}
+.site-root .op-choice.regional-match{border-color:#a8d46b;box-shadow:inset 0 0 14px #c7ff7210}
+.site-root .op-choice.regional-match:not(.selected):after{content:'LOCAL';margin-left:auto;color:#d3fb91;font:700 7px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
+.site-root .regional-op-preview{margin-top:8px;padding:7px 8px;border-left:2px solid var(--matrix-lime);background:#c7ff720b;color:#daf3b4;font-size:10px;line-height:1.45}
+.site-root .rival-target-strip{justify-content:flex-start;gap:5px;flex-wrap:wrap;margin:0 9px 8px;padding:5px 7px;border:1px solid #414f43;background:#090f12;color:#aebca7;font-size:8px}
+.rival-target-strip>b{font:700 8px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;color:#91a57d}
+.rival-target-strip>span{padding:3px 4px;border-left:2px solid var(--rival-color);color:#cbd8c3;white-space:nowrap}
+.rival-target-strip>span strong{color:var(--rival-color);font:800 8px ui-monospace,SFMono-Regular,Consolas,monospace}
+.site-root .objectives-panel{padding:9px 9px 13px;overflow:visible}
+.site-root .objectives-panel .section-heading{display:flex;padding:5px 3px 8px}
+.site-root .objectives-panel .section-heading h2{font-size:15px;margin:2px 0 0}
+.site-root .objectives-panel .section-heading .tag-lime{border:1px solid #91b55a;border-left:2px solid var(--matrix-lime);border-radius:0;background:#182117;color:#ddf6ad;font:700 9px ui-monospace,SFMono-Regular,Consolas,monospace}
+.objectives-intro{margin:0 3px 9px;color:#9ba897;font-size:10px;line-height:1.5}
+.objective-empty{display:flex;align-items:center;gap:9px;margin:0 0 9px;padding:9px;border:1px dashed #526249;color:#b8c4b2;font-size:10px;line-height:1.45}
+.objective-empty svg{flex:none;color:#c7ff72}
+.objective-current,.objective-offer{padding:10px;border:1px solid #526347;border-left:2px solid #c7ff72;background-image:linear-gradient(90deg,#c7ff7207 1px,transparent 1px),linear-gradient(140deg,#121a16,#0c1218);background-size:18px 100%,auto}
+.objective-current{margin-bottom:10px}
+.objective-current-head .eyebrow,.objective-offer-top .eyebrow{font:700 8px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;color:#a2bc7d}
+.objective-current-head>b,.objective-offer-top>b{color:#d9ff9d;font:700 9px ui-monospace,SFMono-Regular,Consolas,monospace}
+.objective-current h3,.objective-offer h3{margin:6px 0 4px;color:#edf7e4;font-size:12px}
+.objective-current p,.objective-offer p{margin:0 0 7px;color:#a4b3a0;font-size:10px;line-height:1.5}
+.objective-progress-label{align-items:flex-start;margin-top:6px;flex-wrap:wrap;color:#d4e5c9;font-size:9px;line-height:1.5}
+.objective-progress-label small{color:#9eae98;font-size:9px}
+.objective-abandon{margin-top:8px}
+.objective-offer-grid{display:grid;gap:7px}
+.objective-offer.is-locked{opacity:.58}
+.objective-offer>small{display:block;margin-top:5px;color:#aebc9f;font-size:9px}
+.objective-offer .secondary-button{width:100%;min-height:36px;margin-top:8px;padding:6px;border:1px solid #637750;border-left:2px solid #c7ff72;border-radius:0;background:#121c16;color:#e4f4cf;font-size:10px;font-weight:800;touch-action:manipulation}
+.objective-offer .secondary-button:disabled{color:#9aa394;border-color:#454e43;cursor:not-allowed}
+.objective-all-done{padding:10px;border-left:2px solid #76e9c4;background:#76e9c40d;color:#b5e6d3;font-size:10px;line-height:1.5}
+.site-root .rival-strategy-board{grid-column:1/-1;padding:13px;border:1px solid #4d5b48;border-left:2px solid #c7ff72;background-image:linear-gradient(90deg,#c7ff7208 1px,transparent 1px),linear-gradient(140deg,#111914,#0b1116);background-size:20px 100%,auto}
+.rival-strategy-board .section-heading{padding:0 0 10px}
+.rival-strategy-board .section-heading h3{margin:3px 0 0;color:#e4f2d8;font-size:14px}
+.rival-refresh-label{color:#98a691;font-size:9px}
+.rival-strategy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rival-strategy-card{min-width:0;padding:10px;border:1px solid color-mix(in srgb,var(--rival-color) 46%,#303c36);border-left:2px solid var(--rival-color);background:#080e12}
+.rival-strategy-head b{color:var(--rival-color);font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace}
+.rival-strategy-head span{color:#d4ded0;font-size:9px}
+.rival-strategy-card p{min-height:30px;margin:7px 0;color:#9eac9a;font-size:9px;line-height:1.5}
+.rival-current-target{border-top:1px solid #303d35;padding-top:6px}
+.rival-current-target small{color:#81927e;font-size:8px}
+.rival-current-target strong{color:#e0f2d0;font-size:10px}
+@media(max-width:700px){.rival-strategy-grid{grid-template-columns:1fr}.rival-strategy-card p{min-height:0}.site-root .drawer-tabs button{font-size:9px;letter-spacing:0}.site-root .report-wrap{padding:12px}}
 </style></head><body><div id="legacy-root" hidden></div><div id="root"></div><script>/*
  React v16.0.0
  react.production.min.js
@@ -489,7 +550,13 @@ window.AIP_EVENT_ENGINE = (() => {
     ]
   }));
   const KAIROS_EVENT={id:'rival_kairos_emergence',category:'競合AI',title:'速報：新興AI「KAIROS」が世界市場に参入',text:'四地域で同時公開された軽量AIが急速に支持を集めている。協調して安全基準を作るか、資源を集中して市場を守るか。',choices:[{label:'安全基準とAPIを共同公開',effect:{funds:-14,trust:11,alert:-6,openness:4},flags:['kairos_cooperate']},{label:'演算資源を集中して先行',effect:{funds:-16,tech:9,alert:5},flags:['kairos_challenge']}],conditions:[],weight:0,cooldown:99,once:true,minTurn:13,maxTurn:36,onlyScheduled:true,regionScope:'selected'};
-  const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS,KAIROS_EVENT];
+  const KAIROS_OUTCOME_EVENTS=[
+    {id:'kairos_cooperation_outcome',category:'選択の後日談',title:'共同APIの成果が広がる',text:'{{region}}で互換APIを使った共同サービスが定着。信頼と公開技術への評価が高まった。',automatic:true,effect:{trust:4,alert:-2,openness:3},once:true,onlyScheduled:true},
+    {id:'kairos_challenge_outcome',category:'選択の後日談',title:'KAIROSが価格競争で反撃',text:'{{region}}でKAIROSが低価格攻勢を開始。競争は激化したが、先行投資から新しい技術知見を得た。',automatic:true,effect:{tech:4,funds:-6,alert:2},once:true,onlyScheduled:true}
+  ];
+  KAIROS_EVENT.choices[0].schedule=[{eventId:'kairos_cooperation_outcome',delay:3}];
+  KAIROS_EVENT.choices[1].schedule=[{eventId:'kairos_challenge_outcome',delay:3}];
+  const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS,KAIROS_EVENT,...KAIROS_OUTCOME_EVENTS];
   // v0.6 economy rebalance: event effects no longer flood money or EP.
   for(const event of EVENTS){for(const choice of event.choices||[]){const fx=choice.effect||{};
     if(fx.ep>0)fx.ep=Math.max(1,Math.round(fx.ep*.12));
@@ -503,6 +570,26 @@ window.AIP_EVENT_ENGINE = (() => {
   const NEWS_RULES=EVENT_DATA.newsRules;
   const MAX_TURNS=36;
   const COLORS=['#4bdeed','#ffbd71','#ae8aff','#ff6e9f'];
+  const REGION_CHALLENGE_TYPES={
+    access:{label:'接続・利用機会',symbol:'↗',description:'通信環境や導入支援が不足。普及キャンペーンで利用の入口を広げられる。',operation:'campaign'},
+    trust:{label:'信頼・透明性',symbol:'◉',description:'利用者は説明と安全性を求めている。監査を通じて地域の不安を和らげられる。',operation:'safety'},
+    compute:{label:'演算資源・電力',symbol:'⚡',description:'需要に対して計算基盤が不足。設備投資で現地の導入余地を広げられる。',operation:'compute'},
+    regulation:{label:'規制・説明責任',symbol:'§',description:'導入審査が厳しく、対応の遅れが障壁になっている。安全監査が有効。',operation:'safety'},
+    industry:{label:'産業導入',symbol:'▣',description:'企業はAIに関心を持つ一方、現場への統合が進んでいない。産業導入で需要をつかめる。',operation:'integrate'},
+    language:{label:'言語・地域適合',symbol:'文',description:'利用者の言語や地域慣習に合うサービスが不足。普及キャンペーンが効果的。',operation:'campaign'}
+  };
+  const REGION_CHALLENGE_MAP={nw:'compute',ne:'trust',sa:'access',we:'regulation',ee:'industry',na:'access',af:'access',me:'compute',in:'language',ea:'industry',se:'language',oc:'trust'};
+  const REGION_CHALLENGE_START={nw:64,ne:62,sa:72,we:70,ee:58,na:66,af:76,me:61,in:70,ea:60,se:65,oc:56};
+  const RIVAL_PROFILES=[
+    {id:'atlas',index:1,name:'ATLAS',doctrine:'商用最適化',strategy:'高需要・高デジタル基盤の収益市場へ集中',color:COLORS[1]},
+    {id:'nova',index:2,name:'NOVA',doctrine:'オープン普及',strategy:'AI未導入の大人口地域へ先回り',color:COLORS[2]},
+    {id:'kairos',index:3,name:'KAIROS',doctrine:'省資源展開',strategy:'計算基盤が薄く需要の強い地域を開拓',color:COLORS[3]}
+  ];
+  const OPTIONAL_OBJECTIVES=[
+    {id:'regional_recovery',title:'地域基盤を立て直す',description:'地域課題を2地域で解消する。対象地域の推奨オペレーションを使うと進みます。',duration:9,reward:{funds:18,ep:2}},
+    {id:'trust_charter',title:'信頼の共同憲章',description:'信頼度68以上、警戒度40以下を達成する。',duration:10,reward:{funds:15,ep:2}},
+    {id:'open_standard',title:'オープン標準を確立',description:'オープン化62以上、公開技術2以上を達成する。',duration:11,reward:{funds:14,ep:3}}
+  ];
   const REGIONS=[
     {id:'nw',name:'北米西部',short:'北米西部',cx:132,cy:142,pop:8,digital:92,demand:86,regulation:23,adoption:4,presence:[2,5,4],points:'52,100 97,69 157,68 204,97 184,131 167,185 112,208 66,170'},
     {id:'ne',name:'北米東部',short:'北米東部',cx:239,cy:150,pop:10,digital:95,demand:89,regulation:29,adoption:5,presence:[3,6,4],points:'203,94 260,78 302,105 291,153 266,190 207,182 181,147'},
@@ -710,11 +797,12 @@ window.AIP_EVENT_ENGINE = (() => {
     const bonuses={business:{funds:66,tech:24,trust:50,ep:3,compute:26,openness:10},research:{funds:49,tech:32,trust:52,ep:5,compute:27,openness:9},open:{funds:48,tech:23,trust:55,ep:3,compute:22,openness:25}};
     const b=bonuses[type]||bonuses.research;
     const country=COUNTRY_BY_ID.get(countryId)||COUNTRY_BY_ID.get('jp');
-    const regions=REGIONS.map(r=>({...r,presence:[0,r.presence[1],r.presence[2],0],integration:3,regulation:r.regulation}));
+    const regions=REGIONS.map(r=>({...r,presence:[0,r.presence[1],r.presence[2],0],integration:3,regulation:r.regulation,challengePressure:REGION_CHALLENGE_START[r.id]||55}));
     const home=regions.find(r=>r.id===country.regionId);
     if(home){home.presence[0]=Math.max(.8,Math.round(country.homePresence*.025*10)/10);home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
-    return {version:9,day:1,elapsedDays:0,simMs:0,pickups:[],nextPickupId:1,lastFundraiseDay:-120,worldModifier:null,monthBaseline:null,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
+    return {version:10,day:1,elapsedDays:0,simMs:0,pickups:[],nextPickupId:1,lastFundraiseDay:-120,worldModifier:null,monthBaseline:null,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
       turn:1,actions:1,selected:country.regionId,regions,unlockedSkills:[],
+      activeObjective:null,completedObjectives:[],rivalTargets:{},rivalPlanLastAnnounced:{},
       funds:Math.max(30,b.funds+Math.round((country.bonuses.funds||0)*.2)),
       tech:clamp(b.tech+Math.round((country.bonuses.tech||0)*.55)),trust:clamp(b.trust+(country.bonuses.trust||0)),
       ep:Math.max(2,b.ep+Math.round((country.bonuses.ep||0)*.16)),compute:clamp(b.compute+Math.round((country.bonuses.compute||0)*.55)),
@@ -725,7 +813,7 @@ window.AIP_EVENT_ENGINE = (() => {
   }
   function readSave(){try{
     const parsed=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(!parsed||![3,4,5,6,7,8,9].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
+    if(!parsed||![3,4,5,6,7,8,9,10].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
     if(parsed.version===3){
       const oldIds=['tech_model_errors','economy_chip_shortage','politics_treaty','tech_breakthrough','society_labor','rival_atlas_launch','rival_nova_release','economy_power','politics_treaty'];
       if(parsed.pendingEvent&&Number.isInteger(parsed.pendingEvent.id)){
@@ -759,8 +847,10 @@ window.AIP_EVENT_ENGINE = (() => {
     parsed.eventRuntime ||= ENGINE.makeRuntime(0x12345678^parsed.turn);
     parsed.activityLog ||= [];
     parsed.feed ||= [];
-    parsed.regions.forEach(r=>{const p=Array.isArray(r.presence)?r.presence:[];r.presence=[0,1,2,3].map(i=>Math.max(0,Number(p[i])||0));if(r.presence[1]+r.presence[2]===0){r.presence[1]=1;r.presence[2]=1;}});
-    parsed.version=9;
+    parsed.regions.forEach(r=>{const p=Array.isArray(r.presence)?r.presence:[];r.presence=[0,1,2,3].map(i=>Math.max(0,Number(p[i])||0));if(r.presence[1]+r.presence[2]===0){r.presence[1]=1;r.presence[2]=1;}r.challengePressure=Number.isFinite(r.challengePressure)?clamp(r.challengePressure):REGION_CHALLENGE_START[r.id]||55;});
+    parsed.activeObjective??=null;parsed.completedObjectives||=[];parsed.rivalTargets||={};parsed.rivalPlanLastAnnounced||={};
+    refreshRivalPlans(parsed,false);
+    parsed.version=10;
     return parsed;
   }catch(e){console.warn('保存データを読み込めませんでした。',e);return null;}}
   function save(silent=true){if(!game)return;try{localStorage.setItem(KEY,JSON.stringify(game));if(!silent)notify('ゲームを保存しました。');}catch(e){if(!silent)notify('ブラウザの保存領域を利用できません。',true);}}
@@ -784,9 +874,107 @@ window.AIP_EVENT_ENGINE = (() => {
     return {worldAdoption:adoption,share:sh[0],sh,dependency,integration,maxOthers,safeAlert:state.alert,project:state.project,governance:['safe_1','safe_2','safe_3','safe_4','safe_5','safe_6'].filter(id=>(state.unlockedSkills||[]).includes(id)).length,...Object.fromEntries(['trust','tech','compute','autonomy','openness','publications'].map(k=>[k,state[k]]))};
   }
   function stats(){return statsFor(game);}
+  function regionalIssue(regionId){
+    const region=game?.regions.find(r=>r.id===regionId),typeId=REGION_CHALLENGE_MAP[regionId]||'access',type=REGION_CHALLENGE_TYPES[typeId];
+    const initial=REGION_CHALLENGE_START[regionId]||55,pressure=clamp(Number.isFinite(region?.challengePressure)?region.challengePressure:initial);
+    return {id:typeId,regionId,label:type.label,symbol:type.symbol,description:type.description,recommendedOperation:type.operation,
+      recommendedLabel:({campaign:'地域に普及',integrate:'産業へ導入',compute:'演算設備に投資',safety:'安全監査'})[type.operation],initial,pressure,
+      progress:initial?clamp((initial-pressure)/initial*100):100,resolved:pressure<=0};
+  }
+  function rivalTargetScore(state,profile,region){
+    if(profile.id==='atlas')return region.demand*.43+region.digital*.37+region.pop*.42+region.adoption*.10-region.regulation*.20+region.presence[0]*.04;
+    if(profile.id==='nova')return (100-region.adoption)*.48+region.pop*.52+(100-region.regulation)*.18+(100-region.digital)*.08;
+    const challenge=Boolean(state.eventRuntime?.flags?.kairos_challenge);
+    return (100-region.digital)*.24+region.demand*.36+region.pop*.33+(challenge?region.presence[0]*.62:(100-region.adoption)*.18)-region.regulation*.08;
+  }
+  function refreshRivalPlans(state=game,announce=false){
+    if(!state)return {};
+    const previous=state.rivalTargets||{},next={...(previous||{})};
+    for(const profile of RIVAL_PROFILES){
+      if(profile.id==='kairos'&&!state.eventRuntime?.flags?.kairosLaunched){next.kairos=null;continue;}
+      const target=state.regions.reduce((best,region)=>!best||rivalTargetScore(state,profile,region)>rivalTargetScore(state,profile,best)?region:best,null);
+      next[profile.id]=target?.id||null;
+      if(announce&&state===game&&previous[profile.id]&&previous[profile.id]!==next[profile.id]){
+        const last=state.rivalPlanLastAnnounced?.[profile.id]??-99;
+        if(state.turn-last>=3){
+          const destination=state.regions.find(r=>r.id===next[profile.id]);
+          pushNews(ENGINE.newsObject(state,{id:`rival-plan-${profile.id}`,headline:`${profile.name}が${destination?.name||'新市場'}へ重点投資`,body:`${profile.strategy}。競合の次の一手が見えてきた。`,category:'競合AIの作戦',severity:'important',regionId:destination?.id}));
+          pushFeed(`${profile.name}の重点地域が${destination?.name||'更新'}へ移動。${profile.doctrine}の動きを確認。`);
+          state.rivalPlanLastAnnounced ||= {};state.rivalPlanLastAnnounced[profile.id]=state.turn;
+        }
+      }
+    }
+    state.rivalTargets=next;return next;
+  }
+  function rivalIntel(){
+    if(!game)return [];
+    const targets=game.rivalTargets||refreshRivalPlans(game,false);
+    return RIVAL_PROFILES.filter(p=>p.id!=='kairos'||game.eventRuntime?.flags?.kairosLaunched).map(p=>{
+      const region=game.regions.find(r=>r.id===targets[p.id]);
+      return {id:p.id,name:p.name,index:p.index,doctrine:p.doctrine,strategy:p.strategy,color:p.color,targetRegionId:region?.id||null,targetName:region?.name||'選定中'};
+    });
+  }
+  function objectiveMetrics(def,state=game){
+    if(!def||!state)return {complete:false,progress:0,percent:0,label:''};
+    if(def.id==='regional_recovery'){
+      const count=state.regions.filter(r=>(r.challengePressure??(REGION_CHALLENGE_START[r.id]||55))<=0).length;
+      return {complete:count>=2,progress:count,percent:clamp(count/2*100),label:`課題解消 ${count} / 2 地域`};
+    }
+    if(def.id==='trust_charter'){
+      const trust=clamp(state.trust/68*100),calm=state.alert<=40?100:clamp((100-state.alert)/60*100);
+      return {complete:state.trust>=68&&state.alert<=40,progress:Math.min(trust,calm),percent:Math.min(trust,calm),label:`信頼 ${Math.round(state.trust)} / 68 · 警戒 ${Math.round(state.alert)} / 40以下`};
+    }
+    const openness=clamp(state.openness/62*100),publications=clamp(state.publications/2*100);
+    return {complete:state.openness>=62&&state.publications>=2,progress:Math.min(openness,publications),percent:Math.min(openness,publications),label:`オープン化 ${Math.round(state.openness)} / 62 · 公開技術 ${state.publications} / 2`};
+  }
+  function checkOptionalObjective(){
+    const active=game?.activeObjective;if(!active)return false;
+    const def=OPTIONAL_OBJECTIVES.find(o=>o.id===active.id);if(!def){game.activeObjective=null;return false;}
+    const metrics=objectiveMetrics(def);
+    if(metrics.complete){
+      game.funds+=def.reward.funds;game.ep+=def.reward.ep;game.completedObjectives=[...new Set([...(game.completedObjectives||[]),def.id])];game.activeObjective=null;
+      const headline=`任意目標達成：${def.title}`,body=`報酬として資金 +${def.reward.funds} / 進化EP +${def.reward.ep} を獲得。`;
+      pushFeed(`${headline}。${body}`);pushNews(ENGINE.newsObject(game,{id:`objective-${def.id}`,headline,body,category:'任意目標',severity:'important'}));notify(`${def.title}を達成しました。報酬を獲得。`);return true;
+    }
+    if(game.turn>active.dueTurn){
+      game.activeObjective=null;const headline=`任意目標の期限終了：${def.title}`;
+      pushFeed(`${headline}。失敗によるペナルティはありません。`);pushNews(ENGINE.newsObject(game,{id:`objective-expired-${def.id}`,headline,body:'次の機会に再挑戦できます。',category:'任意目標',severity:'normal'}));return true;
+    }
+    return false;
+  }
+  function getObjectives(){
+    if(!game)return {active:null,offers:[],completed:[]};
+    const completed=game.completedObjectives||[],active=game.activeObjective,activeDef=OPTIONAL_OBJECTIVES.find(o=>o.id===active?.id);
+    const current=activeDef?{...activeDef,...objectiveMetrics(activeDef),acceptedTurn:active.acceptedTurn,dueTurn:active.dueTurn,turnsLeft:Math.max(0,active.dueTurn-game.turn)}:null;
+    return {active:current,offers:OPTIONAL_OBJECTIVES.filter(o=>!completed.includes(o.id)).map(o=>({...o,...objectiveMetrics(o),completed:false,locked:!!active})),completed};
+  }
+  function acceptObjective(id){
+    if(!game||game.phase!=='playing'||game.pendingEvent||game.activeObjective)return false;
+    const def=OPTIONAL_OBJECTIVES.find(o=>o.id===id);if(!def||(game.completedObjectives||[]).includes(id))return false;
+    game.activeObjective={id,acceptedTurn:game.turn,dueTurn:Math.min(MAX_TURNS,game.turn+def.duration)};
+    pushFeed(`任意目標「${def.title}」を受諾。期限はあと${game.activeObjective.dueTurn-game.turn}か月。`);
+    pushNews(ENGINE.newsObject(game,{id:`objective-start-${id}`,headline:`新しい任意目標：${def.title}`,body:`${def.description} 報酬：資金 +${def.reward.funds} / EP +${def.reward.ep}`,category:'任意目標',severity:'important'}));
+    checkOptionalObjective();save();render();return true;
+  }
+  function abandonObjective(){
+    if(!game?.activeObjective)return false;
+    const def=OPTIONAL_OBJECTIVES.find(o=>o.id===game.activeObjective.id);game.activeObjective=null;
+    pushFeed(`任意目標「${def?.title||'目標'}」を解除。ペナルティはありません。`);save();render();return true;
+  }
+  function addressRegionalChallenge(region,operationId){
+    if(!region||!region.challengePressure)return false;
+    const typeId=REGION_CHALLENGE_MAP[region.id],type=REGION_CHALLENGE_TYPES[typeId];
+    if(!type||type.operation!==operationId)return false;
+    const before=clamp(region.challengePressure),reduction=Math.min(before,Math.round(20+before*.12));
+    region.challengePressure=Math.max(0,before-reduction);
+    region.presence[0]+=(1.2+before*.045);region.adoption=clamp(region.adoption+.45+before*.008);region.integration=clamp(region.integration+1.4);
+    const issue=regionalIssue(region.id),message=`${region.name}の「${type.label}」を${reduction}ポイント改善。自AIの現地シェアも伸びた。`;
+    pushFeed(message);pushNews(ENGINE.newsObject(game,{id:`regional-issue-${region.id}`,headline:region.challengePressure<=0?`${region.name}の地域課題を解消`:`${region.name}で地域課題への対応が進展`,body:`${type.label}を推奨オペレーションで改善。${Math.round(region.challengePressure)}ポイントが残っています。`,category:'地域シグナル',severity:region.challengePressure<=0?'important':'normal',regionId:region.id}));
+    return true;
+  }
   function routeData(route){const st=stats();const req=route.requirements.map(([key,target,label,op])=>({key,target,label,value:st[key],done:op==='<='?st[key]<=target:st[key]>=target,progress:op==='<='?(st[key]<=target?100:clamp(target/st[key]*100)) :clamp(st[key]/target*100)}));return {ready:req.every(r=>r.done),progress:req.reduce((n,r)=>n+r.progress,0)/req.length,req};}
   function notify(message,isError=false){document.querySelector('.toast')?.remove();let el=document.createElement('div');el.className='toast'+(isError?' error':'');el.textContent=message;document.body.appendChild(el);clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.remove(),2900);}
-  function startGame(){const name=draft.name.trim();if(!name){notify('AIの名前を入力してください。',true);return;}if(['ATLAS','NOVA'].includes(name.toUpperCase())){notify('競合AIとは異なる名前を指定してください。',true);return;}game=createGame(name,draft.type,draft.country);selected=game.selected;tab='action';newsTab='news';modal=null;save();render();window.scrollTo({top:0,left:0,behavior:'instant'});}
+  function startGame(){const name=draft.name.trim();if(!name){notify('AIの名前を入力してください。',true);return;}if(['ATLAS','NOVA','KAIROS'].includes(name.toUpperCase())){notify('競合AIとは異なる名前を指定してください。',true);return;}game=createGame(name,draft.type,draft.country);refreshRivalPlans(game,false);game.rivalPlanLastAnnounced={atlas:game.turn,nova:game.turn,kairos:game.turn};selected=game.selected;tab='action';newsTab='news';modal=null;save();render();window.scrollTo({top:0,left:0,behavior:'instant'});}
   function lose(title,detail){
     if(game.phase==='ended')return;
     game.ending={id:'failure',title,detail,tone:'bad',turn:game.turn};
@@ -850,7 +1038,7 @@ window.AIP_EVENT_ENGINE = (() => {
       compute(){if(!payOperation({funds:21}))return false;game.compute=clamp(game.compute+10);game.infra=clamp(game.infra+5);pushFeed('小規模データセンターへ投資。演算と基盤を強化。');return true;},
       safety(){if(!payOperation({funds:15}))return false;game.trust=clamp(game.trust+Math.round(9*m.safety));game.alert=clamp(game.alert-Math.round(7*m.safety));pushFeed('社会的な安全監査を実施。信頼を獲得しました。');return true;}
     };
-    if(actions[id]?.()){emitStateNews(before);if(checkEnding())return true;save();render();return true;}
+    if(actions[id]?.()){addressRegionalChallenge(r,id);checkOptionalObjective();refreshRivalPlans(game,true);emitStateNews(before);if(checkEnding())return true;save();render();return true;}
     return false;
   }
   function unlockSkill(id){if(!game||game.phase!=='playing'||(modal&&modal!=='evolution')||game.pendingEvent)return false;
@@ -861,7 +1049,7 @@ window.AIP_EVENT_ENGINE = (() => {
     applyEffect(skill.effect);
     pushFeed(`進化ツリー「${skill.title}」を解放。EP -${skill.cost}（資金があればオペレーションは随時実行可能）。`);
     pushNews(ENGINE.newsObject(game,{id:`skill-${id}`,headline:`${game.name}、新能力「${skill.title}」を獲得`,body:skill.desc,category:'技術進化',severity:'important'}));
-    emitStateNews(before,2);if(checkEnding())return true;save();render();notify(`「${skill.title}」を解放しました。`);return true;
+    checkOptionalObjective();refreshRivalPlans(game,true);emitStateNews(before,2);if(checkEnding())return true;save();render();notify(`「${skill.title}」を解放しました。`);return true;
   }
 
   function applyEffect(effect,regionId=null){
@@ -892,6 +1080,7 @@ window.AIP_EVENT_ENGINE = (() => {
     const before=structuredClone(game);
     applyEffect(choice.effect,pending.regionId);
     ENGINE.finishEvent(game,event,i,pending.regionId);
+    checkOptionalObjective();refreshRivalPlans(game,true);
     const title=ENGINE.interpolate(event.title,game,pending.regionId);
     const label=ENGINE.interpolate(choice.label,game,pending.regionId);
     pushNews(ENGINE.newsObject(game,{id:`event-${event.id}`,headline:`${title}：${label}`,body:effectDetail(choice),category:event.category,severity:'important',regionId:pending.regionId,sourceEventId:event.id}));
@@ -929,12 +1118,10 @@ window.AIP_EVENT_ENGINE = (() => {
   function simulateDailyGrowth(){
     if(game.day===1&&!game.monthBaseline){game.monthBaseline=structuredClone({...game,monthBaseline:null});}
     const country=countryFor(game),mods=country.mods;
-    let bestAtlas=null,bestNova=null,aScore=-Infinity,nScore=-Infinity;
-    for(const r of game.regions){
-      const as=r.digital*.45+r.demand*.28+r.pop*.7-r.regulation*.2+r.adoption*.2;
-      const ns=(100-r.adoption)*.55+r.pop*1.35-r.regulation*.16+r.demand*.2;
-      if(as>aScore){aScore=as;bestAtlas=r;}if(ns>nScore){nScore=ns;bestNova=r;}
-    }
+    const rivalTargets=game.rivalTargets||{};
+    const bestAtlas=game.regions.find(r=>r.id===rivalTargets.atlas)||game.regions[0];
+    const bestNova=game.regions.find(r=>r.id===rivalTargets.nova)||game.regions[1];
+    const bestKairos=game.regions.find(r=>r.id===rivalTargets.kairos)||null;
     for(const r of game.regions){
       const penalty=clamp((r.regulation*mods.regulation+Math.max(0,game.alert-37)*.62)/190,.06,.7);
       const effective=(1-penalty);
@@ -968,6 +1155,7 @@ window.AIP_EVENT_ENGINE = (() => {
           const diffusion=.0008+seeded*.00048+Math.max(0,game.turn-13)*.000055;
           if(ENGINE.random(game.eventRuntime)<diffusion){r.presence[3]=.24;pushNews(ENGINE.newsObject(game,{id:`kairos-entry-${r.id}`,headline:`KAIROS、${r.name}で初の導入契約`,body:'新興AIのAPIが地域企業に採用され、市場の勢力図が動き始めた。',category:'競合AI',severity:'important',regionId:r.id}));}
         }
+        if(r===bestKairos)r.presence[3]+=(2.2+game.turn*.04)*(1-penalty*.24)*kairosFactor/30;
       }
       if(r===bestAtlas)r.presence[1]+=(1.8+game.turn*.045)/30;
       if(r===bestNova)r.presence[2]+=(2.2+game.turn*.04)/30;
@@ -1000,10 +1188,14 @@ window.AIP_EVENT_ENGINE = (() => {
     const pool=AUTONOMOUS_EVENTS.filter(e=>(!e.modifier||!game.worldModifier)&&(e.rival!==3||game.eventRuntime.flags.kairosLaunched));
     const e=pool[Math.floor(roll()*pool.length)];if(!e)return;
     if(e.effect)applyEffect(e.effect);
-    if(e.rival)for(const r of game.regions)r.presence[e.rival]+=e.boost*(.3+roll()*.8);
+    let rivalRegion=null;
+    if(e.rival){const profile=RIVAL_PROFILES.find(p=>p.index===e.rival),targetId=profile&&game.rivalTargets?.[profile.id];rivalRegion=game.regions.find(r=>r.id===targetId)||null;
+      if(rivalRegion)rivalRegion.presence[e.rival]+=e.boost*(.9+roll()*.55);
+      else for(const r of game.regions)r.presence[e.rival]+=e.boost*(.3+roll()*.8);
+    }
     if(e.regulation){const r=game.regions[Math.floor(roll()*game.regions.length)];r.regulation=clamp(r.regulation+e.regulation);}
     if(e.modifier)game.worldModifier={...e.modifier};
-    pushNews(ENGINE.newsObject(game,{id:`autonomous-${e.id}`,headline:e.headline,body:e.body,category:'自律進化・世界情勢',severity:e.modifier?'breaking':'important'}));
+    pushNews(ENGINE.newsObject(game,{id:`autonomous-${e.id}`,headline:e.headline,body:e.body+(rivalRegion?`重点投資先は${rivalRegion.name}。${RIVAL_PROFILES.find(p=>p.index===e.rival)?.doctrine||'競合戦略'}の動きが集中している。`:''),category:'自律進化・世界情勢',severity:e.modifier?'breaking':'important',regionId:rivalRegion?.id||null}));
     pushFeed(`世界情勢変化：${e.headline}`);
   }
   function launchKairos(){
@@ -1013,16 +1205,25 @@ window.AIP_EVENT_ENGINE = (() => {
     const hub=ranked[0];
     game.eventRuntime.flags.kairosLaunched=true;
     game.eventRuntime.flags.kairosHubRegion=hub.id;
+    refreshRivalPlans(game,false);
     pushFeed(`新興AI「KAIROS」が${ranked.slice(0,4).map(r=>r.name).join('・')}でサービスを開始。市場競争が四つ巴に。`);
     pushNews(ENGINE.newsObject(game,{id:'kairos-launch',headline:'速報：新興AI「KAIROS」が世界市場に参入',body:`${hub.name}を開発拠点に、四地域でサービスを同時公開。プレイヤーには競争か協調かの判断が迫られている。`,category:'競合AI',severity:'breaking',regionId:hub.id}));
     return hub.id;
+  }
+  function resolveScheduledOutcome(event,due){
+    const before=structuredClone(game);if(event.effect)applyEffect(event.effect,due.regionId);
+    const rt=game.eventRuntime;rt.lastTriggered[event.id]=game.turn;rt.history.push({eventId:event.id,turn:game.turn,choiceId:'auto',regionId:due.regionId||null});rt.history=rt.history.slice(-150);
+    const title=ENGINE.interpolate(event.title,game,due.regionId),body=ENGINE.interpolate(event.text,game,due.regionId);
+    pushNews(ENGINE.newsObject(game,{id:`outcome-${event.id}`,headline:title,body,category:event.category||'選択の後日談',severity:'important',regionId:due.regionId,sourceEventId:due.sourceEventId||null}));
+    pushFeed(`数か月前の選択が結果に表れた：${title}。${effectDetail({effect:event.effect||{}})}`);
+    checkOptionalObjective();emitStateNews(before,1);
   }
   function simulateMonthBoundary(){
     if(game.phase!=='playing')return;
     const before=game.monthBaseline||structuredClone({...game,monthBaseline:null});
     game.monthBaseline=null;
     const country=countryFor(game),mods=country.mods;
-    game.turn++;game.actions=1;
+    game.turn++;game.actions=1;checkOptionalObjective();
     const st=stats();
     const income=4.2+st.share*.115+game.infra*.075+st.worldAdoption*.037+(game.type==='business'?2.3:0);
     const upkeep=3.6+game.compute*.065+(game.autonomy>70?2:0);
@@ -1036,8 +1237,10 @@ window.AIP_EVENT_ENGINE = (() => {
     }
     const shift=game.autonomy*.029+st.worldAdoption*.029+game.project*1.4-game.trust*.018-game.openness*.008;
     game.alert=clamp(game.alert+shift-.52);
+    checkOptionalObjective();
     if(game.alert>=99)game.alertStreak++;else game.alertStreak=0;
     autonomousWorldChange();
+    refreshRivalPlans(game,true);
     emitStateNews(before,3);
     if(checkEnding())return;
     const newStats=stats();
@@ -1052,7 +1255,10 @@ window.AIP_EVENT_ENGINE = (() => {
     if(!game.pendingEvent){
       let due=ENGINE.takeScheduled(game);
       while(due){const event=EVENT_BY_ID.get(due.eventId);
-        if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);break;}
+        if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){
+          if(event.automatic){resolveScheduledOutcome(event,due);due=ENGINE.takeScheduled(game);continue;}
+          game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);break;
+        }
         due=ENGINE.takeScheduled(game);
       }
       if(!game.pendingEvent&&game.turn>=7&&game.countryId){const originId=`origin_${game.countryId}`;
@@ -1241,6 +1447,11 @@ window.AIP_EVENT_ENGINE = (() => {
     getSkills:()=>SKILL_LANES.map(l=>({...l,skills:l.skills.map(s=>({...s,position:SKILL_TREE_POS[s.id],svg:SKILL_ICONS[s.id]}))})),
     getRoutes:()=>game?ROUTES.map(r=>({...r,data:routeData(r)})):[],
     getOperations:()=>game?actionDef():[],
+    getRegionalIssue:(id)=>game?regionalIssue(id):null,
+    getRivalIntel:()=>rivalIntel(),
+    getObjectives:()=>getObjectives(),
+    acceptObjective:(id)=>acceptObjective(id),
+    abandonObjective:()=>abandonObjective(),
     getCountry:()=>game?countryFor(game):null,
     getPendingEvent:()=>{if(!game?.pendingEvent)return null;const p=game.pendingEvent,e=EVENT_BY_ID.get(p.eventId);if(!e)return null;return {id:e.id,category:e.category,title:ENGINE.interpolate(e.title,game,p.regionId),text:ENGINE.interpolate(e.text,game,p.regionId),source:p.source,choices:e.choices.map(c=>({label:ENGINE.interpolate(c.label,game,p.regionId),detail:effectDetail(c),affordable:game.funds+(c.effect?.funds||0)>=0,chained:!!c.schedule?.length}))};},
     getDate:()=>game?dateText():null,
@@ -1848,8 +2059,10 @@ class App extends React.Component {
                     React.createElement("div", { className: `action-column ${this.state.showOperations ? "is-open" : ""}`, id: "operations-panel", "aria-hidden": !this.state.showOperations },
                         this.state.showOperations ? React.createElement("div", { className: "drawer-tabs", role: "group", "aria-label": "地域と操作" },
                             React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "actions", onClick: () => this.setState({ drawerTab: "actions" }) }, "オペレーション"),
-                            React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "region", onClick: () => this.setState({ drawerTab: "region" }) }, "地域情報")) : null,
+                            React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "region", onClick: () => this.setState({ drawerTab: "region" }) }, "地域情報"),
+                            React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "objectives", onClick: () => this.setState({ drawerTab: "objectives" }) }, "任意目標")) : null,
                         this.state.showOperations && this.state.drawerTab === "region" ? this.renderRegion(g, selected) : null,
+                        this.state.showOperations && this.state.drawerTab === "objectives" ? this.renderObjectives(g) : null,
                         this.state.showOperations && this.state.drawerTab === "actions" ? this.renderOperations(g, selected) : null)),
                 React.createElement("nav", { className: "map-controls", "aria-label": "ゲームメニュー" },
                     React.createElement("button", { type: "button", onClick: () => this.setState({ showOperations: !this.state.showOperations }), "aria-expanded": this.state.showOperations, "aria-controls": "operations-panel" }, this.state.showOperations ? "✕ 閉じる" : "◎ 地域・行動"),
@@ -1903,6 +2116,7 @@ class App extends React.Component {
         const mapPath = GEO.landPath;
         const selected = g.selected;
         const selectedRegion = g.regions.find(r => r.id === selected) || g.regions[0];
+        const selectedIssue = engine.getRegionalIssue(selectedRegion.id);
         const chosenLines = g.regions.filter(r => r.id !== selected && r.adoption > 2).sort((a, b) => b.adoption - a.adoption).slice(0, 8);
         const [selectedX, selectedY] = MAP_ANCHORS[selectedRegion.id];
         return React.createElement("svg", { className: "world-svg", style: { transform: `translate(${this.state.mapX}px, ${this.state.mapY}px) scale(${this.state.mapZoom})` }, xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 960 500", role: "group", "aria-label": "AI\u4E16\u754C\u52E2\u529B\u30DE\u30C3\u30D7\u3002\u7740\u8272\u3055\u308C\u305F\u9678\u5730\u304B\u4E38\u3044\u5730\u57DF\u30DE\u30FC\u30AB\u30FC\u3092\u62BC\u3057\u3066\u5730\u57DF\u3092\u9078\u629E\u3067\u304D\u307E\u3059" },
@@ -1971,17 +2185,21 @@ class App extends React.Component {
                     React.createElement("title", null, `${ep ? '進化ポイント' : '資金'} +${drop.amount} · タップして回収（期限あり）`));
             }),
             React.createElement("g", { pointerEvents: "none", className: "map-selection-readout" },
-                React.createElement("rect", { x: "684", y: "12", width: "258", height: "35", rx: "7" }),
+                React.createElement("rect", { x: "684", y: "12", width: "258", height: "55", rx: "7" }),
                 React.createElement("text", { x: "700", y: "34" },
                     "SELECTED  /  ",
                     selectedRegion.short,
                     "  ·  自AIシェア ",
-                    pct(shares(selectedRegion)[0]))),
+                    pct(shares(selectedRegion)[0])),
+                React.createElement("text", { x: "700", y: "52", className: "map-issue-readout" },
+                    selectedIssue.resolved ? 'LOCAL SIGNAL / 課題を解消' : `LOCAL SIGNAL / ${selectedIssue.label} · 残り ${Math.round(selectedIssue.pressure)}`)),
             React.createElement("text", { x: "29", y: "468", className: "map-corner-label", pointerEvents: "none" }, "PLAYER AI SHARE \u2022 12 REGIONS"),
             React.createElement("text", { x: "892", y: "468", textAnchor: "end", className: "map-corner-label", pointerEvents: "none" }, "2030 \u2022 DIGITAL WORLD"));
     }
     renderRegion(g, r) {
         const sh = shares(r);
+        const issue = engine.getRegionalIssue(r.id);
+        const localRivals = engine.getRivalIntel().filter(ai => ai.targetRegionId === r.id);
         const names = [g.name, 'ATLAS', 'NOVA', 'KAIROS'].slice(0, g.eventRuntime?.flags?.kairosLaunched ? 4 : 3);
         const leader = sh.slice(0, names.length).indexOf(Math.max(...sh.slice(0, names.length)));
         return React.createElement("section", { className: "region-panel panel-glass" },
@@ -2002,6 +2220,19 @@ class App extends React.Component {
             React.createElement("small", { className: "market-caption" }, "シェアはAI利用者内の比率です。地域全体への普及率は上の「AI普及率」です。"),
             React.createElement("div", { className: "region-legend" },
                 names.map((name, i) => React.createElement("span", { key: name }, React.createElement("i", { style: { background: aiColors[i] } }), `${name === g.name ? '自AI' : name} ${Math.round(sh[i] || 0)}%`))),
+            React.createElement("div", { className: `regional-challenge ${issue.resolved ? 'is-resolved' : ''}` },
+                React.createElement("div", { className: "regional-challenge-head" },
+                    React.createElement("span", { className: "eyebrow" }, "LOCAL SIGNAL / 地域課題"),
+                    React.createElement("b", null, issue.resolved ? '対応済み' : `残り ${Math.round(issue.pressure)}`)),
+                React.createElement("div", { className: "regional-challenge-title" },
+                    React.createElement("span", null, issue.symbol),
+                    React.createElement("strong", null, issue.label)),
+                React.createElement("p", null, issue.description),
+                React.createElement(Progress, { value: issue.progress, color: issue.resolved ? '#76e9c4' : '#c4ff68', height: 5 }),
+                React.createElement("small", null, issue.resolved ? 'この地域のボトルネックは解消しています。' : `推奨オペレーション：${issue.recommendedLabel} · 改善度 ${Math.round(issue.progress)}%`)),
+            React.createElement("div", { className: "regional-rival-signal" },
+                React.createElement("span", { className: "eyebrow" }, "RIVAL ACTIVITY"),
+                localRivals.length ? localRivals.map(ai => React.createElement("span", { key: ai.id, style: { '--rival-color': ai.color }, title: ai.strategy }, `${ai.name} / ${ai.doctrine}`)) : React.createElement("small", null, "現在この地域を重点対象にしている競合はいません。")),
             React.createElement("div", { className: "region-statline" },
                 React.createElement("span", null, "デジタル基盤 ", React.createElement("b", null, r.digital)),
                 React.createElement("span", null, "技術需要 ", React.createElement("b", null, r.demand)),
@@ -2010,6 +2241,8 @@ class App extends React.Component {
     renderOperations(g, r) {
         const ops = engine.getOperations();
         const op = ops.find(o => o.id === this.state.selectedOp) || ops[0];
+        const issue = engine.getRegionalIssue(r.id);
+        const rivals = engine.getRivalIntel();
         const localShares = shares(r);
         const leader = localShares.indexOf(Math.max(...localShares));
         const aiNames = [g.name, 'ATLAS', 'NOVA', 'KAIROS'];
@@ -2017,6 +2250,7 @@ class App extends React.Component {
         const price = { campaign: g.type === 'open' ? 12 : 17, integrate: 21, research: 13, compute: 21, safety: 15, fundraise: 0 };
         const fundCooldown = op?.id === 'fundraise' && g.elapsedDays - g.lastFundraiseDay < 90;
         const available = !fundCooldown && g.funds >= (price[op?.id] || 0);
+        const addressesIssue = issue.recommendedOperation === op?.id && issue.pressure > 0;
         return React.createElement("section", { className: "operation-panel panel-glass" },
             React.createElement("div", { className: "section-heading" },
                 React.createElement("div", null,
@@ -2026,18 +2260,23 @@ class App extends React.Component {
             React.createElement("button", { type: "button", className: "operation-target-trigger", "aria-expanded": this.state.regionPickerOpen, "aria-controls": "operation-region-picker", onClick: () => this.setState(s => ({ regionPickerOpen: !s.regionPickerOpen })) }, React.createElement("span", { className: "operation-target-label" }, "TARGET NODE"), React.createElement("b", null, r.name), React.createElement(Icon, { name: this.state.regionPickerOpen ? "chevron-left" : "chevron-right", size: 16 })), this.state.regionPickerOpen ? React.createElement("div", { id: "operation-region-picker", className: "operation-region-picker", role: "group", "aria-label": "操作対象地域" }, g.regions.map(region => React.createElement("button", { type: "button", key: region.id, className: "operation-region-choice "+(region.id === r.id ? "active" : ""), "aria-pressed": region.id === r.id, "aria-label": region.name+"を操作対象に選択", onClick: () => this.selectRegion(region.id) }, region.name))) : null, React.createElement("div", { className: "operation-briefing", "aria-live": "polite" },
                 React.createElement("strong", null, `${r.name}市場：${aiNames[leader] || 'AI未導入'}が${Math.round(localShares[leader] || 0)}%で先行`),
                 React.createElement("span", null, `AI普及 ${pct(r.adoption)} · 自AI ${pct(localShares[0] || 0)}`),
+                React.createElement("small", null, issue.resolved ? '地域課題は解消済み' : `地域課題：${issue.label} · 推奨 ${issue.recommendedLabel}`),
                 React.createElement("small", null, kairosStatus)),
-            React.createElement("div", { className: "op-grid" }, ops.map(o => React.createElement("button", { type: "button", key: o.id, className: `op-choice ${this.state.selectedOp === o.id ? 'selected' : ''}`, onClick: () => this.setState({ selectedOp: o.id }), 'aria-pressed': this.state.selectedOp === o.id, disabled: false },
+            React.createElement("div", { className: "rival-target-strip", "aria-label": "競合AIの重点地域" },
+                React.createElement("b", null, "競合の作戦"),
+                rivals.map(ai => React.createElement("span", { key: ai.id, style: { '--rival-color': ai.color }, title: `${ai.doctrine}：${ai.strategy}` }, React.createElement("strong", null, ai.name), ` → ${ai.targetName}`))),
+            React.createElement("div", { className: "op-grid" }, ops.map(o => React.createElement("button", { type: "button", key: o.id, className: `op-choice ${this.state.selectedOp === o.id ? 'selected' : ''} ${issue.recommendedOperation === o.id && issue.pressure > 0 ? 'regional-match' : ''}`, onClick: () => this.setState({ selectedOp: o.id }), 'aria-pressed': this.state.selectedOp === o.id, title: issue.recommendedOperation === o.id && issue.pressure > 0 ? `${issue.label}に有効な地域対応` : undefined, disabled: false },
                 React.createElement("span", { className: "op-icon" },
                     React.createElement(Icon, { name: opIcons[o.id] || 'sparkles', size: 21 })),
                 React.createElement("span", null,
                     React.createElement("b", null, o.title),
-                    React.createElement("small", null, o.cost))))),
+                    React.createElement("small", null, `${o.cost}${issue.recommendedOperation === o.id && issue.pressure > 0 ? ' · 地域に有効' : ''}`))))),
             op ? React.createElement("div", { className: "op-inspector" },
                 React.createElement("div", { className: "op-inspector-head" },
                     React.createElement("strong", null, op.title),
                     React.createElement("span", null, op.cost)),
                 React.createElement("p", null, op.desc),
+                addressesIssue ? React.createElement("div", { className: "regional-op-preview" }, `地域課題「${issue.label}」を改善し、現地シェアと導入度も押し上げます。`) : null,
                 React.createElement("div", { className: "op-effect" },
                     React.createElement(Icon, { name: "sparkles", size: 15 }),
                     " ",
@@ -2046,6 +2285,40 @@ class App extends React.Component {
                 fundCooldown ? `資金調達まで残り${90 - (g.elapsedDays - g.lastFundraiseDay)}日` : !available ? '資金が不足しています' : `${op?.title || '行動'} を実行`,
                 " ",
                 React.createElement(Icon, { name: "arrow-right", size: 18 })));
+    }
+    renderObjectives(g) {
+        const data = engine.getObjectives();
+        const active = data.active;
+        return React.createElement("section", { className: "objectives-panel panel-glass" },
+            React.createElement("div", { className: "section-heading" },
+                React.createElement("div", null,
+                    React.createElement("span", { className: "eyebrow" }, "OPTIONAL DIRECTIVES / SIDE OBJECTIVES"),
+                    React.createElement("h2", null, "任意目標")),
+                React.createElement(Tag, { tone: "lime" }, "達成は任意")),
+            React.createElement("p", { className: "objectives-intro" }, "目標を受諾すると期限が始まります。見送っても失敗ペナルティはありません。"),
+            active ? React.createElement("article", { className: "objective-current" },
+                React.createElement("div", { className: "objective-current-head" },
+                    React.createElement("span", { className: "eyebrow" }, "ACTIVE DIRECTIVE / IN PROGRESS"),
+                    React.createElement("b", null, `残り ${active.turnsLeft} か月`)),
+                React.createElement("h3", null, active.title),
+                React.createElement("p", null, active.description),
+                React.createElement(Progress, { value: active.percent, color: '#c4ff68', height: 7 }),
+                React.createElement("div", { className: "objective-progress-label" },
+                    React.createElement("span", null, active.label),
+                    React.createElement("small", null, `報酬：資金 +${active.reward.funds} / EP +${active.reward.ep}`)),
+                React.createElement("button", { type: "button", className: "secondary-button objective-abandon", onClick: () => engine.abandonObjective() }, "この目標を解除")) : React.createElement("div", { className: "objective-empty" },
+                React.createElement(Icon, { name: "target", size: 22 }),
+                React.createElement("span", null, "受諾中の目標はありません。下から任意の目標を選んでください。")),
+            React.createElement("div", { className: "objective-offer-grid" }, data.offers.map(objective => React.createElement("article", { key: objective.id, className: `objective-offer ${objective.locked ? 'is-locked' : ''}` },
+                React.createElement("div", { className: "objective-offer-top" },
+                    React.createElement("span", { className: "eyebrow" }, `OPTIONAL CONTRACT / ${String(objective.duration).padStart(2, '0')} MONTHS`),
+                    React.createElement("b", null, `+${objective.reward.ep} EP`)),
+                React.createElement("h3", null, objective.title),
+                React.createElement("p", null, objective.description),
+                React.createElement(Progress, { value: objective.percent, height: 4 }),
+                React.createElement("small", null, objective.label),
+                React.createElement("button", { type: "button", className: "secondary-button", disabled: objective.locked, onClick: () => engine.acceptObjective(objective.id) }, objective.locked ? '別の目標に挑戦中' : '目標を受諾')))),
+            !data.offers.length ? React.createElement("p", { className: "objective-all-done" }, `完了した目標 ${data.completed.length} / ${data.completed.length}。このシミュレーションの任意目標はすべて達成済みです。`) : null);
     }
     renderEvent() { const ev = engine.getPendingEvent(); if (!ev)
         return null; return React.createElement("div", { className: "modal-backdrop event-backdrop" },
@@ -2067,7 +2340,7 @@ class App extends React.Component {
                     React.createElement("strong", null, choice.label),
                     React.createElement("small", null, choice.detail || '世界の状況に影響します'),
                     !choice.affordable ? React.createElement("em", null, "資金が不足しています") : null,
-                    choice.chained ? React.createElement("em", null, "\u3053\u306E\u9078\u629E\u306F\u5C06\u6765\u306E\u30A4\u30D9\u30F3\u30C8\u306B\u3064\u306A\u304C\u308A\u307E\u3059") : null),
+                    choice.chained ? React.createElement("em", null, "\u6570\u304B\u6708\u5F8C\u306B\u9078\u629E\u306E\u7D50\u679C\u304C\u4E16\u754C\u30CB\u30E5\u30FC\u30B9\u3078\u5C4A\u304D\u307E\u3059") : null),
                 React.createElement(Icon, { name: "arrow-right", size: 19 }))), React.createElement("button", { className: "event-skip", type: "button", onClick: () => engine.chooseEvent(-1) }, "イベントをスキップ")))); }
     renderEnding(g) { const stats = engine.getStats(); const win = g.ending?.id !== 'failure'; return React.createElement("div", { className: "modal-backdrop ending-backdrop" },
         React.createElement("section", { className: "ending-window panel-glass", role: "dialog", "aria-modal": "true", "aria-label": "\u30B2\u30FC\u30E0\u7D50\u679C" },
@@ -2228,7 +2501,7 @@ class App extends React.Component {
                 req.key === 'safeAlert' ? '≤' : '/',
                 " ",
                 req.target))))))); }
-    renderReport(g) { const st = engine.getStats(); const rows = [['世界普及率', st.worldAdoption, '%'], ['自AIシェア', st.share, '%'], ['ATLAS シェア', st.sh[1], '%'], ['NOVA シェア', st.sh[2], '%'], ...(g.eventRuntime?.flags?.kairosLaunched ? [['KAIROS シェア', st.sh[3] || 0, '%']] : []), ['AI依存度', st.dependency, '%'], ['信頼度', g.trust, ''], ['技術力', g.tech, ''], ['演算能力', g.compute, ''], ['自律性', g.autonomy, ''], ['オープン化', g.openness, '']]; return React.createElement("div", { className: "report-wrap" },
+    renderReport(g) { const st = engine.getStats(); const rivals = engine.getRivalIntel(); const rows = [['世界普及率', st.worldAdoption, '%'], ['自AIシェア', st.share, '%'], ['ATLAS シェア', st.sh[1], '%'], ['NOVA シェア', st.sh[2], '%'], ...(g.eventRuntime?.flags?.kairosLaunched ? [['KAIROS シェア', st.sh[3] || 0, '%']] : []), ['AI依存度', st.dependency, '%'], ['信頼度', g.trust, ''], ['技術力', g.tech, ''], ['演算能力', g.compute, ''], ['自律性', g.autonomy, ''], ['オープン化', g.openness, '']]; return React.createElement("div", { className: "report-wrap" },
         React.createElement("div", { className: "report-big" },
             React.createElement("span", { className: "eyebrow" }, "CURRENT INTELLIGENCE LEVEL"),
             React.createElement("div", null,
@@ -2243,7 +2516,21 @@ class App extends React.Component {
                 React.createElement("strong", null,
                     Math.round(val),
                     unit)),
-            React.createElement(Progress, { value: val, color: label.includes('ATLAS') ? colors.atlas : label.includes('NOVA') ? colors.nova : label.includes('KAIROS') ? colors.kairos : colors.player }))))); }
+            React.createElement(Progress, { value: val, color: label.includes('ATLAS') ? colors.atlas : label.includes('NOVA') ? colors.nova : label.includes('KAIROS') ? colors.kairos : colors.player })))),
+        React.createElement("section", { className: "rival-strategy-board" },
+            React.createElement("div", { className: "section-heading" },
+                React.createElement("div", null,
+                    React.createElement("span", { className: "eyebrow" }, "COMPETITOR INTELLIGENCE / 次の一手"),
+                    React.createElement("h3", null, "競合AIの作戦傾向")),
+                React.createElement("span", { className: "rival-refresh-label" }, "月ごとに標的を更新")),
+            React.createElement("div", { className: "rival-strategy-grid" }, rivals.map(ai => React.createElement("article", { key: ai.id, className: "rival-strategy-card", style: { '--rival-color': ai.color } },
+                React.createElement("div", { className: "rival-strategy-head" },
+                    React.createElement("b", null, ai.name),
+                    React.createElement("span", null, ai.doctrine)),
+                React.createElement("p", null, ai.strategy),
+                React.createElement("div", { className: "rival-current-target" },
+                    React.createElement("small", null, "重点地域"),
+                    React.createElement("strong", null, ai.targetName))))))); }
     renderNews(g) { return React.createElement("div", { className: "news-full" },
         React.createElement("div", { className: "news-tabs" },
             React.createElement("button", { className: this.state.newsTab === 'news' ? 'active' : '', onClick: () => this.setState({ newsTab: 'news' }) }, "\u4E16\u754C\u30CB\u30E5\u30FC\u30B9"),
@@ -2282,7 +2569,11 @@ class App extends React.Component {
             React.createElement("div", null,
                 React.createElement(Icon, { name: "target" }),
                 React.createElement("strong", null, "04 / \u4E16\u754C\u306E\u5909\u5316\u306B\u9069\u5FDC\u3059\u308B"),
-                React.createElement("p", null, "12ヶ月後にKAIROSが4地域から参入。安全基準を共同化して競争を抑えるか、資源を集中して技術競争に出るかを選びます。自律進化や供給不足など他の世界イベントにも対応。")))); }
+                React.createElement("p", null, "12ヶ月後にKAIROSが4地域から参入。安全基準を共同化して競争を抑えるか、資源を集中して技術競争に出るかを選びます。自律進化や供給不足など他の世界イベントにも対応。")),
+            React.createElement("div", null,
+                React.createElement(Icon, { name: "signal" }),
+                React.createElement("strong", null, "05 / 地域課題と任意目標"),
+                React.createElement("p", null, "地域情報でボトルネックと推奨オペレーションを確認。地域・行動の「任意目標」タブでは契約を受諾できます。競合AIの作戦と標的は世界レポートから確認できます。")))); }
     renderReset() { return React.createElement("div", { className: "reset-content" },
         React.createElement("div", { className: "reset-icon" },
             React.createElement(Icon, { name: "refresh", size: 36 })),

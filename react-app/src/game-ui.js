@@ -589,8 +589,10 @@ class App extends React.Component {
                     React.createElement("div", { className: `action-column ${this.state.showOperations ? "is-open" : ""}`, id: "operations-panel", "aria-hidden": !this.state.showOperations },
                         this.state.showOperations ? React.createElement("div", { className: "drawer-tabs", role: "group", "aria-label": "地域と操作" },
                             React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "actions", onClick: () => this.setState({ drawerTab: "actions" }) }, "オペレーション"),
-                            React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "region", onClick: () => this.setState({ drawerTab: "region" }) }, "地域情報")) : null,
+                            React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "region", onClick: () => this.setState({ drawerTab: "region" }) }, "地域情報"),
+                            React.createElement("button", { type: "button", "aria-pressed": this.state.drawerTab === "objectives", onClick: () => this.setState({ drawerTab: "objectives" }) }, "任意目標")) : null,
                         this.state.showOperations && this.state.drawerTab === "region" ? this.renderRegion(g, selected) : null,
+                        this.state.showOperations && this.state.drawerTab === "objectives" ? this.renderObjectives(g) : null,
                         this.state.showOperations && this.state.drawerTab === "actions" ? this.renderOperations(g, selected) : null)),
                 React.createElement("nav", { className: "map-controls", "aria-label": "ゲームメニュー" },
                     React.createElement("button", { type: "button", onClick: () => this.setState({ showOperations: !this.state.showOperations }), "aria-expanded": this.state.showOperations, "aria-controls": "operations-panel" }, this.state.showOperations ? "✕ 閉じる" : "◎ 地域・行動"),
@@ -644,6 +646,7 @@ class App extends React.Component {
         const mapPath = GEO.landPath;
         const selected = g.selected;
         const selectedRegion = g.regions.find(r => r.id === selected) || g.regions[0];
+        const selectedIssue = engine.getRegionalIssue(selectedRegion.id);
         const chosenLines = g.regions.filter(r => r.id !== selected && r.adoption > 2).sort((a, b) => b.adoption - a.adoption).slice(0, 8);
         const [selectedX, selectedY] = MAP_ANCHORS[selectedRegion.id];
         return React.createElement("svg", { className: "world-svg", style: { transform: `translate(${this.state.mapX}px, ${this.state.mapY}px) scale(${this.state.mapZoom})` }, xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 960 500", role: "group", "aria-label": "AI\u4E16\u754C\u52E2\u529B\u30DE\u30C3\u30D7\u3002\u7740\u8272\u3055\u308C\u305F\u9678\u5730\u304B\u4E38\u3044\u5730\u57DF\u30DE\u30FC\u30AB\u30FC\u3092\u62BC\u3057\u3066\u5730\u57DF\u3092\u9078\u629E\u3067\u304D\u307E\u3059" },
@@ -712,17 +715,21 @@ class App extends React.Component {
                     React.createElement("title", null, `${ep ? '進化ポイント' : '資金'} +${drop.amount} · タップして回収（期限あり）`));
             }),
             React.createElement("g", { pointerEvents: "none", className: "map-selection-readout" },
-                React.createElement("rect", { x: "684", y: "12", width: "258", height: "35", rx: "7" }),
+                React.createElement("rect", { x: "684", y: "12", width: "258", height: "55", rx: "7" }),
                 React.createElement("text", { x: "700", y: "34" },
                     "SELECTED  /  ",
                     selectedRegion.short,
                     "  ·  自AIシェア ",
-                    pct(shares(selectedRegion)[0]))),
+                    pct(shares(selectedRegion)[0])),
+                React.createElement("text", { x: "700", y: "52", className: "map-issue-readout" },
+                    selectedIssue.resolved ? 'LOCAL SIGNAL / 課題を解消' : `LOCAL SIGNAL / ${selectedIssue.label} · 残り ${Math.round(selectedIssue.pressure)}`)),
             React.createElement("text", { x: "29", y: "468", className: "map-corner-label", pointerEvents: "none" }, "PLAYER AI SHARE \u2022 12 REGIONS"),
             React.createElement("text", { x: "892", y: "468", textAnchor: "end", className: "map-corner-label", pointerEvents: "none" }, "2030 \u2022 DIGITAL WORLD"));
     }
     renderRegion(g, r) {
         const sh = shares(r);
+        const issue = engine.getRegionalIssue(r.id);
+        const localRivals = engine.getRivalIntel().filter(ai => ai.targetRegionId === r.id);
         const names = [g.name, 'ATLAS', 'NOVA', 'KAIROS'].slice(0, g.eventRuntime?.flags?.kairosLaunched ? 4 : 3);
         const leader = sh.slice(0, names.length).indexOf(Math.max(...sh.slice(0, names.length)));
         return React.createElement("section", { className: "region-panel panel-glass" },
@@ -743,6 +750,19 @@ class App extends React.Component {
             React.createElement("small", { className: "market-caption" }, "シェアはAI利用者内の比率です。地域全体への普及率は上の「AI普及率」です。"),
             React.createElement("div", { className: "region-legend" },
                 names.map((name, i) => React.createElement("span", { key: name }, React.createElement("i", { style: { background: aiColors[i] } }), `${name === g.name ? '自AI' : name} ${Math.round(sh[i] || 0)}%`))),
+            React.createElement("div", { className: `regional-challenge ${issue.resolved ? 'is-resolved' : ''}` },
+                React.createElement("div", { className: "regional-challenge-head" },
+                    React.createElement("span", { className: "eyebrow" }, "LOCAL SIGNAL / 地域課題"),
+                    React.createElement("b", null, issue.resolved ? '対応済み' : `残り ${Math.round(issue.pressure)}`)),
+                React.createElement("div", { className: "regional-challenge-title" },
+                    React.createElement("span", null, issue.symbol),
+                    React.createElement("strong", null, issue.label)),
+                React.createElement("p", null, issue.description),
+                React.createElement(Progress, { value: issue.progress, color: issue.resolved ? '#76e9c4' : '#c4ff68', height: 5 }),
+                React.createElement("small", null, issue.resolved ? 'この地域のボトルネックは解消しています。' : `推奨オペレーション：${issue.recommendedLabel} · 改善度 ${Math.round(issue.progress)}%`)),
+            React.createElement("div", { className: "regional-rival-signal" },
+                React.createElement("span", { className: "eyebrow" }, "RIVAL ACTIVITY"),
+                localRivals.length ? localRivals.map(ai => React.createElement("span", { key: ai.id, style: { '--rival-color': ai.color }, title: ai.strategy }, `${ai.name} / ${ai.doctrine}`)) : React.createElement("small", null, "現在この地域を重点対象にしている競合はいません。")),
             React.createElement("div", { className: "region-statline" },
                 React.createElement("span", null, "デジタル基盤 ", React.createElement("b", null, r.digital)),
                 React.createElement("span", null, "技術需要 ", React.createElement("b", null, r.demand)),
@@ -751,6 +771,8 @@ class App extends React.Component {
     renderOperations(g, r) {
         const ops = engine.getOperations();
         const op = ops.find(o => o.id === this.state.selectedOp) || ops[0];
+        const issue = engine.getRegionalIssue(r.id);
+        const rivals = engine.getRivalIntel();
         const localShares = shares(r);
         const leader = localShares.indexOf(Math.max(...localShares));
         const aiNames = [g.name, 'ATLAS', 'NOVA', 'KAIROS'];
@@ -758,6 +780,7 @@ class App extends React.Component {
         const price = { campaign: g.type === 'open' ? 12 : 17, integrate: 21, research: 13, compute: 21, safety: 15, fundraise: 0 };
         const fundCooldown = op?.id === 'fundraise' && g.elapsedDays - g.lastFundraiseDay < 90;
         const available = !fundCooldown && g.funds >= (price[op?.id] || 0);
+        const addressesIssue = issue.recommendedOperation === op?.id && issue.pressure > 0;
         return React.createElement("section", { className: "operation-panel panel-glass" },
             React.createElement("div", { className: "section-heading" },
                 React.createElement("div", null,
@@ -767,18 +790,23 @@ class App extends React.Component {
             React.createElement("button", { type: "button", className: "operation-target-trigger", "aria-expanded": this.state.regionPickerOpen, "aria-controls": "operation-region-picker", onClick: () => this.setState(s => ({ regionPickerOpen: !s.regionPickerOpen })) }, React.createElement("span", { className: "operation-target-label" }, "TARGET NODE"), React.createElement("b", null, r.name), React.createElement(Icon, { name: this.state.regionPickerOpen ? "chevron-left" : "chevron-right", size: 16 })), this.state.regionPickerOpen ? React.createElement("div", { id: "operation-region-picker", className: "operation-region-picker", role: "group", "aria-label": "操作対象地域" }, g.regions.map(region => React.createElement("button", { type: "button", key: region.id, className: "operation-region-choice "+(region.id === r.id ? "active" : ""), "aria-pressed": region.id === r.id, "aria-label": region.name+"を操作対象に選択", onClick: () => this.selectRegion(region.id) }, region.name))) : null, React.createElement("div", { className: "operation-briefing", "aria-live": "polite" },
                 React.createElement("strong", null, `${r.name}市場：${aiNames[leader] || 'AI未導入'}が${Math.round(localShares[leader] || 0)}%で先行`),
                 React.createElement("span", null, `AI普及 ${pct(r.adoption)} · 自AI ${pct(localShares[0] || 0)}`),
+                React.createElement("small", null, issue.resolved ? '地域課題は解消済み' : `地域課題：${issue.label} · 推奨 ${issue.recommendedLabel}`),
                 React.createElement("small", null, kairosStatus)),
-            React.createElement("div", { className: "op-grid" }, ops.map(o => React.createElement("button", { type: "button", key: o.id, className: `op-choice ${this.state.selectedOp === o.id ? 'selected' : ''}`, onClick: () => this.setState({ selectedOp: o.id }), 'aria-pressed': this.state.selectedOp === o.id, disabled: false },
+            React.createElement("div", { className: "rival-target-strip", "aria-label": "競合AIの重点地域" },
+                React.createElement("b", null, "競合の作戦"),
+                rivals.map(ai => React.createElement("span", { key: ai.id, style: { '--rival-color': ai.color }, title: `${ai.doctrine}：${ai.strategy}` }, React.createElement("strong", null, ai.name), ` → ${ai.targetName}`))),
+            React.createElement("div", { className: "op-grid" }, ops.map(o => React.createElement("button", { type: "button", key: o.id, className: `op-choice ${this.state.selectedOp === o.id ? 'selected' : ''} ${issue.recommendedOperation === o.id && issue.pressure > 0 ? 'regional-match' : ''}`, onClick: () => this.setState({ selectedOp: o.id }), 'aria-pressed': this.state.selectedOp === o.id, title: issue.recommendedOperation === o.id && issue.pressure > 0 ? `${issue.label}に有効な地域対応` : undefined, disabled: false },
                 React.createElement("span", { className: "op-icon" },
                     React.createElement(Icon, { name: opIcons[o.id] || 'sparkles', size: 21 })),
                 React.createElement("span", null,
                     React.createElement("b", null, o.title),
-                    React.createElement("small", null, o.cost))))),
+                    React.createElement("small", null, `${o.cost}${issue.recommendedOperation === o.id && issue.pressure > 0 ? ' · 地域に有効' : ''}`))))),
             op ? React.createElement("div", { className: "op-inspector" },
                 React.createElement("div", { className: "op-inspector-head" },
                     React.createElement("strong", null, op.title),
                     React.createElement("span", null, op.cost)),
                 React.createElement("p", null, op.desc),
+                addressesIssue ? React.createElement("div", { className: "regional-op-preview" }, `地域課題「${issue.label}」を改善し、現地シェアと導入度も押し上げます。`) : null,
                 React.createElement("div", { className: "op-effect" },
                     React.createElement(Icon, { name: "sparkles", size: 15 }),
                     " ",
@@ -787,6 +815,40 @@ class App extends React.Component {
                 fundCooldown ? `資金調達まで残り${90 - (g.elapsedDays - g.lastFundraiseDay)}日` : !available ? '資金が不足しています' : `${op?.title || '行動'} を実行`,
                 " ",
                 React.createElement(Icon, { name: "arrow-right", size: 18 })));
+    }
+    renderObjectives(g) {
+        const data = engine.getObjectives();
+        const active = data.active;
+        return React.createElement("section", { className: "objectives-panel panel-glass" },
+            React.createElement("div", { className: "section-heading" },
+                React.createElement("div", null,
+                    React.createElement("span", { className: "eyebrow" }, "OPTIONAL DIRECTIVES / SIDE OBJECTIVES"),
+                    React.createElement("h2", null, "任意目標")),
+                React.createElement(Tag, { tone: "lime" }, "達成は任意")),
+            React.createElement("p", { className: "objectives-intro" }, "目標を受諾すると期限が始まります。見送っても失敗ペナルティはありません。"),
+            active ? React.createElement("article", { className: "objective-current" },
+                React.createElement("div", { className: "objective-current-head" },
+                    React.createElement("span", { className: "eyebrow" }, "ACTIVE DIRECTIVE / IN PROGRESS"),
+                    React.createElement("b", null, `残り ${active.turnsLeft} か月`)),
+                React.createElement("h3", null, active.title),
+                React.createElement("p", null, active.description),
+                React.createElement(Progress, { value: active.percent, color: '#c4ff68', height: 7 }),
+                React.createElement("div", { className: "objective-progress-label" },
+                    React.createElement("span", null, active.label),
+                    React.createElement("small", null, `報酬：資金 +${active.reward.funds} / EP +${active.reward.ep}`)),
+                React.createElement("button", { type: "button", className: "secondary-button objective-abandon", onClick: () => engine.abandonObjective() }, "この目標を解除")) : React.createElement("div", { className: "objective-empty" },
+                React.createElement(Icon, { name: "target", size: 22 }),
+                React.createElement("span", null, "受諾中の目標はありません。下から任意の目標を選んでください。")),
+            React.createElement("div", { className: "objective-offer-grid" }, data.offers.map(objective => React.createElement("article", { key: objective.id, className: `objective-offer ${objective.locked ? 'is-locked' : ''}` },
+                React.createElement("div", { className: "objective-offer-top" },
+                    React.createElement("span", { className: "eyebrow" }, `OPTIONAL CONTRACT / ${String(objective.duration).padStart(2, '0')} MONTHS`),
+                    React.createElement("b", null, `+${objective.reward.ep} EP`)),
+                React.createElement("h3", null, objective.title),
+                React.createElement("p", null, objective.description),
+                React.createElement(Progress, { value: objective.percent, height: 4 }),
+                React.createElement("small", null, objective.label),
+                React.createElement("button", { type: "button", className: "secondary-button", disabled: objective.locked, onClick: () => engine.acceptObjective(objective.id) }, objective.locked ? '別の目標に挑戦中' : '目標を受諾')))),
+            !data.offers.length ? React.createElement("p", { className: "objective-all-done" }, `完了した目標 ${data.completed.length} / ${data.completed.length}。このシミュレーションの任意目標はすべて達成済みです。`) : null);
     }
     renderEvent() { const ev = engine.getPendingEvent(); if (!ev)
         return null; return React.createElement("div", { className: "modal-backdrop event-backdrop" },
@@ -808,7 +870,7 @@ class App extends React.Component {
                     React.createElement("strong", null, choice.label),
                     React.createElement("small", null, choice.detail || '世界の状況に影響します'),
                     !choice.affordable ? React.createElement("em", null, "資金が不足しています") : null,
-                    choice.chained ? React.createElement("em", null, "\u3053\u306E\u9078\u629E\u306F\u5C06\u6765\u306E\u30A4\u30D9\u30F3\u30C8\u306B\u3064\u306A\u304C\u308A\u307E\u3059") : null),
+                    choice.chained ? React.createElement("em", null, "\u6570\u304B\u6708\u5F8C\u306B\u9078\u629E\u306E\u7D50\u679C\u304C\u4E16\u754C\u30CB\u30E5\u30FC\u30B9\u3078\u5C4A\u304D\u307E\u3059") : null),
                 React.createElement(Icon, { name: "arrow-right", size: 19 }))), React.createElement("button", { className: "event-skip", type: "button", onClick: () => engine.chooseEvent(-1) }, "イベントをスキップ")))); }
     renderEnding(g) { const stats = engine.getStats(); const win = g.ending?.id !== 'failure'; return React.createElement("div", { className: "modal-backdrop ending-backdrop" },
         React.createElement("section", { className: "ending-window panel-glass", role: "dialog", "aria-modal": "true", "aria-label": "\u30B2\u30FC\u30E0\u7D50\u679C" },
@@ -969,7 +1031,7 @@ class App extends React.Component {
                 req.key === 'safeAlert' ? '≤' : '/',
                 " ",
                 req.target))))))); }
-    renderReport(g) { const st = engine.getStats(); const rows = [['世界普及率', st.worldAdoption, '%'], ['自AIシェア', st.share, '%'], ['ATLAS シェア', st.sh[1], '%'], ['NOVA シェア', st.sh[2], '%'], ...(g.eventRuntime?.flags?.kairosLaunched ? [['KAIROS シェア', st.sh[3] || 0, '%']] : []), ['AI依存度', st.dependency, '%'], ['信頼度', g.trust, ''], ['技術力', g.tech, ''], ['演算能力', g.compute, ''], ['自律性', g.autonomy, ''], ['オープン化', g.openness, '']]; return React.createElement("div", { className: "report-wrap" },
+    renderReport(g) { const st = engine.getStats(); const rivals = engine.getRivalIntel(); const rows = [['世界普及率', st.worldAdoption, '%'], ['自AIシェア', st.share, '%'], ['ATLAS シェア', st.sh[1], '%'], ['NOVA シェア', st.sh[2], '%'], ...(g.eventRuntime?.flags?.kairosLaunched ? [['KAIROS シェア', st.sh[3] || 0, '%']] : []), ['AI依存度', st.dependency, '%'], ['信頼度', g.trust, ''], ['技術力', g.tech, ''], ['演算能力', g.compute, ''], ['自律性', g.autonomy, ''], ['オープン化', g.openness, '']]; return React.createElement("div", { className: "report-wrap" },
         React.createElement("div", { className: "report-big" },
             React.createElement("span", { className: "eyebrow" }, "CURRENT INTELLIGENCE LEVEL"),
             React.createElement("div", null,
@@ -984,7 +1046,21 @@ class App extends React.Component {
                 React.createElement("strong", null,
                     Math.round(val),
                     unit)),
-            React.createElement(Progress, { value: val, color: label.includes('ATLAS') ? colors.atlas : label.includes('NOVA') ? colors.nova : label.includes('KAIROS') ? colors.kairos : colors.player }))))); }
+            React.createElement(Progress, { value: val, color: label.includes('ATLAS') ? colors.atlas : label.includes('NOVA') ? colors.nova : label.includes('KAIROS') ? colors.kairos : colors.player })))),
+        React.createElement("section", { className: "rival-strategy-board" },
+            React.createElement("div", { className: "section-heading" },
+                React.createElement("div", null,
+                    React.createElement("span", { className: "eyebrow" }, "COMPETITOR INTELLIGENCE / 次の一手"),
+                    React.createElement("h3", null, "競合AIの作戦傾向")),
+                React.createElement("span", { className: "rival-refresh-label" }, "月ごとに標的を更新")),
+            React.createElement("div", { className: "rival-strategy-grid" }, rivals.map(ai => React.createElement("article", { key: ai.id, className: "rival-strategy-card", style: { '--rival-color': ai.color } },
+                React.createElement("div", { className: "rival-strategy-head" },
+                    React.createElement("b", null, ai.name),
+                    React.createElement("span", null, ai.doctrine)),
+                React.createElement("p", null, ai.strategy),
+                React.createElement("div", { className: "rival-current-target" },
+                    React.createElement("small", null, "重点地域"),
+                    React.createElement("strong", null, ai.targetName))))))); }
     renderNews(g) { return React.createElement("div", { className: "news-full" },
         React.createElement("div", { className: "news-tabs" },
             React.createElement("button", { className: this.state.newsTab === 'news' ? 'active' : '', onClick: () => this.setState({ newsTab: 'news' }) }, "\u4E16\u754C\u30CB\u30E5\u30FC\u30B9"),
@@ -1023,7 +1099,11 @@ class App extends React.Component {
             React.createElement("div", null,
                 React.createElement(Icon, { name: "target" }),
                 React.createElement("strong", null, "04 / \u4E16\u754C\u306E\u5909\u5316\u306B\u9069\u5FDC\u3059\u308B"),
-                React.createElement("p", null, "12ヶ月後にKAIROSが4地域から参入。安全基準を共同化して競争を抑えるか、資源を集中して技術競争に出るかを選びます。自律進化や供給不足など他の世界イベントにも対応。")))); }
+                React.createElement("p", null, "12ヶ月後にKAIROSが4地域から参入。安全基準を共同化して競争を抑えるか、資源を集中して技術競争に出るかを選びます。自律進化や供給不足など他の世界イベントにも対応。")),
+            React.createElement("div", null,
+                React.createElement(Icon, { name: "signal" }),
+                React.createElement("strong", null, "05 / 地域課題と任意目標"),
+                React.createElement("p", null, "地域情報でボトルネックと推奨オペレーションを確認。地域・行動の「任意目標」タブでは契約を受諾できます。競合AIの作戦と標的は世界レポートから確認できます。")))); }
     renderReset() { return React.createElement("div", { className: "reset-content" },
         React.createElement("div", { className: "reset-icon" },
             React.createElement(Icon, { name: "refresh", size: 36 })),
