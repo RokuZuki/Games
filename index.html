@@ -309,53 +309,39 @@
 /* Preserve spacing after the console skin overrides */
 .site-root .region-statline{padding:10px 14px;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}.site-root .region-statline span{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0;line-height:1.4;white-space:normal}.site-root .region-statline b{font-size:11px;white-space:nowrap}
 
-/* Keep operation action labels readable in active and unavailable states. */
-.site-root .game-shell .action-column .primary-button{color:#10150a}
-.site-root .game-shell .action-column .primary-button:disabled{opacity:1;color:#d8e5d1;background:#26332a;background-image:none!important;border:1px solid #64715a;box-shadow:inset 0 0 14px #0008;text-shadow:none}
-.site-root .game-shell .action-column .primary-button:disabled:after{display:none}
-
-/* Keep the complete operation sheet visible between the HUD and fixed controls. */
+/* Keep the region/actions switch above the intelligence HUD on touch screens. */
+.game-shell .action-column{z-index:48}
 @media(max-width:750px){
- .game-shell .action-column{top:58px;bottom:97px;height:auto;max-height:none;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
- .game-shell .op-choice{min-height:44px;padding:7px 8px;gap:7px}
- .game-shell .op-icon{width:26px;height:26px}
- .game-shell .op-choice b{font-size:10px}
- .game-shell .op-inspector{margin:8px 9px;padding:9px}
- .game-shell .op-inspector p{margin-top:4px}
- .game-shell .op-effect{margin-top:6px}
+ .game-shell .action-column{z-index:48;top:clamp(128px,20dvh,180px);bottom:97px;height:auto;max-height:none}
+ .game-shell .drawer-tabs{position:sticky;top:0;z-index:12;padding:7px 2px 8px;background:#0c1113;box-shadow:0 5px 12px #020708a8}
+ .game-shell .drawer-tabs button{position:relative;z-index:13;min-height:46px;pointer-events:auto;touch-action:manipulation;color:#e3ecd8}
+ .game-shell .operation-briefing{margin:0 8px 7px;padding:6px 8px}
 }
-@media(max-width:750px) and (max-height:500px){
- .game-shell .action-column{top:58px;bottom:100px;height:auto;max-height:none}
-}
-
-
-/* Make every successful action legible and show player share expanding on the map. */
-.game-shell .region-territory{transition:fill-opacity .55s ease,stroke-width .45s ease}
-.game-shell .map-share-arc{transition:stroke-dasharray .65s ease,stroke-dashoffset .65s ease;filter:drop-shadow(0 0 2px currentColor)}
-.map-share-wave{fill:none;stroke:var(--matrix-lime,#c7ff72);stroke-width:2;opacity:0;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;animation:map-share-wave 1.05s cubic-bezier(.15,.7,.2,1) forwards}
-.map-share-gain-label{fill:#d7ff8b;font:800 13px ui-monospace,SFMono-Regular,Consolas,monospace;paint-order:stroke;stroke:#050b12;stroke-width:3px;filter:drop-shadow(0 0 6px #c7ff72b3);animation:map-share-label 1.7s ease-out both}
-.map-share-trace{stroke-width:2.2;stroke-dasharray:0 100;stroke-opacity:.95;filter:drop-shadow(0 0 5px var(--matrix-lime,#c7ff72));animation:map-share-trace 1.25s ease-out both}
-.site-root .map-region.share-growing .map-marker-core{transform-box:fill-box;transform-origin:center;animation:map-share-core .52s ease-out 2}
-.site-root .operation-panel.operation-completed .op-choice.selected{animation:operation-success-card .72s ease-out}
-.site-root .operation-panel.operation-completed .operation-execute{animation:operation-success-button .72s ease-out}
-.site-root .skill-node.just-unlocked{z-index:8;animation:skill-unlock-pop .8s cubic-bezier(.2,.8,.25,1.2) 2}
-.site-root .skill-node.just-unlocked .node-rim{border-color:var(--matrix-lime)!important;box-shadow:0 0 0 2px #c7ff7245,0 0 28px #c7ff72a8!important}
-.game-feedback{position:fixed;z-index:180;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));width:min(360px,calc(100vw - 28px));display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid #82975f;background:linear-gradient(115deg,#101a16f5,#0a1119f5 70%,#15101cf5);box-shadow:0 0 0 1px #c7ff7215,0 0 24px #c7ff7224,0 12px 35px #000b;color:#f0f8e8;transform:translateX(-50%);pointer-events:none;animation:game-feedback-enter .25s ease-out both}
-.game-feedback:before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:2px;background:var(--matrix-lime);box-shadow:0 0 12px var(--matrix-lime)}
-.feedback-mark{width:27px;height:27px;display:grid;place-items:center;flex:none;border:1px solid #96ba68;color:var(--matrix-lime);font-weight:900}
-.feedback-copy{display:grid;gap:3px;min-width:0}
-.feedback-copy b{font-size:12px}
-.feedback-copy small{font-size:10px;color:#b0c2aa;line-height:1.35}
-.game-feedback.evolution{border-color:#9b86dd;box-shadow:0 0 0 1px #a994ed22,0 0 24px #a994ed2a,0 12px 35px #000b}
-.game-feedback.evolution .feedback-mark{border-color:#aa96ff;color:#c5afff}
-@keyframes map-share-wave{0%{transform:scale(.65);opacity:.88}65%{opacity:.45}100%{transform:scale(3.2);opacity:0}}
-@keyframes map-share-label{0%{opacity:0;transform:translateY(8px) scale(.85)}18%{opacity:1}76%{opacity:1;transform:translateY(-9px) scale(1)}100%{opacity:0;transform:translateY(-19px) scale(1)}}
-@keyframes map-share-trace{0%{stroke-dasharray:0 100;stroke-opacity:.95;opacity:.9}75%{stroke-dasharray:80 100;stroke-opacity:.8;opacity:.75}100%{stroke-dasharray:100 100;stroke-opacity:0;opacity:0}}
-@keyframes map-share-core{0%,100%{transform:scale(1)}45%{transform:scale(1.55);filter:drop-shadow(0 0 9px var(--matrix-lime))}}
-@keyframes operation-success-card{0%,100%{box-shadow:inset 0 0 0 transparent}40%{box-shadow:inset 0 0 25px #c7ff7233,0 0 17px #c7ff7255}}
-@keyframes operation-success-button{0%,100%{filter:brightness(1);box-shadow:0 0 0 #c7ff7200}45%{filter:brightness(1.35);box-shadow:0 0 24px #c7ff7288}}
-@keyframes skill-unlock-pop{0%,100%{filter:brightness(1)}38%{filter:brightness(1.9) drop-shadow(0 0 16px #c7ff72);transform:scale(1.14)}68%{filter:brightness(1.35);transform:scale(.96)}}
-@keyframes game-feedback-enter{from{opacity:0;transform:translate(-50%,10px) scale(.97)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@media(max-width:750px) and (max-height:500px){.game-shell .action-column{top:58px;bottom:98px;height:auto;max-height:none}.game-shell .drawer-tabs{top:0}}
+.site-root .operation-briefing{display:grid;gap:3px;margin:0 9px 8px;padding:7px 9px;border:1px solid #4f6146;border-left:2px solid var(--matrix-lime);background:linear-gradient(90deg,#c7ff7208 1px,transparent 1px),#101719;background-size:18px 100%,auto;color:#dce8d3;font-size:10px;line-height:1.35}
+.site-root .operation-briefing strong{color:#e3ffad;font-size:11px}
+.site-root .operation-briefing span{color:#c1d0bd}
+.site-root .operation-briefing small,.site-root .market-caption{color:#91a48c;font-size:9px;line-height:1.45}
+.site-root .market-caption{display:block;margin:5px 0 8px}
+.site-root .region-legend{display:flex;flex-wrap:wrap;gap:6px 12px}
+.site-root .event-skip{display:block;width:100%;min-height:44px;margin-top:9px;border:1px solid #53634a;border-left:2px solid #9a80da;background:#101719;color:#d8e0d1;font-weight:800;text-align:left;padding:10px 14px;touch-action:manipulation}
+.site-root .event-choices button:disabled{opacity:.45;cursor:not-allowed}
+.site-root .action-feedback{position:fixed;z-index:95;top:15%;left:50%;display:grid;grid-template-columns:14px minmax(0,1fr);gap:2px 10px;min-width:min(300px,calc(100vw - 32px));max-width:min(420px,calc(100vw - 32px));padding:13px 16px;border:1px solid #a7d46b;border-left:3px solid var(--matrix-lime);background:linear-gradient(90deg,#c7ff720e 1px,transparent 1px),linear-gradient(120deg,#111a17f5,#090f13f5);background-size:20px 100%,auto;color:#edf8dd;box-shadow:0 0 28px #baff5530;transform:translateX(-50%);animation:feedback-enter .24s cubic-bezier(.2,.8,.2,1) both;pointer-events:none}
+.site-root .action-feedback .feedback-pulse{grid-row:span 2;align-self:center;width:10px;height:10px;border-radius:50%;background:var(--matrix-lime);box-shadow:0 0 16px var(--matrix-lime);animation:feedback-pulse 1s ease-in-out infinite}
+.site-root .action-feedback strong{font-size:14px;letter-spacing:.03em}
+.site-root .action-feedback small{color:#aebda5;font-size:10px}
+.site-root .action-feedback.evolution{border-left-color:#b28cff;box-shadow:0 0 28px #a479ff35}
+.site-root .action-feedback.evolution .feedback-pulse{background:#b28cff;box-shadow:0 0 16px #b28cff}
+@keyframes feedback-enter{from{opacity:0;transform:translate(-50%,-8px) scale(.96)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes feedback-pulse{50%{opacity:.35;transform:scale(.7)}}
+.site-root .map-share-burst{fill:none;stroke:var(--share-color);stroke-width:2.2;filter:drop-shadow(0 0 5px var(--share-color));transform-box:fill-box;transform-origin:center;animation:share-ripple 1.7s ease-out both}
+.site-root .map-share-label{fill:var(--share-color);font:800 12px ui-monospace,SFMono-Regular,Consolas,monospace;paint-order:stroke;stroke:#06111a;stroke-width:4px;filter:drop-shadow(0 0 5px var(--share-color));animation:share-label-rise 1.7s ease-out both}
+.site-root .map-share-trace{stroke:var(--share-color);stroke-width:2;stroke-dasharray:9 8;stroke-linecap:square;filter:drop-shadow(0 0 4px var(--share-color));animation:share-trace 1.65s ease-out both}
+@keyframes share-ripple{0%{opacity:0;transform:scale(.45)}18%{opacity:.95}100%{opacity:0;transform:scale(2.35)}}
+@keyframes share-label-rise{0%{opacity:0;transform:translateY(8px)}18%,70%{opacity:1}100%{opacity:0;transform:translateY(-17px)}}
+@keyframes share-trace{0%{opacity:0;stroke-dashoffset:80}20%{opacity:.8}100%{opacity:0;stroke-dashoffset:0}}
+@media(max-width:750px){.site-root .action-feedback{top:21%;padding:10px 12px}.site-root .map-share-label{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.site-root .action-feedback,.site-root .feedback-pulse,.site-root .map-share-burst,.site-root .map-share-label,.site-root .map-share-trace{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style></head><body><div id="legacy-root" hidden></div><div id="root"></div><script>/*
  React v16.0.0
  react.production.min.js
@@ -502,7 +488,8 @@ window.AIP_EVENT_ENGINE = (() => {
       {label:'成長と事業化を優先する',effect:{funds:Math.round(45*c.mods.income),tech:Math.round(4*c.mods.research),alert:6,regionPresence:Math.round(19*c.mods.spread)}}
     ]
   }));
-  const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS];
+  const KAIROS_EVENT={id:'rival_kairos_emergence',category:'競合AI',title:'速報：新興AI「KAIROS」が世界市場に参入',text:'四地域で同時公開された軽量AIが急速に支持を集めている。協調して安全基準を作るか、資源を集中して市場を守るか。',choices:[{label:'安全基準とAPIを共同公開',effect:{funds:-14,trust:11,alert:-6,openness:4},flags:['kairos_cooperate']},{label:'演算資源を集中して先行',effect:{funds:-16,tech:9,alert:5},flags:['kairos_challenge']}],conditions:[],weight:0,cooldown:99,once:true,minTurn:13,maxTurn:36,onlyScheduled:true,regionScope:'selected'};
+  const EVENTS=[...EVENT_DATA.events,...COUNTRY_EVENTS,KAIROS_EVENT];
   // v0.6 economy rebalance: event effects no longer flood money or EP.
   for(const event of EVENTS){for(const choice of event.choices||[]){const fx=choice.effect||{};
     if(fx.ep>0)fx.ep=Math.max(1,Math.round(fx.ep*.12));
@@ -515,7 +502,7 @@ window.AIP_EVENT_ENGINE = (() => {
   const EVENT_BY_ID=new Map(EVENTS.map(e=>[e.id,e]));
   const NEWS_RULES=EVENT_DATA.newsRules;
   const MAX_TURNS=36;
-  const COLORS=['#4bdeed','#ffbd71','#ae8aff'];
+  const COLORS=['#4bdeed','#ffbd71','#ae8aff','#ff6e9f'];
   const REGIONS=[
     {id:'nw',name:'北米西部',short:'北米西部',cx:132,cy:142,pop:8,digital:92,demand:86,regulation:23,adoption:4,presence:[2,5,4],points:'52,100 97,69 157,68 204,97 184,131 167,185 112,208 66,170'},
     {id:'ne',name:'北米東部',short:'北米東部',cx:239,cy:150,pop:10,digital:95,demand:89,regulation:29,adoption:5,presence:[3,6,4],points:'203,94 260,78 302,105 291,153 266,190 207,182 181,147'},
@@ -723,10 +710,10 @@ window.AIP_EVENT_ENGINE = (() => {
     const bonuses={business:{funds:66,tech:24,trust:50,ep:3,compute:26,openness:10},research:{funds:49,tech:32,trust:52,ep:5,compute:27,openness:9},open:{funds:48,tech:23,trust:55,ep:3,compute:22,openness:25}};
     const b=bonuses[type]||bonuses.research;
     const country=COUNTRY_BY_ID.get(countryId)||COUNTRY_BY_ID.get('jp');
-    const regions=REGIONS.map(r=>({...r,presence:[0,r.presence[1],r.presence[2]],integration:3,regulation:r.regulation}));
+    const regions=REGIONS.map(r=>({...r,presence:[0,r.presence[1],r.presence[2],0],integration:3,regulation:r.regulation}));
     const home=regions.find(r=>r.id===country.regionId);
-    if(home){home.presence[0]=Math.max(1.5,Math.round(country.homePresence*.045*10)/10);home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
-    return {version:8,day:1,elapsedDays:0,simMs:0,pickups:[],nextPickupId:1,lastFundraiseDay:-120,worldModifier:null,monthBaseline:null,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
+    if(home){home.presence[0]=Math.max(.8,Math.round(country.homePresence*.025*10)/10);home.adoption=clamp(home.adoption+country.adoption*.16);home.integration=clamp(home.integration+(country.bonuses.infra||0)*.16+1);}
+    return {version:9,day:1,elapsedDays:0,simMs:0,pickups:[],nextPickupId:1,lastFundraiseDay:-120,worldModifier:null,monthBaseline:null,phase:'playing',name:name.trim().slice(0,16),type,countryId:country.id,homeRegionId:country.regionId,
       turn:1,actions:1,selected:country.regionId,regions,unlockedSkills:[],
       funds:Math.max(30,b.funds+Math.round((country.bonuses.funds||0)*.2)),
       tech:clamp(b.tech+Math.round((country.bonuses.tech||0)*.55)),trust:clamp(b.trust+(country.bonuses.trust||0)),
@@ -738,7 +725,7 @@ window.AIP_EVENT_ENGINE = (() => {
   }
   function readSave(){try{
     const parsed=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(!parsed||![3,4,5,6,7,8].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
+    if(!parsed||![3,4,5,6,7,8,9].includes(parsed.version)||!Array.isArray(parsed.regions)||parsed.regions.length!==12||!parsed.name||!parsed.phase)return null;
     if(parsed.version===3){
       const oldIds=['tech_model_errors','economy_chip_shortage','politics_treaty','tech_breakthrough','society_labor','rival_atlas_launch','rival_nova_release','economy_power','politics_treaty'];
       if(parsed.pendingEvent&&Number.isInteger(parsed.pendingEvent.id)){
@@ -772,6 +759,8 @@ window.AIP_EVENT_ENGINE = (() => {
     parsed.eventRuntime ||= ENGINE.makeRuntime(0x12345678^parsed.turn);
     parsed.activityLog ||= [];
     parsed.feed ||= [];
+    parsed.regions.forEach(r=>{const p=Array.isArray(r.presence)?r.presence:[];r.presence=[0,1,2,3].map(i=>Math.max(0,Number(p[i])||0));if(r.presence[1]+r.presence[2]===0){r.presence[1]=1;r.presence[2]=1;}});
+    parsed.version=9;
     return parsed;
   }catch(e){console.warn('保存データを読み込めませんでした。',e);return null;}}
   function save(silent=true){if(!game)return;try{localStorage.setItem(KEY,JSON.stringify(game));if(!silent)notify('ゲームを保存しました。');}catch(e){if(!silent)notify('ブラウザの保存領域を利用できません。',true);}}
@@ -787,10 +776,11 @@ window.AIP_EVENT_ENGINE = (() => {
     const weighted=(fn,denom='pop')=>{const sum=state.regions.reduce((n,r)=>n+r.pop*fn(r),0);return sum/state.regions.reduce((n,r)=>n+r.pop,0);};
     const adoption=weighted(r=>r.adoption);
     const market=state.regions.reduce((n,r)=>n+r.pop*r.adoption,0);
-    const sh= [0,1,2].map(i=>state.regions.reduce((n,r)=>n+r.pop*r.adoption*shares(r)[i]/100,0)/(market||1)*100);
+    const forceCount=Math.max(3,...state.regions.map(r=>r.presence?.length||0));
+    const sh=Array.from({length:forceCount},(_,i)=>state.regions.reduce((n,r)=>n+r.pop*r.adoption*(shares(r)[i]||0)/100,0)/(market||1)*100);
     const integration=weighted(r=>r.integration);
     const dependency=clamp(sh[0]*.54+adoption*.15+state.autonomy*.32+state.infra*.48+integration*.11);
-    const maxOthers=Math.max(sh[1],sh[2]);
+    const maxOthers=Math.max(...sh.slice(1));
     return {worldAdoption:adoption,share:sh[0],sh,dependency,integration,maxOthers,safeAlert:state.alert,project:state.project,governance:['safe_1','safe_2','safe_3','safe_4','safe_5','safe_6'].filter(id=>(state.unlockedSkills||[]).includes(id)).length,...Object.fromEntries(['trust','tech','compute','autonomy','openness','publications'].map(k=>[k,state[k]]))};
   }
   function stats(){return statsFor(game);}
@@ -860,17 +850,18 @@ window.AIP_EVENT_ENGINE = (() => {
       compute(){if(!payOperation({funds:21}))return false;game.compute=clamp(game.compute+10);game.infra=clamp(game.infra+5);pushFeed('小規模データセンターへ投資。演算と基盤を強化。');return true;},
       safety(){if(!payOperation({funds:15}))return false;game.trust=clamp(game.trust+Math.round(9*m.safety));game.alert=clamp(game.alert-Math.round(7*m.safety));pushFeed('社会的な安全監査を実施。信頼を獲得しました。');return true;}
     };
-    if(actions[id]?.()){emitStateNews(before);if(checkEnding())return;save();render();}
+    if(actions[id]?.()){emitStateNews(before);if(checkEnding())return true;save();render();return true;}
+    return false;
   }
-  function unlockSkill(id){if(!game||game.phase!=='playing'||(modal&&modal!=='evolution')||game.pendingEvent)return;
-    const skill=SKILL_BY_ID.get(id);if(!skill)return;
-    const problem=skillProblem(skill);if(problem){notify(problem,true);return;}
+  function unlockSkill(id){if(!game||game.phase!=='playing'||(modal&&modal!=='evolution')||game.pendingEvent)return false;
+    const skill=SKILL_BY_ID.get(id);if(!skill)return false;
+    const problem=skillProblem(skill);if(problem){notify(problem,true);return false;}
     const before=structuredClone(game);
     game.ep-=skill.cost;game.unlockedSkills.push(id);
     applyEffect(skill.effect);
     pushFeed(`進化ツリー「${skill.title}」を解放。EP -${skill.cost}（資金があればオペレーションは随時実行可能）。`);
     pushNews(ENGINE.newsObject(game,{id:`skill-${id}`,headline:`${game.name}、新能力「${skill.title}」を獲得`,body:skill.desc,category:'技術進化',severity:'important'}));
-    emitStateNews(before,2);if(checkEnding())return;save();render();notify(`「${skill.title}」を解放しました。`);
+    emitStateNews(before,2);if(checkEnding())return true;save();render();notify(`「${skill.title}」を解放しました。`);return true;
   }
 
   function applyEffect(effect,regionId=null){
@@ -969,6 +960,15 @@ window.AIP_EVENT_ENGINE = (() => {
       }
       r.presence[1]+=(.74+r.digital*.004+game.turn*.027)*(1-penalty*.5)/30;
       r.presence[2]+=(.86+(100-r.adoption)*.003+game.turn*.018)*(1-penalty*.5)/30;
+      if(game.eventRuntime.flags.kairosLaunched){
+        const kairosFactor=game.eventRuntime.flags.kairos_cooperate?.76:game.eventRuntime.flags.kairos_challenge?1.22:1;
+        if(r.presence[3]>.01){r.presence[3]+=(.55+r.digital*.003+r.demand*.002+game.turn*.025)*(1-penalty*.32)*worldFactor*kairosFactor/30;}
+        else{
+          const seeded=game.regions.filter(x=>x.presence[3]>.05).length;
+          const diffusion=.0008+seeded*.00048+Math.max(0,game.turn-13)*.000055;
+          if(ENGINE.random(game.eventRuntime)<diffusion){r.presence[3]=.24;pushNews(ENGINE.newsObject(game,{id:`kairos-entry-${r.id}`,headline:`KAIROS、${r.name}で初の導入契約`,body:'新興AIのAPIが地域企業に採用され、市場の勢力図が動き始めた。',category:'競合AI',severity:'important',regionId:r.id}));}
+        }
+      }
       if(r===bestAtlas)r.presence[1]+=(1.8+game.turn*.045)/30;
       if(r===bestNova)r.presence[2]+=(2.2+game.turn*.04)/30;
       r.integration=clamp(r.integration+(.16+(r.adoption/100)*.38)/30);
@@ -990,13 +990,14 @@ window.AIP_EVENT_ENGINE = (() => {
     {id:'boom',headline:'世界でAIサービス需要が急伸',body:'AIを導入する企業が増加。数か月にわたり新規利用者の増加が速くなる。',modifier:{id:'boom',label:'AI利用ブーム',monthsLeft:3,growthMultiplier:1.42,incomeMultiplier:1.12},effect:{alert:3}},
     {id:'policy',headline:'各国政府が高度AIへの監督を強化',body:'主要市場の審査が厳格化し、参入コストが上昇する。',regulation:8,effect:{alert:4}},
     {id:'outage',headline:'世界的なクラウド障害でAI利用が停滞',body:'システム停止の影響で社会的な信頼が揺らぎ、設備復旧が進められている。',effect:{trust:-6,compute:-3,alert:4}},
-    {id:'discovery',headline:'AI研究者ネットワークが新手法を発見',body:'新しい学習手法が公開され、プレイヤーの意図とは無関係に能力が改善した。',effect:{tech:4,openness:3}}
+    {id:'discovery',headline:'AI研究者ネットワークが新手法を発見',body:'新しい学習手法が公開され、プレイヤーの意図とは無関係に能力が改善した。',effect:{tech:4,openness:3}},
+    {id:'kairos-growth',headline:'KAIROS、オープン推論市場を急拡大',body:'新興AIの軽量モデルが未開拓市場に広がり、既存AIは対応を迫られている。',rival:3,boost:1.3}
   ];
   function autonomousWorldChange(){
     const roll=()=>ENGINE.random(game.eventRuntime);
     if(game.worldModifier){game.worldModifier.monthsLeft--;if(game.worldModifier.monthsLeft<=0){pushNews(ENGINE.newsObject(game,{id:'shock-ended',headline:`${game.worldModifier.label}の影響が収束`,category:'世界情勢',severity:'normal'}));game.worldModifier=null;}}
     if(roll()>.56)return;
-    const pool=AUTONOMOUS_EVENTS.filter(e=>!e.modifier||!game.worldModifier);
+    const pool=AUTONOMOUS_EVENTS.filter(e=>(!e.modifier||!game.worldModifier)&&(e.rival!==3||game.eventRuntime.flags.kairosLaunched));
     const e=pool[Math.floor(roll()*pool.length)];if(!e)return;
     if(e.effect)applyEffect(e.effect);
     if(e.rival)for(const r of game.regions)r.presence[e.rival]+=e.boost*(.3+roll()*.8);
@@ -1004,6 +1005,17 @@ window.AIP_EVENT_ENGINE = (() => {
     if(e.modifier)game.worldModifier={...e.modifier};
     pushNews(ENGINE.newsObject(game,{id:`autonomous-${e.id}`,headline:e.headline,body:e.body,category:'自律進化・世界情勢',severity:e.modifier?'breaking':'important'}));
     pushFeed(`世界情勢変化：${e.headline}`);
+  }
+  function launchKairos(){
+    const ranked=[...game.regions].sort((a,b)=>(b.digital*.36+b.demand*.39+b.pop*.25-b.regulation*.16)-(a.digital*.36+a.demand*.39+a.pop*.25-a.regulation*.16));
+    const levels=[5.4,4.3,3.6,2.9];
+    ranked.slice(0,levels.length).forEach((r,i)=>{r.presence[3]=levels[i];});
+    const hub=ranked[0];
+    game.eventRuntime.flags.kairosLaunched=true;
+    game.eventRuntime.flags.kairosHubRegion=hub.id;
+    pushFeed(`新興AI「KAIROS」が${ranked.slice(0,4).map(r=>r.name).join('・')}でサービスを開始。市場競争が四つ巴に。`);
+    pushNews(ENGINE.newsObject(game,{id:'kairos-launch',headline:'速報：新興AI「KAIROS」が世界市場に参入',body:`${hub.name}を開発拠点に、四地域でサービスを同時公開。プレイヤーには競争か協調かの判断が迫られている。`,category:'競合AI',severity:'breaking',regionId:hub.id}));
+    return hub.id;
   }
   function simulateMonthBoundary(){
     if(game.phase!=='playing')return;
@@ -1031,18 +1043,25 @@ window.AIP_EVENT_ENGINE = (() => {
     const newStats=stats();
     if(newStats.sh[1]>=61&&newStats.worldAdoption>=48){lose('ATLASが商用市場を制覇','競合AI「ATLAS」が世界市場の過半を掌握しました。');return;}
     if(newStats.sh[2]>=61&&newStats.worldAdoption>=48){lose('NOVAがAIの解放を実現','競合AI「NOVA」のオープンモデルが世界の標準になりました。');return;}
+    if(newStats.sh[3]>=61&&newStats.worldAdoption>=48){lose('KAIROSが新市場を制覇','新興AI「KAIROS」が地域市場を押さえ、世界のAI基盤になりました。');return;}
+    if(game.turn>=13&&!game.eventRuntime.flags.kairosLaunched){
+      const hub=launchKairos(),event=EVENT_BY_ID.get('rival_kairos_emergence');
+      if(event)game.pendingEvent=ENGINE.makePending(event,game,'rival-emergence',hub);
+    }
     if(game.turn>=MAX_TURNS){lose('時間切れ','36か月が経過しました。どの勝利ルートも完成できませんでした。');return;}
-    let due=ENGINE.takeScheduled(game);
-    while(due){const event=EVENT_BY_ID.get(due.eventId);
-      if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);break;}
-      due=ENGINE.takeScheduled(game);
+    if(!game.pendingEvent){
+      let due=ENGINE.takeScheduled(game);
+      while(due){const event=EVENT_BY_ID.get(due.eventId);
+        if(event&&(!event.once||!game.eventRuntime.history.some(h=>h.eventId===event.id))){game.pendingEvent=ENGINE.makePending(event,game,'scheduled',due.regionId);break;}
+        due=ENGINE.takeScheduled(game);
+      }
+      if(!game.pendingEvent&&game.turn>=7&&game.countryId){const originId=`origin_${game.countryId}`;
+        const originEvent=EVENT_BY_ID.get(originId);
+        if(originEvent&&!game.eventRuntime.history.some(entry=>entry.eventId===originId))game.pendingEvent=ENGINE.makePending(originEvent,game,'origin',game.homeRegionId);
+      }
+      // Deliberate choice events are occasional; uncontrolled events occur independently.
+      if(!game.pendingEvent&&game.turn>=5&&(game.turn-5)%4===0){const event=ENGINE.pickEvent(EVENTS,game,stats());if(event)game.pendingEvent=ENGINE.makePending(event,game);}
     }
-    if(!game.pendingEvent&&game.turn>=7&&game.countryId){const originId=`origin_${game.countryId}`;
-      const originEvent=EVENT_BY_ID.get(originId);
-      if(originEvent&&!game.eventRuntime.history.some(entry=>entry.eventId===originId))game.pendingEvent=ENGINE.makePending(originEvent,game,'origin',game.homeRegionId);
-    }
-    // Deliberate choice events are occasional; uncontrolled events occur independently.
-    if(!game.pendingEvent&&game.turn>=5&&(game.turn-5)%4===0){const event=ENGINE.pickEvent(EVENTS,game,stats());if(event)game.pendingEvent=ENGINE.makePending(event,game);}
     if(game.pendingEvent){const event=EVENT_BY_ID.get(game.pendingEvent.eventId);const title=ENGINE.interpolate(event.title,game,game.pendingEvent.regionId);
       pushNews(ENGINE.newsObject(game,{id:'event-start',headline:`特報：${title}`,body:'進行を停止して方針を選択してください。',category:event.category,severity:'breaking',regionId:game.pendingEvent.regionId,sourceEventId:event.id}));}
     save();render();
@@ -1327,7 +1346,8 @@ function startMatrixRain(canvas) {
 
 const pct = (x) => `${Math.round(x)}%`;
 const clamp = (n, a = 0, b = 100) => Math.min(b, Math.max(a, n));
-const colors = { player: '#4ce0d6', atlas: '#e9b46f', nova: '#b48dff' };
+const colors = { player: '#4ce0d6', atlas: '#e9b46f', nova: '#b48dff', kairos: '#ff6e9f' };
+const aiColors = [colors.player, colors.atlas, colors.nova, colors.kairos];
 const GEO = window.AIPandemicGeography;
 const MAP_ANCHORS = GEO.anchors;
 const laneColors = { reason: '#66ceff', autonomy: '#b99bff', trust: '#65dfb3', spread: '#ffcd81', singularity: '#fa8fc3', data: '#56d6f0', policy: '#ff9c88', market: '#e6d270' };
@@ -1457,23 +1477,14 @@ class App extends React.Component {
         this.didMapDrag = false;
         this.treeRef = { current: null };
         this.rewardSequence = 0;
-        this.mapShareSequence = 0;
-        this.mapShareTimer = 0;
-        this.lastMapShares = new Map();
-        const initialMap = engine.getSnapshot();
-        if (initialMap?.regions) initialMap.regions.forEach(region => this.lastMapShares.set(region.id, shares(region)[0]));
         this.feedbackSequence = 0;
-        this.feedbackTimer = 0;
-        this.skillRevealSequence = 0;
-        this.skillRevealTimer = 0;
+        this.lastMapShares = null;
+        this.pendingMapGains = [];
         this.treeDrag = null;
         this.treeScale = 0.65;
         this.treeTouch = null;
         this.didTreeDrag = false;
-        this.listener = () => {
-            this.trackMapShareGrowth(engine.getSnapshot());
-            this.setState(s => ({ revision: s.revision + 1 }));
-        };
+        this.listener = () => this.setState(s => ({ revision: s.revision + 1 }));
         this.lastClock = 0;
         this.onVisible = () => { this.lastClock = performance.now(); };
         this.advanceClock = () => {
@@ -1486,60 +1497,13 @@ class App extends React.Component {
         };
         this.resumeBgmOnGesture = () => { if (engine.getSnapshot()?.phase === 'playing' && this.bgmRef.current?.paused)
             this.tryPlayBgm(); };
-        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, regionPickerOpen: false, drawerTab: 'actions', mapZoom: 1, mapX: 0, mapY: 0, treeZoom: 0.65, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, mapShareEffects: {}, skillReveal: null, feedback: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
+        this.state = { revision: 0, modal: null, selectedOp: 'campaign', showOperations: false, regionPickerOpen: false, drawerTab: 'actions', mapZoom: 1, mapX: 0, mapY: 0, treeZoom: 0.65, selectedSkill: null, draftName: 'PROMETHEUS', draftType: 'research', draftCountry: 'jp', newsTab: 'news', confirmAdvance: false, showFullNews: false, playing: true, speed: 1, reward: null, shareEffects: [], actionFeedback: null, bgmPanelOpen: false, bgmBlocked: false, ...readBgmPrefs() };
     }
-    componentDidMount() { window.addEventListener('aip:updated', this.listener); document.addEventListener('visibilitychange', this.onVisible); document.addEventListener('pointerdown', this.resumeBgmOnGesture, { passive: true }); this.lastClock = performance.now(); this.clockTimer = window.setInterval(this.advanceClock, 100); this.syncBgmSettings(); this.centerHome(); }
-    componentWillUnmount() { window.removeEventListener('aip:updated', this.listener); document.removeEventListener('visibilitychange', this.onVisible); document.removeEventListener('pointerdown', this.resumeBgmOnGesture); window.clearInterval(this.clockTimer); window.clearTimeout(this.rewardTimer); this.matrixRainCleanup?.(); this.matrixRef.current = null; this.bgmRef.current?.pause(); }
+    componentDidMount() { window.addEventListener('aip:updated', this.listener); document.addEventListener('visibilitychange', this.onVisible); document.addEventListener('pointerdown', this.resumeBgmOnGesture, { passive: true }); this.lastClock = performance.now(); this.clockTimer = window.setInterval(this.advanceClock, 100); this.syncBgmSettings(); this.centerHome(); this.trackMapShareGrowth(engine.getSnapshot()); }
+    componentWillUnmount() { window.removeEventListener('aip:updated', this.listener); document.removeEventListener('visibilitychange', this.onVisible); document.removeEventListener('pointerdown', this.resumeBgmOnGesture); window.clearInterval(this.clockTimer); window.clearTimeout(this.rewardTimer); window.clearTimeout(this.actionFeedbackTimer); window.clearTimeout(this.shareEffectsTimer); this.matrixRainCleanup?.(); this.matrixRef.current = null; this.bgmRef.current?.pause(); }
     componentDidUpdate(_prev, previous) { const g = engine.getSnapshot(); if (previous.revision !== this.state.revision && g?.turn === 1 && previous.revision === 0)
-        this.centerHome(); if (previous.bgmVolume !== this.state.bgmVolume || previous.bgmMuted !== this.state.bgmMuted)
+        this.centerHome(); this.trackMapShareGrowth(g); if (previous.bgmVolume !== this.state.bgmVolume || previous.bgmMuted !== this.state.bgmMuted)
         this.syncBgmSettings(); }
-    trackMapShareGrowth(snapshot) {
-        if (!snapshot?.regions) return;
-        const gains = [];
-        for (const region of snapshot.regions) {
-            const current = shares(region)[0];
-            const previous = this.lastMapShares.get(region.id);
-            if (previous == null || current < previous - 0.05) {
-                this.lastMapShares.set(region.id, current);
-                continue;
-            }
-            if (current - previous >= 0.12) {
-                const delta = current - previous;
-                this.lastMapShares.set(region.id, current);
-                gains.push({ id: region.id, delta, version: ++this.mapShareSequence });
-            }
-        }
-        if (gains.length) this.triggerShareGrowth(gains);
-    }
-    triggerShareGrowth(gains) {
-        const effects = Object.fromEntries(gains.map(gain => [gain.id, { delta: gain.delta, version: gain.version }]));
-        window.clearTimeout(this.mapShareTimer);
-        this.setState(state => ({ mapShareEffects: { ...state.mapShareEffects, ...effects } }));
-        this.mapShareTimer = window.setTimeout(() => this.setState({ mapShareEffects: {} }), 1800);
-    }
-    showFeedback(kind, title, detail, metadata = {}) {
-        const id = ++this.feedbackSequence;
-        window.clearTimeout(this.feedbackTimer);
-        this.setState({ feedback: { id, kind, title, detail, ...metadata } });
-        this.feedbackTimer = window.setTimeout(() => {
-            this.setState(state => state.feedback?.id === id ? { feedback: null } : null);
-        }, 2400);
-    }
-    unlockSkill(id) {
-        const before = engine.getSnapshot();
-        if (!before || before.unlockedSkills.includes(id)) return;
-        engine.unlock(id);
-        const after = engine.getSnapshot();
-        if (!after || !after.unlockedSkills.includes(id)) return;
-        const skill = engine.getSkills().flatMap(lane => lane.skills).find(item => item.id === id);
-        const version = ++this.skillRevealSequence;
-        window.clearTimeout(this.skillRevealTimer);
-        this.setState({ skillReveal: { id, version } });
-        this.skillRevealTimer = window.setTimeout(() => {
-            this.setState(state => state.skillReveal?.version === version ? { skillReveal: null } : null);
-        }, 1800);
-        this.showFeedback("evolution", (skill?.title || "進化ノード") + "を解放", "EP -" + (skill?.cost ?? "") + " · 進化ツリーに反映", { skillId: id });
-    }
     syncBgmSettings() { const audio = this.bgmRef.current; if (!audio)
         return; audio.volume = this.state.bgmVolume / 100; audio.muted = this.state.bgmMuted; }
     saveBgmPrefs() { try {
@@ -1577,23 +1541,35 @@ class App extends React.Component {
     close() { this.setState({ modal: null }); }
     start() { engine.start(this.state.draftName.trim(), this.state.draftType, this.state.draftCountry); this.lastClock = performance.now(); this.setState({ selectedOp: 'campaign', modal: null, playing: true, speed: 1 }); this.tryPlayBgm(); }
     selectRegion(id) { engine.selectRegion(id); if (this.state.regionPickerOpen) this.setState({ regionPickerOpen: false }); }
-    executeOp() {
-        const before = engine.getSnapshot();
-        if (!before) return;
-        const region = before.regions.find(item => item.id === before.selected);
-        const operation = engine.getOperations().find(item => item.id === this.state.selectedOp);
-        const beforeState = JSON.stringify(before);
-        engine.operation(this.state.selectedOp);
-        const after = engine.getSnapshot();
-        if (!after || JSON.stringify(after) === beforeState) return;
-        this.showFeedback("operation", (operation?.title || "オペレーション") + "を実行", (region?.name || "対象地域") + "に反映されました", { opId: this.state.selectedOp });
+    executeOp() { const g = engine.getSnapshot(), region = g?.regions.find(r => r.id === g.selected), op = engine.getOperations().find(o => o.id === this.state.selectedOp); if (engine.operation(this.state.selectedOp)) this.showActionFeedback('operation', op?.title || 'オペレーション完了', `${region?.name || '対象地域'}で実行 · 世界の勢力図に反映`); }
+    unlockSkill(id) { const skill = engine.getSkills().flatMap(l => l.skills).find(s => s.id === id); if (engine.unlock(id)) this.showActionFeedback('evolution', skill?.title || '新スキルを解放', '進化ネットワークに反映 · 効果が有効化'); }
+    showActionFeedback(kind, title, detail) { const id = ++this.feedbackSequence; window.clearTimeout(this.actionFeedbackTimer); this.setState({ actionFeedback: { id, kind, title, detail } }); this.actionFeedbackTimer = window.setTimeout(() => this.setState(s => s.actionFeedback?.id === id ? { actionFeedback: null } : null), 2300); }
+    trackMapShareGrowth(g) {
+        if (!g?.regions?.length) { this.lastMapShares = null; return; }
+        const current = new Map(g.regions.map(r => [r.id, shares(r)]));
+        if (!this.lastMapShares) { this.lastMapShares = current; return; }
+        for (const region of g.regions) {
+            const before = this.lastMapShares.get(region.id) || [];
+            const after = current.get(region.id) || [];
+            after.forEach((share, aiIndex) => {
+                const old = before[aiIndex] || 0, delta = share - old;
+                if (delta >= .65 || (aiIndex === 3 && old < .05 && share >= 1)) this.pendingMapGains.push({ regionId: region.id, aiIndex, delta, label: aiIndex === 3 && old < .05 ? 'KAIROS' : `+${delta.toFixed(1)}%` });
+            });
+        }
+        this.lastMapShares = current;
+        if (this.pendingMapGains.length && !g.pendingEvent && !this.state.modal && !this.state.showOperations) {
+            const gains = this.pendingMapGains.splice(-4);
+            this.triggerShareGrowth(gains);
+        }
     }
+    triggerShareGrowth(gains) { const id = ++this.feedbackSequence; window.clearTimeout(this.shareEffectsTimer); this.setState({ shareEffects: gains.map(g => ({ ...g, id })) }); this.shareEffectsTimer = window.setTimeout(() => this.setState(s => s.shareEffects[0]?.id === id ? { shareEffects: [] } : null), 1900); }
     togglePlay() { this.lastClock = performance.now(); this.setState(s => ({ playing: !s.playing })); }
     restart() { this.bgmRef.current?.pause(); if (this.bgmRef.current)
         this.bgmRef.current.currentTime = 0; engine.reset(); this.mapView = { zoom: 1, x: 0, y: 0 }; this.setState({ mapZoom: 1, mapX: 0, mapY: 0, modal: null, selectedOp: 'campaign', selectedSkill: null, playing: true, speed: 1, draftName: 'PROMETHEUS', reward: null }); window.scrollTo({ top: 0 }); }
     render() { const g = engine.getSnapshot(); const reward = this.state.reward; return React.createElement("div", { className: "site-root" },
         React.createElement("audio", { ref: el => { this.bgmRef.current = el; }, src: BGM_URL, loop: true, preload: "none", "aria-hidden": "true" }),
         g ? this.renderGame(g) : this.renderSetup(),
+        g?.phase === 'playing' && this.state.actionFeedback ? React.createElement("div", { key: this.state.actionFeedback.id, className: `action-feedback ${this.state.actionFeedback.kind}`, role: "status", "aria-live": "polite" }, React.createElement("span", { className: "feedback-pulse" }), React.createElement("strong", null, this.state.actionFeedback.title), React.createElement("small", null, this.state.actionFeedback.detail)) : null,
         reward && g?.phase === 'playing' ? React.createElement("div", { key: reward.id, className: `reward-burst ${reward.kind}`, style: { left: reward.x, top: reward.y }, "aria-live": "polite" },
             React.createElement("span", { className: "reward-ring" }),
             React.createElement("span", { className: "reward-ring second" }),
@@ -1602,11 +1578,6 @@ class App extends React.Component {
                 " +",
                 reward.amount),
             Array.from({ length: 8 }, (_, i) => React.createElement("i", { key: i, style: { '--i': i } }))) : null,
-        this.state.feedback ? React.createElement("div", { key: this.state.feedback.id, className: "game-feedback " + this.state.feedback.kind, role: "status", "aria-live": "polite" },
-            React.createElement("span", { className: "feedback-mark", "aria-hidden": "true" }, this.state.feedback.kind === "evolution" ? "✦" : "✓"),
-            React.createElement("span", { className: "feedback-copy" },
-                React.createElement("b", null, this.state.feedback.title),
-                React.createElement("small", null, this.state.feedback.detail))) : null,
         g?.pendingEvent ? this.renderEvent() : null,
         g?.phase === 'ended' ? this.renderEnding(g) : null,
         g && !g.pendingEvent && g.phase === 'playing' && this.state.modal ? this.renderModal(g) : null); }
@@ -1616,9 +1587,6 @@ class App extends React.Component {
         const x = 'clientX' in event && event.clientX ? event.clientX : rect.left + rect.width / 2;
         const y = 'clientY' in event && event.clientY ? event.clientY : rect.top + rect.height / 2;
         window.clearTimeout(this.rewardTimer);
-        window.clearTimeout(this.mapShareTimer);
-        window.clearTimeout(this.feedbackTimer);
-        window.clearTimeout(this.skillRevealTimer);
         const id = ++this.rewardSequence;
         this.setState({ reward: { id, kind: drop.kind, amount: drop.amount, x, y } });
         engine.collectPickup(drop.id);
@@ -1717,7 +1685,7 @@ class App extends React.Component {
                     this.renderBgmControl(),
                     React.createElement("span", { className: "version-pill" },
                         "PREVIEW BUILD ",
-                        React.createElement("b", null, "1.2")))),
+                        React.createElement("b", null, "1.3")))),
             React.createElement("div", { className: "setup-container" },
                 React.createElement("section", { className: "setup-hero" },
                     React.createElement(Tag, null, "SIMULATION INITIALIZATION"),
@@ -1725,7 +1693,7 @@ class App extends React.Component {
                         "\u77E5\u6027\u306F\u3001\u751F\u307E\u308C\u305F\u5834\u6240\u304B\u3089",
                         React.createElement("br", null),
                         React.createElement("em", null, "\u4E16\u754C\u306E\u5F62\u3092\u5909\u3048\u3066\u3044\u304F\u3002")),
-                    React.createElement("p", null, "AI\u3092\u958B\u767A\u3057\u3001\u7AF6\u5408\u306B\u5148\u3093\u3058\u3066\u6280\u8853\u3092\u9032\u5316\u3055\u305B\u3001\u4E16\u754C\u3092\u52D5\u304B\u3059\u3002\u3042\u306A\u305F\u306E\u9078\u629E\u304C\u3001\u4EBA\u985E\u306E\u672A\u6765\u3092\u6C7A\u3081\u308B\u3002"),
+                    React.createElement("p", null, "AIを育て、競合の動きに対応しながら世界市場を切り開く。12ヶ月後には新興AI「KAIROS」が参入し、協調か競争かを選ぶ局面が訪れる。"),
                     React.createElement("div", { className: "origin-core" },
                         React.createElement("div", { className: "orbit orbit-a" }),
                         React.createElement("div", { className: "orbit orbit-b" }),
@@ -1740,7 +1708,7 @@ class App extends React.Component {
                     React.createElement("div", { className: "setup-facts" },
                         React.createElement("span", null,
                             React.createElement("i", null),
-                            " 3\u3064\u306EAI\u52E2\u529B"),
+                            " \u6700\u59274\u3064\u306EAI\u52E2\u529B"),
                         React.createElement("span", null,
                             React.createElement("i", null),
                             " 12\u306E\u6226\u7565\u5730\u57DF"),
@@ -1857,17 +1825,8 @@ class App extends React.Component {
                                 React.createElement("button", { type: "button", onClick: () => this.updateMapView(1,0,0), "aria-label": "マップ全体を表示" }, "全体"),
                                 React.createElement("button", { type: "button", onClick: () => this.changeMapZoom(1.3), "aria-label": "マップを拡大", disabled: this.state.mapZoom >= 4 }, "+")),
                             React.createElement("div", { className: "map-legend" },
-                                React.createElement("span", null,
-                                    React.createElement("i", { style: { background: colors.player } }),
-                                    " ",
-                                    g.name),
-                                React.createElement("span", null,
-                                    React.createElement("i", { style: { background: colors.atlas } }),
-                                    " ATLAS"),
-                                React.createElement("span", null,
-                                    React.createElement("i", { style: { background: colors.nova } }),
-                                    " NOVA"),
-                                React.createElement("span", { className: "legend-hint" }, "数値＝自AIシェア · 円弧＝各AIのシェア · 地域の色＝首位AI、濃さ＝全AI普及率 · ¥＝資金 / ✦＝EP（タップで回収）"))),
+                                [g.name, 'ATLAS', 'NOVA', 'KAIROS'].slice(0, g.eventRuntime?.flags?.kairosLaunched ? 4 : 3).map((name, i) => React.createElement("span", { key: name }, React.createElement("i", { style: { background: aiColors[i] } }), " ", name)),
+                                React.createElement("span", { className: "legend-hint" }, "数値＝自AIシェア · 円弧＝AI利用者内のシェア · 地域の色＝市場首位、濃さ＝AI普及率 · ¥＝資金 / ✦＝EP（タップで回収）"))),
                         React.createElement("div", { className: "quick-launch" },
                             React.createElement("button", { onClick: () => this.open('evolution') },
                                 React.createElement("span", { className: "q-icon violet" },
@@ -1906,7 +1865,7 @@ class App extends React.Component {
                         React.createElement(Icon, { name: "info", size: 17 }),
                         " \u64CD\u4F5C\u30AC\u30A4\u30C9")),
                 React.createElement("footer", { className: "app-footer" },
-                    "AI PANDEMIC \u00B7 v1.2 / GLOBAL INTELLIGENCE NETWORK ",
+                    "AI PANDEMIC \u00B7 v1.3 / GLOBAL INTELLIGENCE NETWORK ",
                     React.createElement("button", { onClick: () => this.open('reset') }, "\u65B0\u3057\u304F\u59CB\u3081\u308B"))));
     }
     renderStat(label, value, icon, color, flash = false) { return React.createElement("div", { className: `stat-cell ${flash ? 'stat-just-collected' : ''}`, key: label, style: { '--stat-color': color } },
@@ -1967,12 +1926,11 @@ class App extends React.Component {
             g.regions.map(r => {
                 const sh = shares(r);
                 const lead = sh.indexOf(Math.max(...sh));
-                const fill = [colors.player, colors.atlas, colors.nova][lead];
+                const fill = aiColors[lead] || colors.player;
                 const active = r.id === selected;
                 const density = Math.min(.84, .10 + r.adoption * .008);
                 const [cx, cy] = MAP_ANCHORS[r.id];
-                const gain = this.state.mapShareEffects[r.id];
-                return React.createElement("g", { key: r.id, className: "map-region " + (active ? "is-selected " : "") + (gain ? "share-growing" : ""), role: "button", tabIndex: 0, "aria-label": `${r.name}、自AIシェア ${pct(sh[0])}${active ? '、選択中' : ''}`, onClick: () => this.selectRegion(r.id), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') {
+                return React.createElement("g", { key: r.id, className: `map-region ${active ? 'is-selected' : ''}`, role: "button", tabIndex: 0, "aria-label": `${r.name}、自AIシェア ${pct(sh[0])}${active ? '、選択中' : ''}`, onClick: () => this.selectRegion(r.id), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         this.selectRegion(r.id);
                     } } },
@@ -1983,9 +1941,8 @@ class App extends React.Component {
                     React.createElement("circle", { pointerEvents: "none", className: "map-pulse", cx: cx, cy: cy, r: active ? 13 : 7, stroke: fill, strokeOpacity: ".55", fill: "none", style: { animationDelay: `-${cx / 150}s` } }),
                     React.createElement("circle", { className: "map-marker", cx: cx, cy: cy, r: active ? 17 : 14, stroke: active ? '#b2fff1' : fill, fill: "#0c2134", fillOpacity: ".86", strokeWidth: active ? 2.5 : 1.4 }),
                     React.createElement("circle", { className: "map-marker-core", cx: cx, cy: cy, r: active ? 6.5 : 4.7, fill: active ? '#e9fffe' : fill, filter: active ? 'url(#map-glow)' : undefined, pointerEvents: "none" }),
-                    sh.map((share, i) => { const circumference = 2 * Math.PI * (active ? 21 : 19); const start = sh.slice(0, i).reduce((sum, value) => sum + value, 0); return share > 0 ? React.createElement("circle", { key: i, className: "map-share-arc", cx: cx, cy: cy, r: active ? 21 : 19, fill: "none", stroke: [colors.player, colors.atlas, colors.nova][i], strokeWidth: "4", strokeDasharray: `${circumference * share / 100} ${circumference}`, strokeDashoffset: -circumference * start / 100, transform: `rotate(-90 ${cx} ${cy})`, pointerEvents: "none" }) : null; }),
-                    gain ? React.createElement("circle", { key: "share-wave-" + gain.version, className: "map-share-wave", cx: cx, cy: cy, r: "18", stroke: colors.player, pointerEvents: "none" }) : null,
-                    gain ? React.createElement("text", { key: "share-label-" + gain.version, className: "map-share-gain-label", x: cx, y: cy - 32, textAnchor: "middle", pointerEvents: "none" }, "+" + gain.delta.toFixed(1) + "%") : null,
+                    sh.map((share, i) => { const circumference = 2 * Math.PI * (active ? 21 : 19); const start = sh.slice(0, i).reduce((sum, value) => sum + value, 0); return share > 0 ? React.createElement("circle", { key: i, cx: cx, cy: cy, r: active ? 21 : 19, fill: "none", stroke: aiColors[i] || colors.player, strokeWidth: "4", strokeDasharray: `${circumference * share / 100} ${circumference}`, strokeDashoffset: -circumference * start / 100, transform: `rotate(-90 ${cx} ${cy})`, pointerEvents: "none" }) : null; }),
+                    this.state.shareEffects.find(effect => effect.regionId === r.id) ? (() => { const effect = this.state.shareEffects.find(item => item.regionId === r.id); return React.createElement(React.Fragment, null, React.createElement("circle", { className: "map-share-burst", cx: cx, cy: cy, r: "19", style: { '--share-color': aiColors[effect.aiIndex] || colors.player }, pointerEvents: "none" }), React.createElement("text", { className: "map-share-label", x: cx, y: cy - 28, textAnchor: "middle", style: { '--share-color': aiColors[effect.aiIndex] || colors.player }, pointerEvents: "none" }, effect.label)); })() : null,
                     React.createElement("text", { pointerEvents: "none", x: cx, y: cy + 34, textAnchor: "middle", className: `map-region-label ${active ? 'active' : ''}` }, r.short),
                     React.createElement("text", { pointerEvents: "none", x: cx, y: cy + 48, textAnchor: "middle", className: "map-adoption-label" }, pct(sh[0])),
                     React.createElement("title", null,
@@ -1995,17 +1952,10 @@ class App extends React.Component {
                         " / ",
                         active ? '選択中' : 'タップして選択'));
             }),
-            Object.entries(this.state.mapShareEffects).map(([regionId, effect]) => {
-                const target = g.regions.find(region => region.id === regionId);
-                const origin = g.regions.find(region => region.id === g.homeRegionId) || selectedRegion;
-                if (!target || target.id === origin.id) return null;
-                const [sx, sy] = MAP_ANCHORS[origin.id];
-                const [tx, ty] = MAP_ANCHORS[target.id];
-                return React.createElement("path", { key: "share-trace-" + regionId + "-" + effect.version, className: "map-share-trace", d: "M " + sx + " " + sy + " Q " + ((sx + tx) / 2) + " " + (Math.min(sy, ty) - 40) + " " + tx + " " + ty, pathLength: "100", fill: "none", stroke: colors.player, pointerEvents: "none" });
-            }),
             React.createElement("path", { d: GEO.countryBorders, fill: "none", stroke: "#9fc5d3", strokeWidth: ".42", strokeOpacity: ".27", pointerEvents: "none" }),
             React.createElement("path", { d: mapPath, fill: "none", stroke: "#a4c5d7", strokeWidth: ".65", strokeOpacity: ".82", pointerEvents: "none" }),
             chosenLines.map((r, i) => React.createElement("path", { key: r.id, className: "data-trace", style: { animationDelay: `-${i * .45}s` }, d: `M ${selectedX} ${selectedY} Q ${(selectedX + MAP_ANCHORS[r.id][0]) / 2} ${Math.min(selectedY, MAP_ANCHORS[r.id][1]) - 40}, ${MAP_ANCHORS[r.id][0]} ${MAP_ANCHORS[r.id][1]}`, fill: "none", stroke: colors.player, strokeWidth: "1.2", strokeOpacity: .20 + Math.min(.35, r.adoption * .007) })),
+            this.state.shareEffects.map(effect => { const originId = effect.aiIndex === 3 ? g.eventRuntime?.flags?.kairosHubRegion : g.homeRegionId; const origin = MAP_ANCHORS[originId]; const target = MAP_ANCHORS[effect.regionId]; if (!origin || !target || originId === effect.regionId) return null; return React.createElement("path", { key: `surge-${effect.id}-${effect.regionId}-${effect.aiIndex}`, className: "map-share-trace", d: `M ${origin[0]} ${origin[1]} Q ${(origin[0] + target[0]) / 2} ${Math.min(origin[1], target[1]) - 38}, ${target[0]} ${target[1]}`, style: { '--share-color': aiColors[effect.aiIndex] || colors.player }, fill: "none", pointerEvents: "none" }); }),
             (g.pickups || []).map((drop, i) => {
                 const [ax, ay] = MAP_ANCHORS[drop.regionId] || [480, 230];
                 const x = ax + 26, y = ay - 27;
@@ -2032,74 +1982,51 @@ class App extends React.Component {
     }
     renderRegion(g, r) {
         const sh = shares(r);
+        const names = [g.name, 'ATLAS', 'NOVA', 'KAIROS'].slice(0, g.eventRuntime?.flags?.kairosLaunched ? 4 : 3);
+        const leader = sh.slice(0, names.length).indexOf(Math.max(...sh.slice(0, names.length)));
         return React.createElement("section", { className: "region-panel panel-glass" },
             React.createElement("div", { className: "section-heading" },
                 React.createElement("div", null,
-                    React.createElement("span", { className: "eyebrow" },
-                        "SELECTED REGION / ",
-                        r.id.toUpperCase()),
+                    React.createElement("span", { className: "eyebrow" }, "SELECTED REGION / ", r.id.toUpperCase()),
                     React.createElement("h2", null, r.name)),
-                React.createElement("span", { className: "region-flag" },
-                    React.createElement(Icon, { name: "globe", size: 22 }))),
+                React.createElement("span", { className: "region-flag" }, React.createElement(Icon, { name: "globe", size: 22 }))),
             React.createElement("div", { className: "region-primary" },
-                React.createElement("div", null,
-                    React.createElement("span", null, "AI\u666E\u53CA\u7387"),
-                    React.createElement("b", null, pct(r.adoption))),
-                React.createElement("div", null,
-                    React.createElement("span", null, "\u898F\u5236\u30EC\u30D9\u30EB"),
-                    React.createElement("b", null,
-                        Math.round(r.regulation),
-                        React.createElement("small", null, " / 100"))),
-                React.createElement("div", null,
-                    React.createElement("span", null, "\u73FE\u5730\u306E\u81EAAI\u30B7\u30A7\u30A2"),
-                    React.createElement("b", { style: { color: colors.player } }, pct(sh[0])))),
+                React.createElement("div", null, React.createElement("span", null, "AI普及率"), React.createElement("b", null, pct(r.adoption))),
+                React.createElement("div", null, React.createElement("span", null, "規制レベル"), React.createElement("b", null, Math.round(r.regulation), React.createElement("small", null, " / 100"))),
+                React.createElement("div", null, React.createElement("span", null, "現地の自AIシェア"), React.createElement("b", { style: { color: colors.player } }, pct(sh[0] || 0)))),
             React.createElement("div", { className: "market-head" },
-                React.createElement("span", null, "AI\u5E02\u5834\u30B7\u30A7\u30A2"),
-                React.createElement("small", null, "3\u52E2\u529B\u306E\u76F8\u5BFE\u6BD4\u7387")),
-            React.createElement("div", { className: "market-stack", title: `${g.name} ${pct(sh[0])}、ATLAS ${pct(sh[1])}、NOVA ${pct(sh[2])}` },
-                React.createElement("div", { style: { width: `${sh[0]}%`, background: colors.player } }),
-                React.createElement("div", { style: { width: `${sh[1]}%`, background: colors.atlas } }),
-                React.createElement("div", { style: { width: `${sh[2]}%`, background: colors.nova } })),
+                React.createElement("span", null, "AI市場シェア"),
+                React.createElement("small", null, `${names[leader] || 'AI未導入'}が${Math.round(sh[leader] || 0)}%で先行`)),
+            React.createElement("div", { className: "market-stack", title: names.map((name, i) => `${name} ${pct(sh[i] || 0)}`).join('、') },
+                names.map((name, i) => React.createElement("div", { key: name, style: { width: `${sh[i] || 0}%`, background: aiColors[i] } }))),
+            React.createElement("small", { className: "market-caption" }, "シェアはAI利用者内の比率です。地域全体への普及率は上の「AI普及率」です。"),
             React.createElement("div", { className: "region-legend" },
-                React.createElement("span", null,
-                    React.createElement("i", { style: { background: colors.player } }),
-                    "\u81EAAI ",
-                    Math.round(sh[0]),
-                    "%"),
-                React.createElement("span", null,
-                    React.createElement("i", { style: { background: colors.atlas } }),
-                    "ATLAS ",
-                    Math.round(sh[1]),
-                    "%"),
-                React.createElement("span", null,
-                    React.createElement("i", { style: { background: colors.nova } }),
-                    "NOVA ",
-                    Math.round(sh[2]),
-                    "%")),
+                names.map((name, i) => React.createElement("span", { key: name }, React.createElement("i", { style: { background: aiColors[i] } }), `${name === g.name ? '自AI' : name} ${Math.round(sh[i] || 0)}%`))),
             React.createElement("div", { className: "region-statline" },
-                React.createElement("span", null,
-                    "\u30C7\u30B8\u30BF\u30EB\u57FA\u76E4 ",
-                    React.createElement("b", null, r.digital)),
-                React.createElement("span", null,
-                    "\u6280\u8853\u9700\u8981 ",
-                    React.createElement("b", null, r.demand)),
-                React.createElement("span", null,
-                    "\u7523\u696D\u7D71\u5408 ",
-                    React.createElement("b", null, Math.round(r.integration)))));
+                React.createElement("span", null, "デジタル基盤 ", React.createElement("b", null, r.digital)),
+                React.createElement("span", null, "技術需要 ", React.createElement("b", null, r.demand)),
+                React.createElement("span", null, "産業統合 ", React.createElement("b", null, Math.round(r.integration)))));
     }
     renderOperations(g, r) {
         const ops = engine.getOperations();
         const op = ops.find(o => o.id === this.state.selectedOp) || ops[0];
+        const localShares = shares(r);
+        const leader = localShares.indexOf(Math.max(...localShares));
+        const aiNames = [g.name, 'ATLAS', 'NOVA', 'KAIROS'];
+        const kairosStatus = g.eventRuntime?.flags?.kairosLaunched ? 'KAIROS参入後 · 各AIの拡大を監視' : `新AI KAIROS参入まで ${Math.max(0, 13 - g.turn)}ヶ月`;
         const price = { campaign: g.type === 'open' ? 12 : 17, integrate: 21, research: 13, compute: 21, safety: 15, fundraise: 0 };
         const fundCooldown = op?.id === 'fundraise' && g.elapsedDays - g.lastFundraiseDay < 90;
         const available = !fundCooldown && g.funds >= (price[op?.id] || 0);
-        return React.createElement("section", { className: "operation-panel panel-glass " + (this.state.feedback?.kind === "operation" ? "operation-completed" : "") },
+        return React.createElement("section", { className: "operation-panel panel-glass" },
             React.createElement("div", { className: "section-heading" },
                 React.createElement("div", null,
                     React.createElement("span", { className: "eyebrow" }, "STRATEGIC OPERATIONS"),
                     React.createElement("h2", null, "\u30AA\u30DA\u30EC\u30FC\u30B7\u30E7\u30F3")),
                 React.createElement(Tag, { tone: "cyan" }, "\u8CC7\u91D1\u304C\u3042\u308C\u3070\u968F\u6642\u5B9F\u884C")),
-            React.createElement("button", { type: "button", className: "operation-target-trigger", "aria-expanded": this.state.regionPickerOpen, "aria-controls": "operation-region-picker", onClick: () => this.setState(s => ({ regionPickerOpen: !s.regionPickerOpen })) }, React.createElement("span", { className: "operation-target-label" }, "TARGET NODE"), React.createElement("b", null, r.name), React.createElement(Icon, { name: this.state.regionPickerOpen ? "chevron-left" : "chevron-right", size: 16 })), this.state.regionPickerOpen ? React.createElement("div", { id: "operation-region-picker", className: "operation-region-picker", role: "group", "aria-label": "操作対象地域" }, g.regions.map(region => React.createElement("button", { type: "button", key: region.id, className: "operation-region-choice "+(region.id === r.id ? "active" : ""), "aria-pressed": region.id === r.id, "aria-label": region.name+"を操作対象に選択", onClick: () => this.selectRegion(region.id) }, region.name))) : null, React.createElement("p", { className: "operation-intro" }, "実行するオペレーションを選択してください。"),
+            React.createElement("button", { type: "button", className: "operation-target-trigger", "aria-expanded": this.state.regionPickerOpen, "aria-controls": "operation-region-picker", onClick: () => this.setState(s => ({ regionPickerOpen: !s.regionPickerOpen })) }, React.createElement("span", { className: "operation-target-label" }, "TARGET NODE"), React.createElement("b", null, r.name), React.createElement(Icon, { name: this.state.regionPickerOpen ? "chevron-left" : "chevron-right", size: 16 })), this.state.regionPickerOpen ? React.createElement("div", { id: "operation-region-picker", className: "operation-region-picker", role: "group", "aria-label": "操作対象地域" }, g.regions.map(region => React.createElement("button", { type: "button", key: region.id, className: "operation-region-choice "+(region.id === r.id ? "active" : ""), "aria-pressed": region.id === r.id, "aria-label": region.name+"を操作対象に選択", onClick: () => this.selectRegion(region.id) }, region.name))) : null, React.createElement("div", { className: "operation-briefing", "aria-live": "polite" },
+                React.createElement("strong", null, `${r.name}市場：${aiNames[leader] || 'AI未導入'}が${Math.round(localShares[leader] || 0)}%で先行`),
+                React.createElement("span", null, `AI普及 ${pct(r.adoption)} · 自AI ${pct(localShares[0] || 0)}`),
+                React.createElement("small", null, kairosStatus)),
             React.createElement("div", { className: "op-grid" }, ops.map(o => React.createElement("button", { type: "button", key: o.id, className: `op-choice ${this.state.selectedOp === o.id ? 'selected' : ''}`, onClick: () => this.setState({ selectedOp: o.id }), 'aria-pressed': this.state.selectedOp === o.id, disabled: false },
                 React.createElement("span", { className: "op-icon" },
                     React.createElement(Icon, { name: opIcons[o.id] || 'sparkles', size: 21 })),
@@ -2125,7 +2052,7 @@ class App extends React.Component {
         React.createElement("section", { className: "event-window panel-glass", role: "dialog", "aria-modal": "true", "aria-label": ev.title },
             React.createElement("div", { className: "event-alert" },
                 React.createElement("span", { className: "event-beacon" }),
-                React.createElement("strong", null, ev.source === 'scheduled' ? 'CHAIN REACTION' : 'WORLD EVENT'),
+                React.createElement("strong", null, ev.source === 'scheduled' ? 'CHAIN REACTION' : ev.source === 'rival-emergence' ? 'NEW RIVAL / KAIROS' : 'WORLD EVENT'),
                 React.createElement("span", { className: "event-date" }, engine.getDate())),
             React.createElement("div", { className: "event-symbol" },
                 React.createElement(Icon, { name: "radio", size: 32 })),
@@ -2141,7 +2068,7 @@ class App extends React.Component {
                     React.createElement("small", null, choice.detail || '世界の状況に影響します'),
                     !choice.affordable ? React.createElement("em", null, "資金が不足しています") : null,
                     choice.chained ? React.createElement("em", null, "\u3053\u306E\u9078\u629E\u306F\u5C06\u6765\u306E\u30A4\u30D9\u30F3\u30C8\u306B\u3064\u306A\u304C\u308A\u307E\u3059") : null),
-                React.createElement(Icon, { name: "arrow-right", size: 19 }))), React.createElement("button", { type: "button", onClick: () => engine.chooseEvent(-1) }, "スキップ")))); }
+                React.createElement(Icon, { name: "arrow-right", size: 19 }))), React.createElement("button", { className: "event-skip", type: "button", onClick: () => engine.chooseEvent(-1) }, "イベントをスキップ")))); }
     renderEnding(g) { const stats = engine.getStats(); const win = g.ending?.id !== 'failure'; return React.createElement("div", { className: "modal-backdrop ending-backdrop" },
         React.createElement("section", { className: "ending-window panel-glass", role: "dialog", "aria-modal": "true", "aria-label": "\u30B2\u30FC\u30E0\u7D50\u679C" },
             React.createElement("div", { className: `ending-emblem ${win ? 'victory' : 'defeat'}` },
@@ -2227,7 +2154,7 @@ class App extends React.Component {
                             React.createElement(Icon, { name: "logo", size: 37 }),
                             React.createElement("small", null, "CORE")),
                         lanes.map(l => { const origin = l.skills[0]; return React.createElement("div", { key: l.id, className: "tree-lane-label", style: { left: origin.position[0] - 80, top: origin.position[1] - 95, color: laneColors[l.id] } }, l.title.toUpperCase()); }),
-                        all.map(s => { const done = g.unlockedSkills.includes(s.id); const problem = skillStatus(s); const active = this.state.selectedSkill === s.id; return React.createElement("button", { key: s.id, type: "button", style: { left: s.position[0], top: s.position[1], '--node-color': laneColors[lanes.find(l => l.skills.includes(s)).id] }, className: "skill-node " + (done ? "acquired" : !problem ? "available" : "locked") + " " + (active ? "active " : "") + (this.state.skillReveal?.id === s.id ? "just-unlocked" : ""), onMouseDown: e => e.preventDefault(), onClick: e => { if (this.didTreeDrag) {
+                        all.map(s => { const done = g.unlockedSkills.includes(s.id); const problem = skillStatus(s); const active = this.state.selectedSkill === s.id; return React.createElement("button", { key: s.id, type: "button", style: { left: s.position[0], top: s.position[1], '--node-color': laneColors[lanes.find(l => l.skills.includes(s)).id] }, className: `skill-node ${done ? 'acquired' : !problem ? 'available' : 'locked'} ${active ? 'active' : ''}`, onMouseDown: e => e.preventDefault(), onClick: e => { if (this.didTreeDrag) {
                                 e.preventDefault();
                                 return;
                             } this.setState({ selectedSkill: s.id }); }, "aria-label": `${s.title}、EP ${s.cost}、${done ? '習得済み' : problem || '解放可能'}` },
@@ -2301,7 +2228,7 @@ class App extends React.Component {
                 req.key === 'safeAlert' ? '≤' : '/',
                 " ",
                 req.target))))))); }
-    renderReport(g) { const st = engine.getStats(); const rows = [['世界普及率', st.worldAdoption, '%'], ['自AIシェア', st.share, '%'], ['ATLAS シェア', st.sh[1], '%'], ['NOVA シェア', st.sh[2], '%'], ['AI依存度', st.dependency, '%'], ['信頼度', g.trust, ''], ['技術力', g.tech, ''], ['演算能力', g.compute, ''], ['自律性', g.autonomy, ''], ['オープン化', g.openness, '']]; return React.createElement("div", { className: "report-wrap" },
+    renderReport(g) { const st = engine.getStats(); const rows = [['世界普及率', st.worldAdoption, '%'], ['自AIシェア', st.share, '%'], ['ATLAS シェア', st.sh[1], '%'], ['NOVA シェア', st.sh[2], '%'], ...(g.eventRuntime?.flags?.kairosLaunched ? [['KAIROS シェア', st.sh[3] || 0, '%']] : []), ['AI依存度', st.dependency, '%'], ['信頼度', g.trust, ''], ['技術力', g.tech, ''], ['演算能力', g.compute, ''], ['自律性', g.autonomy, ''], ['オープン化', g.openness, '']]; return React.createElement("div", { className: "report-wrap" },
         React.createElement("div", { className: "report-big" },
             React.createElement("span", { className: "eyebrow" }, "CURRENT INTELLIGENCE LEVEL"),
             React.createElement("div", null,
@@ -2316,7 +2243,7 @@ class App extends React.Component {
                 React.createElement("strong", null,
                     Math.round(val),
                     unit)),
-            React.createElement(Progress, { value: val, color: label.includes('ATLAS') ? colors.atlas : label.includes('NOVA') ? colors.nova : colors.player }))))); }
+            React.createElement(Progress, { value: val, color: label.includes('ATLAS') ? colors.atlas : label.includes('NOVA') ? colors.nova : label.includes('KAIROS') ? colors.kairos : colors.player }))))); }
     renderNews(g) { return React.createElement("div", { className: "news-full" },
         React.createElement("div", { className: "news-tabs" },
             React.createElement("button", { className: this.state.newsTab === 'news' ? 'active' : '', onClick: () => this.setState({ newsTab: 'news' }) }, "\u4E16\u754C\u30CB\u30E5\u30FC\u30B9"),
@@ -2338,12 +2265,12 @@ class App extends React.Component {
             React.createElement("h3", null, l.message))))); }
     renderHelp() { return React.createElement("div", { className: "help-content" },
         React.createElement("button", { type: "button", className: "secondary-button help-restart", onClick: () => this.open("reset") }, "新しく始める"),
-        React.createElement("p", null, "\u3042\u306A\u305F\u306FAI\u958B\u767A\u52E2\u529B\u306E\u3072\u3068\u3064\u3002\u7AF6\u5408\u3059\u308BATLAS\u30FBNOVA\u306E\u6210\u9577\u3068\u3001\u4E16\u754C\u306E\u8B66\u6212\u30FB\u898F\u5236\u306E\u4E2D\u3067\u30014\u3064\u306E\u672A\u6765\u306E\u3044\u305A\u308C\u304B\u3092\u76EE\u6307\u3057\u307E\u3059\u3002"),
+        React.createElement("p", null, "あなたはAI開発勢力のひとつ。ATLAS・NOVAとの競争に加え、12ヶ月後には新興AI「KAIROS」が参入します。世界の警戒・規制に対応しながら、4つの未来のいずれかを目指します。"),
         React.createElement("div", { className: "help-steps" },
             React.createElement("div", null,
                 React.createElement(Icon, { name: "globe" }),
                 React.createElement("strong", null, "01 / \u5730\u57DF\u3092\u9078\u3076"),
-                React.createElement("p", null, "\u4E16\u754C\u30DE\u30C3\u30D7\u3092\u30BF\u30C3\u30D7\u3057\u3066\u5730\u57DF\u3092\u9078\u629E\u3002\u5730\u57DF\u3054\u3068\u306B\u666E\u53CA\u7387\u3068AI\u30B7\u30A7\u30A2\u304C\u9055\u3044\u307E\u3059\u3002")),
+                React.createElement("p", null, "世界マップをタップして地域を選択。普及率は住民のAI利用者割合、シェアはAI利用者内での各社比率です。")),
             React.createElement("div", null,
                 React.createElement(Icon, { name: "radio" }),
                 React.createElement("strong", null, "02 / \u6642\u9593\u3092\u64CD\u4F5C\u3059\u308B"),
@@ -2355,7 +2282,7 @@ class App extends React.Component {
             React.createElement("div", null,
                 React.createElement(Icon, { name: "target" }),
                 React.createElement("strong", null, "04 / \u4E16\u754C\u306E\u5909\u5316\u306B\u9069\u5FDC\u3059\u308B"),
-                React.createElement("p", null, "\u81EA\u5F8B\u9032\u5316\u3001\u898F\u5236\u3001\u4F9B\u7D66\u4E0D\u8DB3\u3001\u7AF6\u5408AI\u306E\u8E8D\u9032\u304C\u81EA\u52D5\u767A\u751F\u3002\u6642\u3005\u767A\u751F\u3059\u308B\u9078\u629E\u30A4\u30D9\u30F3\u30C8\u3067\u306F\u6642\u9593\u304C\u505C\u6B62\u3057\u307E\u3059\u30024\u3064\u306E\u7D50\u672B\u306E\u3044\u305A\u308C\u304B\u3092\u76EE\u6307\u3057\u307E\u3059\u3002")))); }
+                React.createElement("p", null, "12ヶ月後にKAIROSが4地域から参入。安全基準を共同化して競争を抑えるか、資源を集中して技術競争に出るかを選びます。自律進化や供給不足など他の世界イベントにも対応。")))); }
     renderReset() { return React.createElement("div", { className: "reset-content" },
         React.createElement("div", { className: "reset-icon" },
             React.createElement(Icon, { name: "refresh", size: 36 })),
